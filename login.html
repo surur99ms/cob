@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="id">
 <head>
   <meta charset="UTF-8" />
@@ -195,12 +195,7 @@
         loginBtn.style.background = 'linear-gradient(135deg,#22c55e,#16a34a)';
         loginBtn.style.boxShadow  = '0 8px 30px rgba(34,197,94,0.45)';
         setTimeout(() => {
-          alert('Login berhasil! Selamat datang, Demo User.');
-          loginBtn.innerHTML = '<span class="btn-text">Masuk</span><div class="spinner"></div>';
-          loginBtn.style.background = '';
-          loginBtn.style.boxShadow  = '';
-          loginBtn.classList.remove('loading');
-          loginBtn.disabled = false;
+          window.location.href = 'dashboard.html';
         }, 1000);
       } else {
         loginBtn.classList.remove('loading');
