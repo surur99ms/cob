@@ -434,7 +434,7 @@ $videos = getLatestContent($pdo, 'video');
             </div>
             
             <div class="border-t border-black/10 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-sm font-medium">
-                <p class="text-gray-500">© 2024 Misbahussurur All rights reserved.</p>
+                <p class="text-gray-500">© 2026 Misbahussurur All rights reserved.</p>
                 <div class="flex gap-8 text-gray-500">
                     <a href="#" class="hover:text-ink transition-colors">Privacy</a>
                     <a href="#" class="hover:text-ink transition-colors">Terms</a>
