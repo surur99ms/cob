@@ -15,3 +15,6 @@ docs/
 # Folder dependencies (jika pakai composer/npm nantinya)
 vendor/
 node_modules/
+
+# Script server-side
+autodeploy.sh
