@@ -2,8 +2,6 @@
 // index.php
 session_start();
 
-require_once 'koneksi.php';
-
 $message = '';
 $msgType = '';
 
@@ -19,7 +17,7 @@ if (isset($_SESSION['message'])) {
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['nama'])) {
     $nama = htmlspecialchars($_POST['nama']);
     
-    // URL Channel YouTube dengan konfirmasi subscribe (Silakan ganti URL-nya dengan yang asli)
+    // URL Channel YouTube dengan konfirmasi subscribe
     $youtubeLink = "https://www.youtube.com/@hayatake99?sub_confirmation=1"; 
     
     // Mengarahkan pengunjung ke YouTube
@@ -27,25 +25,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['nama'])) {
     exit;
 }
 
-// Proses Form Newsletter (Email - untuk form di bagian bawah jika masih ada)
+// Proses Form Newsletter (Tanpa Database)
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['email'])) {
     $email = filter_var($_POST['email'], FILTER_SANITIZE_EMAIL);
     
     if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        try {
-            $stmt = $pdo->prepare("INSERT INTO subscribers (email) VALUES (:email)");
-            $stmt->bindParam(':email', $email);
-            $stmt->execute();
-            $_SESSION['message'] = "Terima kasih telah berlangganan!";
-            $_SESSION['msgType'] = "success";
-        } catch (PDOException $e) {
-            if ($e->getCode() == 23000) {
-                $_SESSION['message'] = "Email ini sudah terdaftar.";
-            } else {
-                $_SESSION['message'] = "Terjadi kesalahan. Silakan coba lagi.";
-            }
-            $_SESSION['msgType'] = "error";
-        }
+        // Karena tidak pakai database, kita langsung set berhasil
+        $_SESSION['message'] = "Terima kasih telah berlangganan (Demo Mode)!";
+        $_SESSION['msgType'] = "success";
     } else {
         $_SESSION['message'] = "Format email tidak valid.";
         $_SESSION['msgType'] = "error";
@@ -55,18 +42,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['email'])) {
     exit;
 }
 
-// Ambil data konten terbaru
-function getLatestContent($pdo, $type, $limit = 3) {
-    $stmt = $pdo->prepare("SELECT * FROM contents WHERE type = :type ORDER BY created_at DESC LIMIT :limit");
-    $stmt->bindParam(':type', $type);
-    $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
-    $stmt->execute();
-    return $stmt->fetchAll();
-}
+// Data Konten Statis (Dummy) karena tidak memakai database
+$articles = [
+    ['url' => 'artikel.php', 'title' => 'Memahami Logika Pemrograman Lewat Ilmu Nahwu Sharaf', 'excerpt' => 'Bagaimana struktur bahasa Arab klasik membantu kita memahami cara kerja variabel, fungsi, dan algoritma dalam koding.'],
+    ['url' => 'artikel.php', 'title' => 'Roadmap Menjadi Web Developer Modern Tahun Ini', 'excerpt' => 'Panduan langkah demi langkah dari nol hingga mahir membuat website profesional dengan teknologi terkini.']
+];
 
-$articles = getLatestContent($pdo, 'article');
-$podcasts = getLatestContent($pdo, 'podcast');
-$videos = getLatestContent($pdo, 'video');
+$podcasts = [
+    ['url' => 'podcast.php', 'title' => 'Ngaji & Koding: Menyeimbangkan Waktu', 'excerpt' => 'Membahas tips praktis membagi waktu antara jadwal pesantren yang padat dengan belajar IT.'],
+    ['url' => 'podcast.php', 'title' => 'Peluang Karir Remote untuk Santri', 'excerpt' => 'Bagaimana santri bisa bekerja dari rumah untuk perusahaan luar negeri dengan modal laptop dan internet.']
+];
+
+$videos = [
+    ['url' => 'video.php', 'title' => 'Tutorial Dasar HTML & CSS', 'excerpt' => 'Belajar membuat kerangka website pertama Anda dalam waktu kurang dari 30 menit.'],
+    ['url' => 'video.php', 'title' => 'Cara Upload Web ke cPanel', 'excerpt' => 'Panduan lengkap hosting website agar bisa diakses seluruh dunia.']
+];
 
 ?>
 <!DOCTYPE html>
