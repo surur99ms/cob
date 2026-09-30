@@ -132,7 +132,7 @@ $videos = [
             <!-- Navigation Links -->
             <nav class="flex flex-wrap items-center justify-center gap-x-6 gap-y-4">
                 <a href="#newsletter" class="px-6 py-2.5 bg-accent hover:bg-accentHover text-white rounded-full font-medium transition-colors shadow-sm text-sm">
-                    Gabung 10.000+ Subscribers
+                    Gabung 50.000+ Subscribers
                 </a>
                 <a href="index.php#courses" class="text-ink hover:text-accent font-medium text-sm transition-colors">Aplikasi Baru</a>
                 <a href="artikel.php" class="text-ink hover:text-accent font-medium text-sm transition-colors">Artikel</a>
