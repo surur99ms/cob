@@ -92,7 +92,7 @@ session_start();
             
             <!-- Page Header -->
             <div class="text-center max-w-2xl mx-auto mb-16">
-                <span class="text-accent font-bold tracking-widest uppercase text-xs">Dengarkan Suara Kami</span>
+                <span class="text-accent font-bold tracking-widest uppercase text-xs">Dengarkan Suara Saya</span>
                 <h1 class="text-5xl font-serif font-bold text-ink mt-4 mb-6">Podcast Santri Koding</h1>
                 <p class="text-lg text-inkLight">Bincang-bincang inspiratif seputar lika-liku karir di dunia IT, pengalaman mondok, dan cerita sukses alumni pesantren.</p>
             </div>
