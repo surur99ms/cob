@@ -174,7 +174,7 @@ $videos = [
                     <!-- Right: Text Content -->
                     <div class="w-full lg:w-7/12 space-y-8 text-center lg:text-left">
                         <h1 class="text-5xl lg:text-7xl font-serif font-bold text-ink leading-[1.1] relative inline-block whitespace-nowrap pr-12 lg:pr-20">
-                            Halo Kang!
+                            Halo Cak!
                             <span class="absolute top-0 right-0 text-5xl lg:text-7xl transform rotate-12 origin-bottom-right">👋</span>
                             <svg class="absolute w-[105%] h-auto bottom-1 -left-2 text-[#60C3D6] -z-10" viewBox="0 0 200 15" xmlns="http://www.w3.org/2000/svg"><path d="M0 10 Q 50 -5 100 10 T 200 5" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"/></svg>
                         </h1>

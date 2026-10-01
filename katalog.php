@@ -359,9 +359,9 @@ session_start();
             ).join('');
 
             // Setup WhatsApp URL
-            // Format: "Halo Kang Misbah, saya tertarik untuk membeli source code/aplikasi [Nama Produk] dari Santri Koding dengan harga [Harga]. Boleh minta info lebih lanjut?"
+            // Format: "Halo Cak Misbah, saya tertarik untuk membeli source code/aplikasi [Nama Produk] dari Santri Koding dengan harga [Harga]. Boleh minta info lebih lanjut?"
             const phoneNumber = "6281234567890"; // Dummy number
-            const messageText = `Halo Kang Misbah, saya tertarik untuk membeli source code/aplikasi *${product.title}* dari Santri Koding dengan harga *${product.price}*. Boleh minta info lebih lanjut?`;
+            const messageText = `Halo Cak Misbah, saya tertarik untuk membeli source code/aplikasi *${product.title}* dari Santri Koding dengan harga *${product.price}*. Boleh minta info lebih lanjut?`;
             const encodedText = encodeURIComponent(messageText);
             const waUrl = `https://wa.me/${phoneNumber}?text=${encodedText}`;
             
