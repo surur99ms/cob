@@ -1393,6 +1393,10 @@ textarea#inputKritikSaran {
   animation: fadeInModal 0.25s ease-out forwards;
 }
 
+.modal-backdrop.open {
+  display: flex !important;
+}
+
 @keyframes fadeInModal {
   from { opacity: 0; }
   to { opacity: 1; }
