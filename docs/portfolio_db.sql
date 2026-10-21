@@ -1,4 +1,4 @@
--- Buat database jika belum ada
+portfolio_db-- Buat database jika belum ada
 CREATE DATABASE IF NOT EXISTS portfolio_db;
 USE portfolio_db;
 
