@@ -508,12 +508,19 @@ function resetFormPeserta() {
 // ========================================================
 // 5. PRESENSI SUBMISSION & ANIMATION POPUP
 // ========================================================
-function handlePresensiSubmit(event) {
+async function handlePresensiSubmit(event) {
   event.preventDefault();
 
   if (!currentMatchedPeserta) {
     alert("Silakan masukkan ID Peserta yang valid terlebih dahulu.");
     return;
+  }
+
+  const submitBtn = document.getElementById("btnSubmitPresensi");
+  const originalBtnContent = submitBtn ? submitBtn.innerHTML : "";
+  if (submitBtn) {
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = `<span>⏳ Menyimpan presensi ke server...</span>`;
   }
 
   const kritikSaran = document.getElementById("inputKritikSaran").value.trim();
@@ -537,6 +544,25 @@ function handlePresensiSubmit(event) {
     status: "HADIR"
   };
 
+  // Kirim data presensi ke server hosting agar otomatis tersimpan di database dan sinkron ke Laptop Admin
+  if (IS_SERVER_ENV) {
+    try {
+      const res = await fetch(`${PRESENSI_API_URL}?action=submit_absen`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(attendanceData)
+      });
+      const result = await res.json();
+      if (!res.ok || result.status !== "success") {
+        console.warn("Respon server presensi:", result);
+      } else {
+        console.log("Presensi berhasil disimpan ke server:", result.storage);
+      }
+    } catch (err) {
+      console.warn("Gagal kirim absen ke server:", err);
+    }
+  }
+
   if (existingIdx !== -1) {
     // Update existing
     rekapPresensi[existingIdx] = attendanceData;
@@ -547,13 +573,9 @@ function handlePresensiSubmit(event) {
 
   saveRekapData();
 
-  // Kirim data presensi ke server hosting agar otomatis sinkron ke Laptop Admin
-  if (IS_SERVER_ENV) {
-    fetch(`${PRESENSI_API_URL}?action=submit_absen`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(attendanceData)
-    }).catch(err => console.warn("Gagal kirim absen ke server:", err));
+  if (submitBtn) {
+    submitBtn.disabled = false;
+    submitBtn.innerHTML = originalBtnContent;
   }
 
   // Play pleasant chime

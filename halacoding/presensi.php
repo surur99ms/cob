@@ -30,30 +30,45 @@ function getJsonData($filePath) {
 // Helper menyimpan data JSON (fallback/backup)
 function saveJsonData($filePath, $data) {
     $encoded = json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
-    return file_put_contents($filePath, $encoded, LOCK_EX) !== false;
+    // Coba dengan atomic lock
+    $saved = @file_put_contents($filePath, $encoded, LOCK_EX);
+    if ($saved === false) {
+        // Fallback simpan tanpa LOCK_EX (penting untuk server hosting cPanel tertentu)
+        $saved = @file_put_contents($filePath, $encoded);
+    }
+    if ($saved !== false) {
+        @chmod($filePath, 0666);
+    }
+    return $saved !== false;
 }
 
-// Inisialisasi Koneksi Database MySQL
+// Inisialisasi Koneksi Database MySQL Secara Aman
 $pdo = null;
 $useDatabase = false;
+$dbError = null;
+
+$host = 'localhost';
+$dbname = 'portfolio_db';
+$username = 'root';
+$password = '';
+
+// Baca kredensial dari ../koneksi.php secara aman tanpa mengeksekusi die() jika koneksi gagal
+if (file_exists(__DIR__ . '/../koneksi.php')) {
+    $koneksiRaw = @file_get_contents(__DIR__ . '/../koneksi.php');
+    if ($koneksiRaw) {
+        if (preg_match('/\$host\s*=\s*[\'"]([^\'"]+)[\'"]\s*;/', $koneksiRaw, $m)) $host = $m[1];
+        if (preg_match('/\$dbname\s*=\s*[\'"]([^\'"]+)[\'"]\s*;/', $koneksiRaw, $m)) $dbname = $m[1];
+        if (preg_match('/\$username\s*=\s*[\'"]([^\'"]+)[\'"]\s*;/', $koneksiRaw, $m)) $username = $m[1];
+        if (preg_match('/\$password\s*=\s*[\'"]([^\'"]*)[\'"]\s*;/', $koneksiRaw, $m)) $password = $m[1];
+    }
+}
 
 try {
-    $host = 'localhost';
-    $dbname = 'portfolio_db';
-    $username = 'root';
-    $password = '';
-
-    // Gunakan konfigurasi dari ../koneksi.php jika ada
-    if (file_exists(__DIR__ . '/../koneksi.php')) {
-        @include_once __DIR__ . '/../koneksi.php';
-    }
-
-    if (!isset($pdo) || !$pdo) {
-        $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8mb4", $username, $password, [
-            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
-        ]);
-    }
+    $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8mb4", $username, $password, [
+        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+        PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+        PDO::ATTR_TIMEOUT => 3
+    ]);
 
     // Pastikan tabel presensi_halacoding sudah tersedia
     $pdo->exec("CREATE TABLE IF NOT EXISTS presensi_halacoding (
@@ -72,9 +87,10 @@ try {
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;");
 
     $useDatabase = true;
-} catch (PDOException $e) {
-    // Jika koneksi MySQL gagal, sistem akan menggunakan file JSON sebagai fallback
+} catch (Throwable $e) {
+    // Jika koneksi MySQL gagal di hosting, sistem otomatis menggunakan file JSON sebagai fallback
     $useDatabase = false;
+    $dbError = $e->getMessage();
     error_log("Database connection failed in presensi.php: " . $e->getMessage());
 }
 
@@ -277,6 +293,20 @@ switch ($action) {
         echo json_encode([
             'status' => 'success',
             'message' => 'Rekap presensi berhasil direset di database'
+        ]);
+        break;
+
+    case 'status':
+        $jsonWritable = is_writable(__DIR__) || (file_exists($rekapFile) && is_writable($rekapFile));
+        echo json_encode([
+            'status' => 'success',
+            'storage' => $useDatabase ? 'mysql_database' : 'json_backup',
+            'mysql_connected' => $useDatabase,
+            'mysql_error' => $dbError,
+            'json_file_exists' => file_exists($rekapFile),
+            'json_writable' => $jsonWritable,
+            'total_in_db' => $useDatabase ? (int)$pdo->query("SELECT COUNT(*) FROM presensi_halacoding")->fetchColumn() : null,
+            'total_in_json' => count(getJsonData($rekapFile))
         ]);
         break;
 
