@@ -510,49 +510,125 @@
 
   <!-- ================= POP-UP CENTANG MENARIK (SUCCESS MODAL) ================= -->
   <div id="modalSuccess" class="modal-backdrop" onclick="closeModalOnBackdrop(event)">
-    <div class="modal-card">
-      <!-- Animated Checkmark Container -->
-      <div class="success-animation-wrapper">
-        <div class="checkmark-circle">
+    <!-- Fullscreen Confetti Particle Canvas -->
+    <canvas id="confettiCanvas" class="confetti-canvas-fullscreen"></canvas>
+
+    <div class="modal-card modal-success-card" onclick="event.stopPropagation()">
+      <button class="modal-close-corner" onclick="closeSuccessModal()" title="Tutup pop-up" aria-label="Tutup">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+
+      <!-- Animated Checkmark Container with Radiant Rings -->
+      <div class="success-hero-header">
+        <div class="pulse-ring ring-1"></div>
+        <div class="pulse-ring ring-2"></div>
+        <div class="checkmark-circle-celebrate">
           <svg class="checkmark-svg" viewBox="0 0 52 52">
             <circle class="checkmark-circle-bg" cx="26" cy="26" r="24" fill="none"/>
             <path class="checkmark-check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8"/>
           </svg>
         </div>
-        <!-- Sparkling confetti particles (CSS / Canvas) -->
-        <canvas id="confettiCanvas" class="confetti-canvas"></canvas>
       </div>
 
       <div class="modal-body-content">
-        <span class="badge-success-pill">Presensi Berhasil Dikonfirmasi</span>
-        <h2 class="modal-title">Terima Kasih, <span id="modalPesertaNama">Peserta</span>!</h2>
-        <p class="modal-subtitle">Kehadiran Anda pada sesi pelatihan HalaCoding hari ini telah tersimpan ke sistem rekap.</p>
+        <div class="success-badge-wrap">
+          <span class="badge-success-pill">
+            <span class="pulse-dot"></span>
+            Presensi Berhasil Dikonfirmasi
+          </span>
+        </div>
+
+        <h2 class="modal-title">Terima Kasih, <span id="modalPesertaNama">Peserta</span>! 🎉</h2>
+        <p class="modal-subtitle">Kehadiran Anda pada sesi pelatihan <strong>HalaCoding</strong> hari ini telah berhasil diverifikasi dan tersimpan otomatis ke database.</p>
         
-        <div class="modal-info-box">
-          <div class="info-row">
-            <span>ID Peserta:</span>
-            <strong id="modalPesertaId">-</strong>
+        <!-- Digital Attendance Pass Card -->
+        <div class="digital-pass-card">
+          <div class="pass-header">
+            <div class="pass-badge">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+              </svg>
+              <span>OFFICIAL ATTENDANCE PASS</span>
+            </div>
+            <div class="pass-status-tag">
+              <span class="dot-green"></span>
+              <span>TERCATAT HADIR</span>
+            </div>
           </div>
-          <div class="info-row">
-            <span>Kelas Pelatihan:</span>
-            <strong id="modalPesertaTrack">-</strong>
+
+          <div class="pass-body">
+            <div class="pass-row">
+              <div class="pass-col">
+                <span class="pass-label">ID PESERTA</span>
+                <span class="pass-id-badge" id="modalPesertaId">HC-101</span>
+              </div>
+              <div class="pass-col">
+                <span class="pass-label">WAKTU PRESENSI</span>
+                <strong class="pass-val text-mono" id="modalTimestamp">-</strong>
+              </div>
+            </div>
+
+            <div class="pass-divider"></div>
+
+            <div class="pass-row">
+              <div class="pass-col full-width">
+                <span class="pass-label">PROGRAM KELAS</span>
+                <strong class="pass-val highlight-val" id="modalPesertaTrack">-</strong>
+              </div>
+            </div>
+
+            <div class="pass-row" id="modalInstansiRow">
+              <div class="pass-col full-width">
+                <span class="pass-label">ASAL INSTITUSI / SEKOLAH</span>
+                <strong class="pass-val" id="modalPesertaInstansi">-</strong>
+              </div>
+            </div>
+
+            <div class="pass-row feedback-row" id="modalFeedbackRow" style="display: none;">
+              <div class="pass-col full-width">
+                <span class="pass-label">CATATAN KRITIK & SARAN</span>
+                <div class="pass-feedback-quote">
+                  <span class="quote-mark">“</span>
+                  <em id="modalFeedbackText">-</em>
+                  <span class="quote-mark">”</span>
+                </div>
+              </div>
+            </div>
           </div>
-          <div class="info-row">
-            <span>Waktu Catat:</span>
-            <strong id="modalTimestamp">-</strong>
-          </div>
-          <div class="info-row feedback-row" id="modalFeedbackRow" style="display: none;">
-            <span>Kritik & Saran:</span>
-            <em id="modalFeedbackText">"-"</em>
+
+          <div class="pass-footer">
+            <div class="pass-security-seal">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+              </svg>
+              <span>Tersinkron Database Server Pelatihan</span>
+            </div>
           </div>
         </div>
 
-        <div class="modal-buttons">
-          <button type="button" class="btn-primary btn-block" onclick="closeSuccessModal()">
+        <!-- Action Buttons -->
+        <div class="modal-buttons-celebrate">
+          <button type="button" class="btn-primary btn-block btn-celebrate-primary" onclick="closeSuccessModal()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
             <span>Selesai & Tutup</span>
           </button>
-          <button type="button" class="btn-secondary btn-block" onclick="goToAdminRekap()">
-            <span>Lihat Rekap Admin</span>
+
+          <button type="button" class="btn-secondary btn-block btn-copy-proof" onclick="copyAttendanceProof()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+            </svg>
+            <span>Salin Bukti Presensi (WhatsApp)</span>
+          </button>
+
+          <button type="button" class="btn-link-rekap" onclick="goToAdminRekap()">
+            <span>Lihat Rekap Seluruh Peserta &rarr;</span>
           </button>
         </div>
       </div>

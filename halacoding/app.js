@@ -581,34 +581,96 @@ async function handlePresensiSubmit(event) {
   // Play pleasant chime
   playCelebrationChime();
 
-  // Show Success Modal with animated checkmark and confetti
+  // Show Success Modal with animated checkmark and full celebration
   showSuccessModal(attendanceData);
 }
 
+let lastConfirmedPresensi = null;
+
 function showSuccessModal(data) {
+  lastConfirmedPresensi = data;
   const modal = document.getElementById("modalSuccess");
-  document.getElementById("modalPesertaNama").textContent = data.nama;
-  document.getElementById("modalPesertaId").textContent = data.idPeserta;
-  document.getElementById("modalPesertaTrack").textContent = data.track;
-  document.getElementById("modalTimestamp").textContent = data.timestamp;
+  if (!modal) return;
+
+  const elNama = document.getElementById("modalPesertaNama");
+  if (elNama) elNama.textContent = data.nama;
+
+  const elId = document.getElementById("modalPesertaId");
+  if (elId) elId.textContent = data.idPeserta;
+
+  const elTrack = document.getElementById("modalPesertaTrack");
+  if (elTrack) elTrack.textContent = data.track;
+
+  const elInstansi = document.getElementById("modalPesertaInstansi");
+  if (elInstansi) elInstansi.textContent = data.instansi || "Peserta HalaCoding";
+
+  const elTimestamp = document.getElementById("modalTimestamp");
+  if (elTimestamp) elTimestamp.textContent = data.timestamp;
 
   const feedbackRow = document.getElementById("modalFeedbackRow");
-  if (data.kritikSaran && data.kritikSaran !== "Belum ada catatan kritik/saran.") {
-    feedbackRow.style.display = "flex";
-    document.getElementById("modalFeedbackText").textContent = `"${data.kritikSaran}"`;
-  } else {
-    feedbackRow.style.display = "none";
+  if (feedbackRow) {
+    if (data.kritikSaran && data.kritikSaran !== "Belum ada catatan kritik/saran.") {
+      feedbackRow.style.display = "block";
+      const elFbText = document.getElementById("modalFeedbackText");
+      if (elFbText) elFbText.textContent = data.kritikSaran;
+    } else {
+      feedbackRow.style.display = "none";
+    }
   }
 
   modal.classList.add("open");
 
-  // Trigger confetti burst
+  // Play pleasant chime
+  playCelebrationChime();
+
+  // Trigger full-screen celebratory confetti burst
   launchConfetti();
+}
+
+function copyAttendanceProof() {
+  if (!lastConfirmedPresensi) return;
+  const text = `*BUKTI PRESENSI RESMI - PELATIHAN HALACODING*\n` +
+    `━━━━━━━━━━━━━━━━━━━━━━━━━\n` +
+    `👤 *Nama:* ${lastConfirmedPresensi.nama}\n` +
+    `🆔 *ID Peserta:* ${lastConfirmedPresensi.idPeserta}\n` +
+    `📚 *Program:* ${lastConfirmedPresensi.track}\n` +
+    `🏛️ *Asal Institusi:* ${lastConfirmedPresensi.instansi || "-"}\n` +
+    `⏰ *Waktu Catat:* ${lastConfirmedPresensi.timestamp}\n` +
+    `✅ *Status:* TERVERIFIKASI HADIR (Database Server)\n` +
+    `━━━━━━━━━━━━━━━━━━━━━━━━━\n` +
+    `Sistem Presensi HalaCoding: https://portofolio.corefive.my.id/halacoding/`;
+
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).then(() => {
+      showToastNotification("Bukti presensi tersalin! Siap dikirim ke WhatsApp.", "📋");
+    }).catch(() => {
+      fallbackCopyText(text);
+    });
+  } else {
+    fallbackCopyText(text);
+  }
+}
+
+function fallbackCopyText(text) {
+  try {
+    const ta = document.createElement("textarea");
+    ta.value = text;
+    ta.style.position = "fixed";
+    ta.style.left = "-9999px";
+    document.body.appendChild(ta);
+    ta.focus();
+    ta.select();
+    document.execCommand("copy");
+    document.body.removeChild(ta);
+    showToastNotification("Bukti presensi tersalin! Siap dikirim ke WhatsApp.", "📋");
+  } catch (err) {
+    showToastNotification("Gagal menyalin otomatis. Silakan screenshot layar ini.", "ℹ️");
+  }
 }
 
 function closeSuccessModal() {
   const modal = document.getElementById("modalSuccess");
-  modal.classList.remove("open");
+  if (modal) modal.classList.remove("open");
   resetFormPeserta();
 }
 
@@ -1582,38 +1644,49 @@ function playCelebrationChime() {
   }
 }
 
-// Lightweight Confetti Particle Canvas Animation
+// Fullscreen Celebratory Confetti Particle Canvas Animation
 function launchConfetti() {
   const canvas = document.getElementById("confettiCanvas");
   if (!canvas) return;
   const ctx = canvas.getContext("2d");
 
-  // Resize canvas to parent wrapper
-  const rect = canvas.parentElement.getBoundingClientRect();
-  canvas.width = rect.width;
-  canvas.height = rect.height;
+  // Fullscreen dimensions
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
 
   const particles = [];
-  const colors = ["#10b981", "#059669", "#34d399", "#6ee7b7", "#047857", "#14b8a6", "#fbbf24"];
-  const particleCount = 48;
+  const colors = [
+    "#10b981", "#059669", "#34d399", "#6ee7b7", 
+    "#06b6d4", "#3b82f6", "#8b5cf6", "#f59e0b", "#fbbf24", "#f43f5e"
+  ];
+  const particleCount = 110;
 
   for (let i = 0; i < particleCount; i++) {
+    const angle = Math.random() * Math.PI * 2;
+    const speed = Math.random() * 14 + 4;
     particles.push({
-      x: canvas.width / 2,
-      y: canvas.height / 2 + 10,
-      r: Math.random() * 4 + 2,
+      x: window.innerWidth / 2,
+      y: window.innerHeight / 2 - 40,
+      r: Math.random() * 5 + 3,
       color: colors[Math.floor(Math.random() * colors.length)],
       tilt: Math.random() * 10 - 5,
-      tiltAngle: 0,
-      tiltAngleInc: Math.random() * 0.08 + 0.04,
-      vx: (Math.random() - 0.5) * 10,
-      vy: (Math.random() - 0.7) * 11,
+      tiltAngle: Math.random() * Math.PI * 2,
+      tiltAngleInc: Math.random() * 0.12 + 0.05,
+      vx: Math.cos(angle) * speed * (Math.random() * 1.5 + 0.5),
+      vy: Math.sin(angle) * speed - Math.random() * 8 - 4,
+      gravity: 0.28,
+      friction: 0.975,
+      shape: Math.random() > 0.4 ? "rect" : "circle",
+      width: Math.random() * 11 + 6,
+      height: Math.random() * 8 + 4,
+      rotation: Math.random() * 360,
+      rotSpeed: (Math.random() - 0.5) * 10,
       opacity: 1
     });
   }
 
   let animationFrame;
-  let startTime = Date.now();
+  const startTime = Date.now();
 
   function draw() {
     const elapsed = Date.now() - startTime;
@@ -1622,22 +1695,30 @@ function launchConfetti() {
     particles.forEach(p => {
       p.x += p.vx;
       p.y += p.vy;
-      p.vy += 0.22; // gravity
-      p.vx *= 0.98; // friction
+      p.vy += p.gravity;
+      p.vx *= p.friction;
+      p.rotation += p.rotSpeed;
       p.tiltAngle += p.tiltAngleInc;
-      p.tilt = Math.sin(p.tiltAngle) * 8;
-      p.opacity = Math.max(0, 1 - elapsed / 1500);
+      p.tilt = Math.sin(p.tiltAngle) * 12;
+      p.opacity = Math.max(0, 1 - (elapsed - 1200) / 1600);
 
       ctx.save();
-      ctx.globalAlpha = p.opacity;
+      ctx.globalAlpha = Math.min(1, p.opacity);
+      ctx.translate(p.x, p.y);
+      ctx.rotate((p.rotation * Math.PI) / 180);
       ctx.fillStyle = p.color;
-      ctx.beginPath();
-      ctx.ellipse(p.x, p.y, p.r, p.r * 1.5, p.tilt * Math.PI / 180, 0, Math.PI * 2);
-      ctx.fill();
+
+      if (p.shape === "rect") {
+        ctx.fillRect(-p.width / 2, -p.height / 2, p.width, p.height);
+      } else {
+        ctx.beginPath();
+        ctx.ellipse(0, 0, p.r, p.r * 1.3, (p.tilt * Math.PI) / 180, 0, Math.PI * 2);
+        ctx.fill();
+      }
       ctx.restore();
     });
 
-    if (elapsed < 1600) {
+    if (elapsed < 2800) {
       animationFrame = requestAnimationFrame(draw);
     } else {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
