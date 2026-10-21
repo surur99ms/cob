@@ -251,6 +251,16 @@ session_start();
                 description: "Template website profile modern yang dioptimasi untuk SEO. Cocok untuk menampilkan informasi pendaftaran santri baru, fasilitas, dan kegiatan pondok.",
                 techStack: ["HTML5", "Tailwind CSS", "Alpine.js", "Vite"],
                 image: "https://images.unsplash.com/photo-1499951360447-b19be8fe80f5?q=80&w=800&auto=format&fit=crop"
+            },
+            {
+                id: 5,
+                title: "Presensi Kehadiran Pelatihan Halacoding",
+                category: "Web",
+                price: "Rp 750.000",
+                numericPrice: 750000,
+                description: "Aplikasi presensi online berbasis web untuk mencatat dan mengelola kehadiran peserta pelatihan Halacoding secara real-time. Dilengkapi fitur scan QR Code presensi, validasi sesi kelas, rekap otomatis kehadiran per peserta, dashboard instruktur, dan ekspor laporan ke Excel & PDF.",
+                techStack: ["Laravel", "PHP", "MySQL", "Tailwind CSS", "QR Code Scanner", "Alpine.js"],
+                image: "https://images.unsplash.com/photo-1531482615713-2afd69097998?q=80&w=800&auto=format&fit=crop"
             }
         ];
 
@@ -360,7 +370,7 @@ session_start();
 
             // Setup WhatsApp URL
             // Format: "Halo Cak Misbah, saya tertarik untuk membeli source code/aplikasi [Nama Produk] dari Santri Koding dengan harga [Harga]. Boleh minta info lebih lanjut?"
-            const phoneNumber = "6281234567890"; // Dummy number
+            const phoneNumber = "6285606373627";
             const messageText = `Halo Cak Misbah, saya tertarik untuk membeli source code/aplikasi *${product.title}* dari Santri Koding dengan harga *${product.price}*. Boleh minta info lebih lanjut?`;
             const encodedText = encodeURIComponent(messageText);
             const waUrl = `https://wa.me/${phoneNumber}?text=${encodedText}`;
