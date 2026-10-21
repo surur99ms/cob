@@ -1405,7 +1405,7 @@ textarea#inputKritikSaran {
 .modal-card {
   background: #ffffff;
   border-radius: var(--radius-xl);
-  box-shadow: var(--shadow-modal);
+  box-shadow: 0 25px 60px -15px rgba(15, 23, 42, 0.25), 0 0 0 1px rgba(226, 232, 240, 0.8);
   width: 100%;
   max-width: 520px;
   position: relative;
@@ -1431,27 +1431,131 @@ textarea#inputKritikSaran {
   flex-direction: column;
 }
 
-/* Animated Checkmark Container */
-.success-animation-wrapper {
-  position: relative;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding-top: 2.5rem;
-  padding-bottom: 0.5rem;
+/* Fullscreen Confetti Particle Canvas */
+.confetti-canvas-fullscreen {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 1050;
 }
 
-.checkmark-circle {
-  width: 84px;
-  height: 84px;
+/* Success Celebratory Modal Specifics */
+.modal-success-card {
+  background: #ffffff;
+  border-radius: 28px;
+  width: 100%;
+  max-width: 490px;
+  box-shadow: 
+    0 25px 60px -12px rgba(16, 185, 129, 0.35), 
+    0 0 0 1px rgba(16, 185, 129, 0.2), 
+    0 20px 45px rgba(15, 23, 42, 0.25);
+  position: relative;
+  overflow: hidden;
+  max-height: 92vh;
+  overflow-y: auto;
+  animation: popInSpring 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+@keyframes popInSpring {
+  0% {
+    opacity: 0;
+    transform: scale(0.7) translateY(40px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+/* Floating Corner Close Button */
+.modal-close-corner {
+  position: absolute;
+  top: 1.15rem;
+  right: 1.15rem;
+  width: 36px;
+  height: 36px;
   border-radius: 50%;
-  background: var(--grad-soft);
+  background: #f1f5f9;
+  border: none;
+  cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 10px 25px rgba(16, 185, 129, 0.3);
+  color: var(--text-muted);
+  transition: var(--transition);
+  z-index: 10;
+}
+
+.modal-close-corner svg {
+  width: 18px;
+  height: 18px;
+}
+
+.modal-close-corner:hover {
+  background: #fee2e2;
+  color: #ef4444;
+  transform: rotate(90deg);
+}
+
+/* Celebratory Checkmark Hero & Radiant Radar Pulse */
+.success-hero-header {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-top: 2.75rem;
+  padding-bottom: 0.75rem;
+  background: radial-gradient(circle at 50% 65%, rgba(16, 185, 129, 0.16) 0%, transparent 72%);
+}
+
+.pulse-ring {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.pulse-ring.ring-1 {
+  width: 110px;
+  height: 110px;
+  border: 2px solid rgba(16, 185, 129, 0.4);
+  animation: pulseRadar 2.2s ease-out infinite;
+}
+
+.pulse-ring.ring-2 {
+  width: 145px;
+  height: 145px;
+  border: 1.5px dashed rgba(6, 182, 212, 0.35);
+  animation: pulseRadar 2.2s ease-out 0.7s infinite;
+}
+
+@keyframes pulseRadar {
+  0% {
+    transform: translate(-50%, -50%) scale(0.8);
+    opacity: 0.95;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(1.4);
+    opacity: 0;
+  }
+}
+
+.checkmark-circle-celebrate {
+  width: 88px;
+  height: 88px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #ecfdf5 0%, #a7f3d0 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 12px 28px -4px rgba(16, 185, 129, 0.4), inset 0 2px 4px rgba(255, 255, 255, 0.8);
   position: relative;
   z-index: 2;
+  border: 3px solid #ffffff;
 }
 
 .checkmark-svg {
@@ -1462,7 +1566,6 @@ textarea#inputKritikSaran {
   stroke-width: 3.5;
   stroke: var(--emerald-600);
   stroke-miterlimit: 10;
-  box-shadow: inset 0 0 0 var(--emerald-600);
   animation: fillCircle 0.4s ease-in-out 0.4s forwards, scaleCircle 0.3s ease-in-out 0.9s both;
 }
 
@@ -1490,49 +1593,308 @@ textarea#inputKritikSaran {
   100% { stroke-dashoffset: 0; }
 }
 
-.confetti-canvas {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-  z-index: 1;
-}
-
+/* Modal Body Content */
 .modal-body-content {
-  padding: 1.5rem 2rem 2.25rem;
+  padding: 1.25rem 1.75rem 2rem;
   text-align: center;
 }
 
+.success-badge-wrap {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 0.75rem;
+}
+
 .badge-success-pill {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
   background: #ecfdf5;
   color: #047857;
   border: 1px solid #a7f3d0;
   font-size: 0.775rem;
   font-weight: 800;
-  padding: 0.3rem 0.9rem;
+  padding: 0.35rem 1rem;
   border-radius: var(--radius-full);
-  margin-bottom: 0.75rem;
   letter-spacing: 0.02em;
 }
 
+.pulse-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #10b981;
+  box-shadow: 0 0 8px #10b981;
+  animation: blinkDot 1.4s infinite;
+}
+
+@keyframes blinkDot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(0.8); }
+}
+
 .modal-title {
-  font-size: 1.5rem;
+  font-size: 1.45rem;
   font-weight: 800;
   color: var(--text-main);
   letter-spacing: -0.02em;
   margin-bottom: 0.4rem;
+  line-height: 1.3;
 }
 
 .modal-subtitle {
   font-size: 0.875rem;
   color: var(--text-muted);
   line-height: 1.5;
-  margin-bottom: 1.5rem;
+  margin-bottom: 1.25rem;
 }
 
+/* Digital Attendance Pass Card */
+.digital-pass-card {
+  background: linear-gradient(145deg, #f8fafc 0%, #f0fdf4 100%);
+  border: 1.5px dashed #cbd5e1;
+  border-radius: var(--radius-lg);
+  padding: 1.15rem 1.25rem;
+  margin: 1.25rem 0 1.5rem;
+  text-align: left;
+  box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.6), 0 4px 12px rgba(15, 23, 42, 0.03);
+  position: relative;
+}
+
+.pass-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px dashed #cbd5e1;
+  margin-bottom: 0.85rem;
+}
+
+.pass-badge {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.675rem;
+  font-weight: 800;
+  color: var(--emerald-800);
+  letter-spacing: 0.06em;
+}
+
+.pass-badge svg {
+  width: 14px;
+  height: 14px;
+  color: var(--emerald-600);
+}
+
+.pass-status-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  background: #10b981;
+  color: #ffffff;
+  padding: 0.2rem 0.65rem;
+  border-radius: var(--radius-full);
+  font-size: 0.675rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+}
+
+.dot-green {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #ffffff;
+}
+
+.pass-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.pass-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+}
+
+.pass-col {
+  flex: 1;
+}
+
+.pass-col.full-width {
+  flex: 1 1 100%;
+}
+
+.pass-label {
+  display: block;
+  font-size: 0.65rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  letter-spacing: 0.06em;
+  margin-bottom: 0.2rem;
+}
+
+.pass-id-badge {
+  display: inline-block;
+  font-family: var(--font-mono);
+  background: #0f172a;
+  color: #34d399;
+  font-size: 0.85rem;
+  font-weight: 800;
+  padding: 0.25rem 0.65rem;
+  border-radius: var(--radius-xs);
+  letter-spacing: 0.05em;
+}
+
+.pass-val {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: var(--text-main);
+  line-height: 1.3;
+}
+
+.pass-val.highlight-val {
+  color: var(--emerald-700);
+  font-weight: 800;
+}
+
+.text-mono {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+}
+
+.pass-divider {
+  height: 1px;
+  background: #e2e8f0;
+  margin: 0.2rem 0;
+}
+
+.pass-feedback-quote {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: var(--radius-sm);
+  padding: 0.5rem 0.75rem;
+  font-size: 0.825rem;
+  color: var(--emerald-900);
+  line-height: 1.4;
+  margin-top: 0.25rem;
+}
+
+.pass-feedback-quote em {
+  font-style: italic;
+}
+
+.quote-mark {
+  color: var(--emerald-400);
+  font-weight: 800;
+  font-size: 1rem;
+}
+
+.pass-footer {
+  margin-top: 0.85rem;
+  padding-top: 0.65rem;
+  border-top: 1px dashed #cbd5e1;
+}
+
+.pass-security-seal {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+.pass-security-seal svg {
+  width: 14px;
+  height: 14px;
+  color: var(--emerald-600);
+}
+
+/* Celebratory Action Buttons */
+.modal-buttons-celebrate {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.btn-celebrate-primary {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  background: var(--grad-primary);
+  color: #ffffff;
+  font-weight: 800;
+  font-size: 0.95rem;
+  padding: 0.9rem 1.5rem;
+  border-radius: var(--radius-full);
+  border: none;
+  cursor: pointer;
+  box-shadow: var(--shadow-btn);
+  transition: var(--transition);
+}
+
+.btn-celebrate-primary:hover {
+  background: var(--grad-primary-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 28px -4px rgba(16, 185, 129, 0.5);
+}
+
+.btn-celebrate-primary svg {
+  width: 18px;
+  height: 18px;
+}
+
+.btn-copy-proof {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  background: #ffffff;
+  color: var(--emerald-700);
+  border: 1.5px solid var(--emerald-300);
+  font-weight: 700;
+  font-size: 0.875rem;
+  padding: 0.75rem 1.25rem;
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.btn-copy-proof:hover {
+  background: #f0fdf4;
+  border-color: var(--emerald-500);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-sm);
+}
+
+.btn-copy-proof svg {
+  width: 16px;
+  height: 16px;
+}
+
+.btn-link-rekap {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  font-size: 0.8rem;
+  font-weight: 700;
+  cursor: pointer;
+  padding: 0.5rem;
+  transition: var(--transition);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.btn-link-rekap:hover {
+  color: var(--emerald-600);
+}
+
+/* Backward compatibility classes */
 .modal-info-box {
   background: #f8fafc;
   border: 1px solid #e2e8f0;
@@ -1559,19 +1921,6 @@ textarea#inputKritikSaran {
 .info-row strong {
   color: var(--text-main);
   font-weight: 700;
-}
-
-.info-row.feedback-row {
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 0.25rem;
-  padding-top: 0.5rem;
-  border-top: 1px solid #edf2f7;
-}
-
-.info-row em {
-  font-style: italic;
-  color: var(--emerald-800);
 }
 
 .modal-buttons {
@@ -2172,13 +2521,24 @@ textarea#inputKritikSaran {
     justify-content: flex-start;
   }
 
-  .modal-card {
+  .modal-card,
+  .modal-success-card {
     width: 95%;
-    max-height: 92vh;
+    max-width: 95%;
+    max-height: 94vh;
   }
 
   .modal-body-content {
-    padding: 1.25rem 1.25rem 1.75rem;
+    padding: 1rem 1rem 1.5rem;
+  }
+
+  .modal-title {
+    font-size: 1.25rem;
+  }
+
+  .digital-pass-card {
+    padding: 1rem;
+    margin: 1rem 0 1.25rem;
   }
 }
 
