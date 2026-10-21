@@ -258,8 +258,8 @@ session_start();
                 category: "Web",
                 price: "Rp 750.000",
                 numericPrice: 750000,
-                description: "Aplikasi presensi online berbasis web untuk mencatat dan mengelola kehadiran peserta pelatihan Halacoding secara real-time. Dilengkapi fitur scan QR Code presensi, validasi sesi kelas, rekap otomatis kehadiran per peserta, dashboard instruktur, dan ekspor laporan ke Excel & PDF.",
-                techStack: ["HTML5", "CSS3", "JavaScript", "PHP", "SheetJS"],
+                description: "Aplikasi presensi online berbasis web untuk mencatat dan mengelola kehadiran peserta pelatihan Halacoding secara real-time. Terintegrasi dengan database MySQL server, scan QR Code presensi, rekap otomatis kehadiran, dashboard admin instruktur, dan ekspor laporan ke Excel & PDF.",
+                techStack: ["PHP", "MySQL", "JavaScript", "HTML5", "CSS3", "SheetJS"],
                 image: "https://images.unsplash.com/photo-1531482615713-2afd69097998?q=80&w=800&auto=format&fit=crop",
                 url: "masuk/"
             }

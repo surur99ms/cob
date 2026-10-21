@@ -19,6 +19,22 @@ CREATE TABLE IF NOT EXISTS subscribers (
     subscribed_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
+-- Tabel untuk presensi peserta HalaCoding
+CREATE TABLE IF NOT EXISTS presensi_halacoding (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    id_peserta VARCHAR(50) NOT NULL UNIQUE,
+    nama VARCHAR(150) NOT NULL,
+    whatsapp VARCHAR(50) DEFAULT NULL,
+    instansi VARCHAR(150) DEFAULT NULL,
+    track VARCHAR(100) DEFAULT NULL,
+    waktu_presensi VARCHAR(100) NOT NULL,
+    kritik_saran TEXT DEFAULT NULL,
+    rating INT DEFAULT 5,
+    status VARCHAR(20) DEFAULT 'HADIR',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
 -- Hapus data lama jika ada (untuk testing)
 TRUNCATE TABLE contents;
 
