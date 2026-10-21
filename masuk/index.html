@@ -27,8 +27,17 @@
         </div>
       </div>
 
-      <!-- Role Switcher -->
-      <div class="role-switcher-container">
+      <!-- Navigation Actions -->
+      <div style="display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap;">
+        <a href="../katalog.php" title="Kembali ke Katalog Aplikasi" style="display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.5rem 0.9rem; font-size: 0.825rem; font-weight: 600; color: var(--text-body); background: var(--card-bg); border: 1px solid var(--card-border); border-radius: var(--radius-full); text-decoration: none; transition: var(--transition); box-shadow: var(--shadow-sm);">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width: 14px; height: 14px;">
+            <polyline points="15 18 9 12 15 6"></polyline>
+          </svg>
+          <span>Katalog Aplikasi</span>
+        </a>
+
+        <!-- Role Switcher -->
+        <div class="role-switcher-container">
         <div class="role-pill">
           <button id="btnRolePeserta" class="role-btn active" onclick="switchRole('peserta')">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
