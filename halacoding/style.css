@@ -2450,31 +2450,67 @@ textarea#inputKritikSaran {
 /* Footer */
 .app-footer {
   text-align: center;
-  padding: 2.25rem 0;
+  padding: 2rem 0;
   border-top: 1px solid rgba(226, 232, 240, 0.7);
   font-size: 0.85rem;
   color: var(--text-muted);
   margin-top: auto;
 }
 
-/* Secret / Subtle Footer Admin Trigger */
-.footer-admin-link {
-  color: inherit;
-  font-weight: 600;
-  cursor: pointer;
-  text-decoration: none;
-  padding: 2px 6px;
-  border-radius: var(--radius-xs);
-  transition: all 0.2s ease;
-  user-select: none;
-  display: inline-block;
+.footer-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.85rem;
+  flex-wrap: wrap;
 }
 
-.footer-admin-link:hover,
-.footer-admin-link:focus-visible {
+.footer-copy {
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+
+/* Button Masuk Admin di Samping Footer */
+.btn-footer-masuk {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.38rem 0.95rem;
+  font-size: 0.82rem;
+  font-weight: 700;
+  font-family: inherit;
+  color: var(--emerald-800);
+  background: #ffffff;
+  border: 1px solid rgba(16, 185, 129, 0.35);
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  transition: all 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 1px 3px rgba(16, 185, 129, 0.1);
+  letter-spacing: 0.01em;
+}
+
+.btn-footer-masuk svg {
+  width: 14px;
+  height: 14px;
   color: var(--emerald-600);
-  background: rgba(16, 185, 129, 0.12);
-  outline: none;
+  transition: transform 0.2s ease, color 0.2s ease;
+}
+
+.btn-footer-masuk:hover {
+  background: var(--grad-primary);
+  color: #ffffff;
+  border-color: transparent;
+  transform: translateY(-1.5px);
+  box-shadow: 0 4px 14px rgba(16, 185, 129, 0.35);
+}
+
+.btn-footer-masuk:hover svg {
+  color: #ffffff;
+  transform: translateX(2px);
+}
+
+.btn-footer-masuk:active {
+  transform: translateY(0);
 }
 
 /* ========================================================

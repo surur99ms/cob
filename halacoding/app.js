@@ -286,6 +286,7 @@ function switchRole(role) {
   currentRole = role;
   const btnPeserta = document.getElementById("btnRolePeserta");
   const btnAdmin = document.getElementById("btnRoleAdmin");
+  const btnAdminMasuk = document.getElementById("btnAdminMasuk");
   const viewPeserta = document.getElementById("viewPeserta");
   const viewAdminLogin = document.getElementById("viewAdminLogin");
   const viewAdmin = document.getElementById("viewAdmin");
@@ -293,6 +294,7 @@ function switchRole(role) {
   if (role === "peserta") {
     if (btnPeserta) btnPeserta.classList.add("active");
     if (btnAdmin) btnAdmin.classList.remove("active");
+    if (btnAdminMasuk) btnAdminMasuk.style.display = "inline-flex";
     viewPeserta.style.display = "block";
     if (viewAdminLogin) viewAdminLogin.style.display = "none";
     if (viewAdmin) viewAdmin.style.display = "none";
@@ -304,6 +306,7 @@ function switchRole(role) {
   } else {
     if (btnAdmin) btnAdmin.classList.add("active");
     if (btnPeserta) btnPeserta.classList.remove("active");
+    if (btnAdminMasuk) btnAdminMasuk.style.display = "none";
     viewPeserta.style.display = "none";
 
     // Check if admin is authenticated
