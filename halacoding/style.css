@@ -202,6 +202,22 @@ body {
   gap: 0.75rem;
 }
 
+/* Header Right Session Status Badge */
+.session-status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  background: rgba(236, 253, 245, 0.95);
+  border: 1px solid var(--emerald-200);
+  color: var(--emerald-800);
+  padding: 0.4rem 0.95rem;
+  border-radius: var(--radius-full);
+  font-size: 0.785rem;
+  font-weight: 700;
+  box-shadow: 0 1px 3px rgba(16, 185, 129, 0.08);
+  letter-spacing: 0.01em;
+}
+
 /* Back to Katalog Button */
 .btn-back-katalog {
   display: inline-flex;
@@ -2441,6 +2457,26 @@ textarea#inputKritikSaran {
   margin-top: auto;
 }
 
+/* Secret / Subtle Footer Admin Trigger */
+.footer-admin-link {
+  color: inherit;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+  padding: 2px 6px;
+  border-radius: var(--radius-xs);
+  transition: all 0.2s ease;
+  user-select: none;
+  display: inline-block;
+}
+
+.footer-admin-link:hover,
+.footer-admin-link:focus-visible {
+  color: var(--emerald-600);
+  background: rgba(16, 185, 129, 0.12);
+  outline: none;
+}
+
 /* ========================================================
    RESPONSIVE BREAKPOINTS (ULTRA-MOBILE OPTIMIZED)
    ======================================================== */
@@ -2547,23 +2583,22 @@ textarea#inputKritikSaran {
     padding: 0 0.85rem;
   }
 
-  /* Compact Native-App Style Header */
+  /* Native Header on Mobile */
   .navbar {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 0.75rem;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
     padding: 0.75rem 0;
   }
 
   .nav-brand-wrap {
-    justify-content: space-between;
-    width: 100%;
+    width: auto;
   }
 
   .nav-actions-wrap {
-    width: 100%;
-    justify-content: space-between;
-    gap: 0.5rem;
+    width: auto;
+    justify-content: flex-end;
   }
 
   .btn-back-katalog {

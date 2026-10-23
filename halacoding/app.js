@@ -291,8 +291,8 @@ function switchRole(role) {
   const viewAdmin = document.getElementById("viewAdmin");
 
   if (role === "peserta") {
-    btnPeserta.classList.add("active");
-    btnAdmin.classList.remove("active");
+    if (btnPeserta) btnPeserta.classList.add("active");
+    if (btnAdmin) btnAdmin.classList.remove("active");
     viewPeserta.style.display = "block";
     if (viewAdminLogin) viewAdminLogin.style.display = "none";
     if (viewAdmin) viewAdmin.style.display = "none";
@@ -302,8 +302,8 @@ function switchRole(role) {
       if (idInput) idInput.focus();
     }, 100);
   } else {
-    btnAdmin.classList.add("active");
-    btnPeserta.classList.remove("active");
+    if (btnAdmin) btnAdmin.classList.add("active");
+    if (btnPeserta) btnPeserta.classList.remove("active");
     viewPeserta.style.display = "none";
 
     // Check if admin is authenticated
