@@ -282,6 +282,38 @@ const DATA_PESERTA_HALACODING = ${JSON.stringify(masterPeserta, null, 2)};
 // ========================================================
 // 3. ROLE NAVIGATION (PESERTA <-> ADMIN)
 // ========================================================
+function openAdminLogin() {
+  currentRole = "admin";
+  const btnPeserta = document.getElementById("btnRolePeserta");
+  const btnAdmin = document.getElementById("btnRoleAdmin");
+  const btnAdminMasuk = document.getElementById("btnAdminMasuk");
+  const viewPeserta = document.getElementById("viewPeserta");
+  const viewAdminLogin = document.getElementById("viewAdminLogin");
+  const viewAdmin = document.getElementById("viewAdmin");
+
+  if (btnAdmin) btnAdmin.classList.add("active");
+  if (btnPeserta) btnPeserta.classList.remove("active");
+  if (btnAdminMasuk) btnAdminMasuk.style.display = "none";
+
+  if (viewPeserta) viewPeserta.style.display = "none";
+  if (viewAdmin) viewAdmin.style.display = "none";
+  if (viewAdminLogin) {
+    viewAdminLogin.style.display = "block";
+    const errAlert = document.getElementById("loginErrorAlert");
+    if (errAlert) errAlert.style.display = "none";
+  }
+
+  // Scroll to top agar form login terlihat jelas
+  window.scrollTo({ top: 0, behavior: "smooth" });
+
+  setTimeout(() => {
+    const userField = document.getElementById("inputAdminUsername");
+    if (userField) {
+      userField.focus();
+    }
+  }, 100);
+}
+
 function switchRole(role) {
   currentRole = role;
   const btnPeserta = document.getElementById("btnRolePeserta");
@@ -295,38 +327,18 @@ function switchRole(role) {
     if (btnPeserta) btnPeserta.classList.add("active");
     if (btnAdmin) btnAdmin.classList.remove("active");
     if (btnAdminMasuk) btnAdminMasuk.style.display = "inline";
-    viewPeserta.style.display = "block";
+    if (viewPeserta) viewPeserta.style.display = "block";
     if (viewAdminLogin) viewAdminLogin.style.display = "none";
     if (viewAdmin) viewAdmin.style.display = "none";
+    window.scrollTo({ top: 0, behavior: "smooth" });
     // Refocus input peserta
     setTimeout(() => {
       const idInput = document.getElementById("inputPesertaId");
       if (idInput) idInput.focus();
     }, 100);
   } else {
-    if (btnAdmin) btnAdmin.classList.add("active");
-    if (btnPeserta) btnPeserta.classList.remove("active");
-    if (btnAdminMasuk) btnAdminMasuk.style.display = "none";
-    viewPeserta.style.display = "none";
-
-    // Check if admin is authenticated
-    if (isAdminAuthenticated) {
-      if (viewAdminLogin) viewAdminLogin.style.display = "none";
-      if (viewAdmin) viewAdmin.style.display = "block";
-      renderAdminDashboard();
-    } else {
-      // Show Admin Login Page
-      if (viewAdmin) viewAdmin.style.display = "none";
-      if (viewAdminLogin) {
-        viewAdminLogin.style.display = "block";
-        const errAlert = document.getElementById("loginErrorAlert");
-        if (errAlert) errAlert.style.display = "none";
-        setTimeout(() => {
-          const userField = document.getElementById("inputAdminUsername");
-          if (userField) userField.focus();
-        }, 100);
-      }
-    }
+    // Selalu arahkan ke halaman login admin
+    openAdminLogin();
   }
 }
 
