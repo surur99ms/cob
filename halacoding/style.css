@@ -2457,60 +2457,21 @@ textarea#inputKritikSaran {
   margin-top: auto;
 }
 
-.footer-content {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.85rem;
-  flex-wrap: wrap;
-}
-
-.footer-copy {
-  color: var(--text-muted);
-  line-height: 1.5;
-}
-
-/* Button Masuk Admin di Samping Footer */
-.btn-footer-masuk {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.45rem;
-  padding: 0.38rem 0.95rem;
-  font-size: 0.82rem;
-  font-weight: 700;
-  font-family: inherit;
-  color: var(--emerald-800);
-  background: #ffffff;
-  border: 1px solid rgba(16, 185, 129, 0.35);
-  border-radius: var(--radius-full);
-  cursor: pointer;
-  transition: all 0.22s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 1px 3px rgba(16, 185, 129, 0.1);
-  letter-spacing: 0.01em;
-}
-
-.btn-footer-masuk svg {
-  width: 14px;
-  height: 14px;
+/* Link Tulisan Masuk Admin di Samping Footer */
+.footer-link-masuk {
   color: var(--emerald-600);
-  transition: transform 0.2s ease, color 0.2s ease;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-left: 0.35rem;
 }
 
-.btn-footer-masuk:hover {
-  background: var(--grad-primary);
-  color: #ffffff;
-  border-color: transparent;
-  transform: translateY(-1.5px);
-  box-shadow: 0 4px 14px rgba(16, 185, 129, 0.35);
-}
-
-.btn-footer-masuk:hover svg {
-  color: #ffffff;
-  transform: translateX(2px);
-}
-
-.btn-footer-masuk:active {
-  transform: translateY(0);
+.footer-link-masuk:hover,
+.footer-link-masuk:focus-visible {
+  color: var(--emerald-800);
+  text-decoration: underline;
+  outline: none;
 }
 
 /* ========================================================

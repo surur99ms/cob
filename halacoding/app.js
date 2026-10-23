@@ -294,7 +294,7 @@ function switchRole(role) {
   if (role === "peserta") {
     if (btnPeserta) btnPeserta.classList.add("active");
     if (btnAdmin) btnAdmin.classList.remove("active");
-    if (btnAdminMasuk) btnAdminMasuk.style.display = "inline-flex";
+    if (btnAdminMasuk) btnAdminMasuk.style.display = "inline";
     viewPeserta.style.display = "block";
     if (viewAdminLogin) viewAdminLogin.style.display = "none";
     if (viewAdmin) viewAdmin.style.display = "none";
