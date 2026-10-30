@@ -1,5 +1,5 @@
 /**
- * HalaCoding Attendance System
+ * HalaCoding Sistem Presensi
  * Core Application Logic: Lookup, Persistence, Role Switching, Confetti & Audio
  */
 
