@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,9 +9,11 @@
   <link rel="icon" type="image/png" href="logo.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
   <div class="app-container">
     <!-- Header / Navigation Bar -->
@@ -18,7 +21,9 @@
       <div class="nav-brand-wrap">
         <div class="nav-brand">
           <div class="logo-icon" id="brandLogoContainer">
-            <img src="logo.png" alt="Logo Halacoding" id="brandLogoImg" class="brand-logo-img" style="display: none;" onload="this.style.display='block'; this.parentElement.classList.add('has-custom-logo');" onerror="this.style.display='none';">
+            <img src="logo.png" alt="Logo Halacoding" id="brandLogoImg" class="brand-logo-img" style="display: none;"
+              onload="this.style.display='block'; this.parentElement.classList.add('has-custom-logo');"
+              onerror="this.style.display='none';">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <polyline points="16 18 22 12 16 6"></polyline>
               <polyline points="8 6 2 12 8 18"></polyline>
@@ -34,14 +39,15 @@
 
     <!-- MAIN CONTENT WRAPPER -->
     <main class="main-content">
-      
+
       <!-- ================= VIEW 1: ROLE PESERTA ================= -->
       <section id="viewPeserta" class="view-section active">
         <div class="section-hero">
           <div class="hero-badge">🎓 Portal Pelatihan Halacoding</div>
           <h1 class="hero-title">Presensi Kehadiran Peserta</h1>
-          <p class="hero-desc">Masukkan ID Peserta Anda untuk memuat data profil otomatis, isi ulasan, lalu konfirmasi kehadiran.</p>
-          
+          <p class="hero-desc">Masukkan ID Peserta Anda untuk memuat data profil otomatis, isi ulasan, lalu konfirmasi
+            kehadiran.</p>
+
           <!-- Quick ID Chips for Easy Mobile Testing -->
           <div class="quick-id-container">
             <span class="quick-label">⚡ Contoh ID Cepat:</span>
@@ -71,17 +77,9 @@
                     <line x1="7" y1="16" x2="12" y2="16"></line>
                   </svg>
                 </div>
-                <input 
-                  type="text" 
-                  id="inputPesertaId" 
-                  placeholder="Ketik ID (contoh: HC14480001)..." 
-                  autocomplete="off"
-                  autocapitalize="characters"
-                  autocorrect="off"
-                  spellcheck="false"
-                  autofocus
-                  oninput="handleIdLookup()"
-                />
+                <input type="text" id="inputPesertaId" placeholder="Ketik ID (contoh: HC14480001)..." autocomplete="off"
+                  autocapitalize="characters" autocorrect="off" spellcheck="false" autofocus
+                  oninput="handleIdLookup()" />
                 <button type="button" id="btnClearId" class="clear-btn" onclick="resetFormPeserta()" title="Bersihkan">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <line x1="18" y1="6" x2="6" y2="18"></line>
@@ -89,7 +87,8 @@
                   </svg>
                 </button>
               </div>
-              <small class="helper-text" id="idHelperText">Ketik ID peserta untuk melihat detail data lengkap secara otomatis.</small>
+              <small class="helper-text" id="idHelperText">Ketik ID peserta untuk melihat detail data lengkap secara
+                otomatis.</small>
             </div>
 
             <!-- Peserta Details Result Box (Initially hidden / empty state) -->
@@ -151,7 +150,8 @@
                     <line x1="12" y1="16" x2="12.01" y2="16"></line>
                   </svg>
                   <div>
-                    <strong>Pemberitahuan:</strong> Peserta ini sudah melakukan presensi hari ini pada <span id="prevAttendedTime">-</span>. Anda dapat memperbarui kritik & saran jika diperlukan.
+                    <strong>Pemberitahuan:</strong> Peserta ini sudah melakukan presensi hari ini pada <span
+                      id="prevAttendedTime">-</span>. Anda dapat memperbarui kritik & saran jika diperlukan.
                   </div>
                 </div>
               </div>
@@ -164,11 +164,8 @@
                   <span>Masukan Kritik & Saran</span>
                   <span class="optional-tag">(Sangat Berharga)</span>
                 </label>
-                <textarea 
-                  id="inputKritikSaran" 
-                  rows="3" 
-                  placeholder="Tuliskan pengalaman, kesan, materi yang ingin dipelajari, atau saran perbaikan untuk pelatihan Halacoding hari ini..."
-                ></textarea>
+                <textarea id="inputKritikSaran" rows="3"
+                  placeholder="Tuliskan pengalaman, kesan, materi yang ingin dipelajari, atau saran perbaikan untuk pelatihan Halacoding hari ini..."></textarea>
               </div>
 
               <!-- Rating Pelatihan (Kesan Cepat) -->
@@ -218,7 +215,8 @@
               </div>
               <div class="hero-badge">🔐 Akses Khusus Pengelola</div>
               <h2 class="login-title">Login Administrator</h2>
-              <p class="login-desc">Masukkan akun admin Anda untuk mengelola data rekap presensi pelatihan Halacoding.</p>
+              <p class="login-desc">Masukkan akun admin Anda untuk mengelola data rekap presensi pelatihan Halacoding.
+              </p>
             </div>
 
             <!-- Error Notification -->
@@ -244,13 +242,8 @@
                       <circle cx="12" cy="7" r="4"></circle>
                     </svg>
                   </div>
-                  <input 
-                    type="text" 
-                    id="inputAdminUsername" 
-                    placeholder="Masukkan username..." 
-                    autocomplete="username"
-                    required
-                  />
+                  <input type="text" id="inputAdminUsername" placeholder="Masukkan username..." autocomplete="username"
+                    required />
                 </div>
               </div>
 
@@ -266,14 +259,10 @@
                       <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
                     </svg>
                   </div>
-                  <input 
-                    type="password" 
-                    id="inputAdminPassword" 
-                    placeholder="Masukkan password..." 
-                    autocomplete="current-password"
-                    required
-                  />
-                  <button type="button" class="password-toggle-btn" onclick="toggleAdminPasswordVisibility()" title="Lihat/Sembunyikan Password">
+                  <input type="password" id="inputAdminPassword" placeholder="Masukkan password..."
+                    autocomplete="current-password" required />
+                  <button type="button" class="password-toggle-btn" onclick="toggleAdminPasswordVisibility()"
+                    title="Lihat/Sembunyikan Password">
                     <svg id="eyeIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                       <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
                       <circle cx="12" cy="12" r="3"></circle>
@@ -317,11 +306,12 @@
           <div class="admin-actions-top">
             <button class="btn-secondary" onclick="switchRole('peserta')" title="Kembali ke formulir presensi peserta">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M19 12H5M12 19l-7-7 7-7"/>
+                <path d="M19 12H5M12 19l-7-7 7-7" />
               </svg>
               <span>Form Presensi</span>
             </button>
-            <button class="btn-secondary" onclick="exportDataExcel()" title="Ekspor data rekap presensi ke file Microsoft Excel (.xlsx)">
+            <button class="btn-secondary" onclick="exportDataExcel()"
+              title="Ekspor data rekap presensi ke file Microsoft Excel (.xlsx)">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
                 <polyline points="7 10 12 15 17 10"></polyline>
@@ -329,7 +319,8 @@
               </svg>
               <span>Export Excel</span>
             </button>
-            <button class="btn-primary" onclick="openImportModal()" id="btnImportPeserta" title="Import data peserta baru sekaligus dari file Excel atau CSV">
+            <button class="btn-primary" onclick="openImportModal()" id="btnImportPeserta"
+              title="Import data peserta baru sekaligus dari file Excel atau CSV">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
                 <polyline points="17 8 12 3 7 8"></polyline>
@@ -337,7 +328,8 @@
               </svg>
               <span>Import Peserta</span>
             </button>
-            <button class="btn-danger" onclick="confirmResetPeserta()" id="btnKosongkanPeserta" title="Kosongkan seluruh data peserta master">
+            <button class="btn-danger" onclick="confirmResetPeserta()" id="btnKosongkanPeserta"
+              title="Kosongkan seluruh data peserta master">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
                 <circle cx="8.5" cy="7" r="4"></circle>
@@ -411,7 +403,9 @@
           <div class="stat-card">
             <div class="stat-icon icon-purple">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
+                <path
+                  d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z">
+                </path>
               </svg>
             </div>
             <div class="stat-content">
@@ -429,14 +423,10 @@
                 <circle cx="11" cy="11" r="8"></circle>
                 <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
               </svg>
-              <input 
-                type="text" 
-                id="adminSearchInput" 
-                placeholder="Cari berdasarkan nama, ID, atau instansi..." 
-                oninput="renderAdminTable()"
-              />
+              <input type="text" id="adminSearchInput" placeholder="Cari berdasarkan nama, ID, atau instansi..."
+                oninput="renderAdminTable()" />
             </div>
-            
+
             <div class="filter-controls">
               <select id="filterTrack" onchange="renderAdminTable()">
                 <option value="ALL">Semua Kelas / Track</option>
@@ -487,7 +477,9 @@
 
     <!-- Footer -->
     <footer class="app-footer">
-      <p>© 2026 Pelatihan Halacoding. Desain responsif, clean & terintegrasi. <a href="javascript:void(0)" id="btnAdminMasuk" class="footer-link-masuk" onclick="openAdminLogin()" title="Halaman Login Admin">Masuk</a></p>
+      <p>© 2026 Pelatihan Halacoding. Desain responsif, clean & terintegrasi. <a href="javascript:void(0)"
+          id="btnAdminMasuk" class="footer-link-masuk" onclick="openAdminLogin()" title="Halaman Login Admin">Masuk</a>
+      </p>
     </footer>
   </div>
 
@@ -510,8 +502,8 @@
         <div class="pulse-ring ring-2"></div>
         <div class="checkmark-circle-celebrate">
           <svg class="checkmark-svg" viewBox="0 0 52 52">
-            <circle class="checkmark-circle-bg" cx="26" cy="26" r="24" fill="none"/>
-            <path class="checkmark-check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8"/>
+            <circle class="checkmark-circle-bg" cx="26" cy="26" r="24" fill="none" />
+            <path class="checkmark-check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8" />
           </svg>
         </div>
       </div>
@@ -525,8 +517,9 @@
         </div>
 
         <h2 class="modal-title">Terima Kasih, <span id="modalPesertaNama">Peserta</span>! 🎉</h2>
-        <p class="modal-subtitle">Kehadiran Anda pada sesi pelatihan <strong>Halacoding</strong> hari ini telah berhasil diverifikasi dan tersimpan otomatis ke database.</p>
-        
+        <p class="modal-subtitle">Kehadiran Anda pada sesi pelatihan <strong>Halacoding</strong> hari ini telah berhasil
+          diverifikasi dan tersimpan otomatis ke database.</p>
+
         <!-- Digital Attendance Pass Card -->
         <div class="digital-pass-card">
           <div class="pass-header">
@@ -662,7 +655,8 @@
           </div>
           <div>
             <h3 class="modal-main-title">Import Data Peserta Halacoding</h3>
-            <p class="modal-sub-title">Tambah atau perbarui data master peserta secara massal menggunakan file Excel (.xlsx) atau CSV.</p>
+            <p class="modal-sub-title">Tambah atau perbarui data master peserta secara massal menggunakan file Excel
+              (.xlsx) atau CSV.</p>
           </div>
         </div>
         <button type="button" class="close-x-btn" onclick="closeImportModal()">&times;</button>
@@ -715,21 +709,12 @@
             </div>
           </div>
 
-          <div 
-            class="import-dropzone" 
-            id="importDropzone" 
-            onclick="triggerImportFileInput()"
-            ondragover="handleImportDragOver(event)"
-            ondragleave="handleImportDragLeave(event)"
-            ondrop="handleImportDrop(event)"
-          >
-            <input 
-              type="file" 
-              id="fileImportPeserta" 
-              accept=".xlsx, .xls, .csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel, text/csv" 
-              style="display: none;" 
-              onchange="handleImportFileSelect(event)"
-            />
+          <div class="import-dropzone" id="importDropzone" onclick="triggerImportFileInput()"
+            ondragover="handleImportDragOver(event)" ondragleave="handleImportDragLeave(event)"
+            ondrop="handleImportDrop(event)">
+            <input type="file" id="fileImportPeserta"
+              accept=".xlsx, .xls, .csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel, text/csv"
+              style="display: none;" onchange="handleImportFileSelect(event)" />
             <div class="dropzone-inner-icon">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
                 <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
@@ -740,7 +725,8 @@
             <div class="dropzone-inner-title">
               <strong>Klik untuk memilih file</strong> atau seret file ke area ini
             </div>
-            <div class="dropzone-inner-hint">Mendukung format: Microsoft Excel (.xlsx, .xls) & Comma Separated (.csv)</div>
+            <div class="dropzone-inner-hint">Mendukung format: Microsoft Excel (.xlsx, .xls) & Comma Separated (.csv)
+            </div>
           </div>
 
           <!-- File Loaded Info Card -->
@@ -778,14 +764,16 @@
               <input type="radio" name="importMergeMode" value="merge" checked>
               <div class="mode-radio-desc">
                 <span class="mode-radio-heading">🔄 Tambah & Perbarui (Direkomendasikan)</span>
-                <span class="mode-radio-sub">Peserta baru akan ditambahkan. Peserta dengan ID yang sama akan diperbarui datanya. Riwayat presensi yang telah dicatat tetap tersimpan aman.</span>
+                <span class="mode-radio-sub">Peserta baru akan ditambahkan. Peserta dengan ID yang sama akan diperbarui
+                  datanya. Riwayat presensi yang telah dicatat tetap tersimpan aman.</span>
               </div>
             </label>
             <label class="mode-radio-box">
               <input type="radio" name="importMergeMode" value="replace">
               <div class="mode-radio-desc">
                 <span class="mode-radio-heading">⚠️ Gantikan Semua Peserta (Reset Master)</span>
-                <span class="mode-radio-sub">Seluruh daftar master peserta sebelumnya akan diganti sepenuhnya dengan data baru dari file ini.</span>
+                <span class="mode-radio-sub">Seluruh daftar master peserta sebelumnya akan diganti sepenuhnya dengan
+                  data baru dari file ini.</span>
               </div>
             </label>
           </div>
@@ -826,7 +814,8 @@
         <button type="button" class="btn-secondary" onclick="closeImportModal()">
           <span>Batal</span>
         </button>
-        <button type="button" class="btn-primary" id="btnConfirmImportAction" onclick="executeImportParticipants()" disabled>
+        <button type="button" class="btn-primary" id="btnConfirmImportAction" onclick="executeImportParticipants()"
+          disabled>
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <polyline points="20 6 9 17 4 12"></polyline>
           </svg>
@@ -848,4 +837,5 @@
   <script src="data-peserta.js"></script>
   <script src="app.js"></script>
 </body>
+
 </html>
