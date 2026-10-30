@@ -1,5 +1,5 @@
 /* ========================================================
-   HalaCoding Attendance System - Ultra-Modern & Mobile-First
+   Halacoding Attendance System - Ultra-Modern & Mobile-First
    Theme: Radiant Emerald Glassmorphism & High-Contrast Slate
    Designed for Exceptional Polish, Mobile Responsiveness & Speed
    ======================================================== */
@@ -170,6 +170,35 @@ body {
 .logo-icon svg {
   width: 22px;
   height: 22px;
+}
+
+.logo-icon.has-custom-logo {
+  background: transparent;
+  box-shadow: none;
+  width: auto;
+  height: auto;
+  min-width: 44px;
+  max-height: 48px;
+  padding: 0;
+  border-radius: var(--radius-sm);
+}
+
+.logo-icon.has-custom-logo svg {
+  display: none !important;
+}
+
+.logo-icon.has-custom-logo:hover {
+  transform: scale(1.04);
+}
+
+.brand-logo-img {
+  max-height: 44px;
+  max-width: 180px;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  display: none;
+  border-radius: var(--radius-sm);
 }
 
 .brand-text {

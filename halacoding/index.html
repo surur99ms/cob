@@ -3,8 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Presensi Pelatihan HalaCoding</title>
-  <meta name="description" content="Sistem Presensi Pelatihan HalaCoding - Cepat, Akurat, dan Terintegrasi Real-time">
+  <title>Presensi Pelatihan Halacoding</title>
+  <meta name="description" content="Sistem Presensi Pelatihan Halacoding - Cepat, Akurat, dan Terintegrasi Real-time">
+  <link rel="icon" type="image/png" href="logo.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -16,14 +17,15 @@
     <header class="navbar">
       <div class="nav-brand-wrap">
         <div class="nav-brand">
-          <div class="logo-icon">
+          <div class="logo-icon" id="brandLogoContainer">
+            <img src="logo.png" alt="Logo Halacoding" id="brandLogoImg" class="brand-logo-img" style="display: none;" onload="this.style.display='block'; this.parentElement.classList.add('has-custom-logo');" onerror="this.style.display='none';">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <polyline points="16 18 22 12 16 6"></polyline>
               <polyline points="8 6 2 12 8 18"></polyline>
             </svg>
           </div>
           <div class="brand-text">
-            <span class="brand-name">HalaCoding</span>
+            <span class="brand-name">Halacoding</span>
             <span class="brand-sub">Attendance System</span>
           </div>
         </div>
@@ -36,8 +38,8 @@
       <!-- ================= VIEW 1: ROLE PESERTA ================= -->
       <section id="viewPeserta" class="view-section active">
         <div class="section-hero">
-          <div class="hero-badge">🎓 Portal Pelatihan HalaCoding</div>
-          <h1 class="hero-title">Presensi Kehadiran Peserta</h1>
+          <div class="hero-badge">🎓 Portal Pelatihan Halacoding</div>
+          <h1 class="hero-title">Presensi Kehadiran Peserta Halacoding</h1>
           <p class="hero-desc">Masukkan ID Peserta Anda untuk memuat data profil otomatis, isi ulasan, lalu konfirmasi kehadiran.</p>
           
           <!-- Quick ID Chips for Easy Mobile Testing -->
@@ -165,7 +167,7 @@
                 <textarea 
                   id="inputKritikSaran" 
                   rows="3" 
-                  placeholder="Tuliskan pengalaman, kesan, materi yang ingin dipelajari, atau saran perbaikan untuk pelatihan HalaCoding hari ini..."
+                  placeholder="Tuliskan pengalaman, kesan, materi yang ingin dipelajari, atau saran perbaikan untuk pelatihan Halacoding hari ini..."
                 ></textarea>
               </div>
 
@@ -216,7 +218,7 @@
               </div>
               <div class="hero-badge">🔐 Akses Khusus Pengelola</div>
               <h2 class="login-title">Login Administrator</h2>
-              <p class="login-desc">Masukkan akun admin Anda untuk mengelola data rekap presensi pelatihan HalaCoding.</p>
+              <p class="login-desc">Masukkan akun admin Anda untuk mengelola data rekap presensi pelatihan Halacoding.</p>
             </div>
 
             <!-- Error Notification -->
@@ -309,7 +311,7 @@
               <span class="hero-badge badge-admin">⚡ Dashboard Pengelola</span>
               <span class="status-live-pill"><span class="pulse-dot"></span> Database MySQL Aktif</span>
             </div>
-            <h2 class="admin-title">Rekap Presensi Pelatihan HalaCoding</h2>
+            <h2 class="admin-title">Rekap Presensi Pelatihan Halacoding</h2>
             <p class="admin-desc">Pantau kehadiran peserta dan tinjau kritik serta saran secara real-time.</p>
           </div>
           <div class="admin-actions-top">
@@ -485,7 +487,7 @@
 
     <!-- Footer -->
     <footer class="app-footer">
-      <p>© 2026 Pelatihan HalaCoding. Desain responsif, clean & terintegrasi. <a href="javascript:void(0)" id="btnAdminMasuk" class="footer-link-masuk" onclick="openAdminLogin()" title="Halaman Login Admin">Masuk</a></p>
+      <p>© 2026 Pelatihan Halacoding. Desain responsif, clean & terintegrasi. <a href="javascript:void(0)" id="btnAdminMasuk" class="footer-link-masuk" onclick="openAdminLogin()" title="Halaman Login Admin">Masuk</a></p>
     </footer>
   </div>
 
@@ -523,7 +525,7 @@
         </div>
 
         <h2 class="modal-title">Terima Kasih, <span id="modalPesertaNama">Peserta</span>! 🎉</h2>
-        <p class="modal-subtitle">Kehadiran Anda pada sesi pelatihan <strong>HalaCoding</strong> hari ini telah berhasil diverifikasi dan tersimpan otomatis ke database.</p>
+        <p class="modal-subtitle">Kehadiran Anda pada sesi pelatihan <strong>Halacoding</strong> hari ini telah berhasil diverifikasi dan tersimpan otomatis ke database.</p>
         
         <!-- Digital Attendance Pass Card -->
         <div class="digital-pass-card">
@@ -646,7 +648,7 @@
     </div>
   </div>
 
-  <!-- Modal Import Data Peserta HalaCoding -->
+  <!-- Modal Import Data Peserta Halacoding -->
   <div id="modalImportPeserta" class="modal-backdrop" onclick="closeImportModalOnBackdrop(event)">
     <div class="modal-card modal-card-large">
       <div class="modal-header-simple">
@@ -659,7 +661,7 @@
             </svg>
           </div>
           <div>
-            <h3 class="modal-main-title">Import Data Peserta HalaCoding</h3>
+            <h3 class="modal-main-title">Import Data Peserta Halacoding</h3>
             <p class="modal-sub-title">Tambah atau perbarui data master peserta secara massal menggunakan file Excel (.xlsx) atau CSV.</p>
           </div>
         </div>
