@@ -1,5 +1,5 @@
 /**
- * HalaCoding Attendance System
+ * Halacoding Attendance System
  * Core Application Logic: Lookup, Persistence, Role Switching, Confetti & Audio
  */
 
@@ -617,7 +617,7 @@ function showSuccessModal(data) {
   if (elTrack) elTrack.textContent = data.track;
 
   const elInstansi = document.getElementById("modalPesertaInstansi");
-  if (elInstansi) elInstansi.textContent = data.instansi || "Peserta HalaCoding";
+  if (elInstansi) elInstansi.textContent = data.instansi || "Peserta Halacoding";
 
   const elTimestamp = document.getElementById("modalTimestamp");
   if (elTimestamp) elTimestamp.textContent = data.timestamp;
@@ -653,7 +653,7 @@ function copyAttendanceProof() {
     `⏰ *Waktu Catat:* ${lastConfirmedPresensi.timestamp}\n` +
     `✅ *Status:* TERVERIFIKASI HADIR (Database Server)\n` +
     `━━━━━━━━━━━━━━━━━━━━━━━━━\n` +
-    `Sistem Presensi HalaCoding: https://portofolio.corefive.my.id/halacoding/`;
+    `Sistem Presensi Halacoding: https://portofolio.corefive.my.id/halacoding/`;
 
   if (navigator.clipboard && navigator.clipboard.writeText) {
     navigator.clipboard.writeText(text).then(() => {
@@ -988,7 +988,7 @@ function exportDataExcel() {
 
   const workbook = XLSX.utils.book_new();
   XLSX.utils.book_append_sheet(workbook, worksheet, "Rekap Presensi");
-  XLSX.writeFile(workbook, `Rekap_Presensi_HalaCoding_${new Date().toISOString().slice(0, 10)}.xlsx`);
+  XLSX.writeFile(workbook, `Rekap_Presensi_Halacoding_${new Date().toISOString().slice(0, 10)}.xlsx`);
   showToastNotification("Data rekap presensi berhasil diekspor ke Excel (.xlsx)!", "📥");
 }
 
@@ -1018,7 +1018,7 @@ function exportDataCSV() {
   const url = URL.createObjectURL(blob);
   const link = document.createElement("a");
   link.setAttribute("href", url);
-  link.setAttribute("download", `Rekap_Presensi_HalaCoding_${new Date().toISOString().slice(0, 10)}.csv`);
+  link.setAttribute("download", `Rekap_Presensi_Halacoding_${new Date().toISOString().slice(0, 10)}.csv`);
   document.body.appendChild(link);
   link.click();
   document.body.removeChild(link);
@@ -1104,7 +1104,7 @@ function downloadTemplateExcel() {
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, "Data Peserta");
 
-    XLSX.writeFile(workbook, "Template_Import_Peserta_HalaCoding.xlsx");
+    XLSX.writeFile(workbook, "Template_Import_Peserta_Halacoding.xlsx");
     showToastNotification("Template Excel (.xlsx) berhasil diunduh!", "📥");
   } catch (error) {
     console.error("Error generating Excel template:", error);
@@ -1131,7 +1131,7 @@ function downloadTemplateCSV() {
   const encodedUri = encodeURI(csvContent);
   const link = document.createElement("a");
   link.setAttribute("href", encodedUri);
-  link.setAttribute("download", "Template_Import_Peserta_HalaCoding.csv");
+  link.setAttribute("download", "Template_Import_Peserta_Halacoding.csv");
   document.body.appendChild(link);
   link.click();
   document.body.removeChild(link);
@@ -1400,7 +1400,7 @@ function extractParticipantFromRow(row, fallbackIndex) {
     whatsapp: whatsapp.trim() || "-",
     instansi: instansi.trim() || "Umum",
     track: track.trim() || "Fullstack Web (React & Node)",
-    mentor: mentor.trim() || "Tim Mentor HalaCoding",
+    mentor: mentor.trim() || "Tim Mentor Halacoding",
     batch: batch.trim() || "Batch 4 - 2026",
     color: color
   };
