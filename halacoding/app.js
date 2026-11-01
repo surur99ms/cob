@@ -703,7 +703,25 @@ function goToAdminRekap() {
 // ========================================================
 // 6. ADMIN DASHBOARD & REKAP
 // ========================================================
+function updateTrackFilterOptions() {
+  const select = document.getElementById("filterTrack");
+  if (!select) return;
+  const currentVal = select.value;
+  const uniqueTracks = [...new Set(masterPeserta.map(p => p.track).filter(Boolean))];
+  const tracksToUse = uniqueTracks.length > 0 
+    ? uniqueTracks 
+    : ["Web Programing Dasar", "Fullstack Web Developer", "Mobile App Development"];
+  select.innerHTML = `<option value="ALL">Semua Kelas / Track</option>` +
+    tracksToUse.map(t => `<option value="${escapeHtml(t)}">${escapeHtml(t)}</option>`).join("");
+  if (tracksToUse.includes(currentVal)) {
+    select.value = currentVal;
+  } else {
+    select.value = "ALL";
+  }
+}
+
 function renderAdminDashboard() {
+  updateTrackFilterOptions();
   renderAdminStats();
   renderAdminTable();
 }
@@ -748,7 +766,7 @@ function renderAdminTable() {
 
   // Apply track filter
   if (filterTrack !== "ALL") {
-    combinedList = combinedList.filter(item => item.track === filterTrack);
+    combinedList = combinedList.filter(item => item.track === filterTrack || item.instansi === filterTrack);
   }
 
   // Apply status filter
