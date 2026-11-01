@@ -254,7 +254,7 @@ session_start();
             },
             {
                 id: 5,
-                title: "Absensi Kehadiran Murid",
+                title: "Presensi Kehadiran Peserta",
                 category: "Web",
                 price: "Rp 750.000",
                 numericPrice: 750000,
