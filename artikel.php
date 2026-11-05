@@ -7,7 +7,7 @@ session_start();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kumpulan Artikel | Santri Koding</title>
+    <title>Kumpulan Artikel 001 | Santri Koding</title>
     <!-- Favicon -->
     <link rel="icon" href="favicon.png" type="image/png">
     <!-- Tailwind CSS CDN -->
@@ -93,7 +93,7 @@ session_start();
             <!-- Page Header -->
             <div class="text-center max-w-2xl mx-auto mb-16">
                 <span class="text-accent font-bold tracking-widest uppercase text-xs">Blog & Tulisan</span>
-                <h1 class="text-5xl font-serif font-bold text-ink mt-4 mb-6">Kumpulan Artikel</h1>
+                <h1 class="text-5xl font-serif font-bold text-ink mt-4 mb-6">Kumpulan Artikel 001</h1>
                 <p class="text-lg text-inkLight">Baca tulisan terbaru seputar pemrograman, teknologi, dan insight dari kehidupan pesantren.</p>
             </div>
 
