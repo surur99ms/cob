@@ -667,7 +667,10 @@ function copyAttendanceProof() {
 
   // Arahkan langsung ke WhatsApp dengan teks bukti terisi
   const waUrl = "https://api.whatsapp.com/send?text=" + encodeURIComponent(text);
-  window.open(waUrl, "_blank");
+  const win = window.open(waUrl, "_blank");
+  if (!win || win.closed || typeof win.closed === "undefined") {
+    window.location.href = waUrl;
+  }
 }
 
 function sendAttendanceProofWA() {
