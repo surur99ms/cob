@@ -657,13 +657,21 @@ function copyAttendanceProof() {
 
   if (navigator.clipboard && navigator.clipboard.writeText) {
     navigator.clipboard.writeText(text).then(() => {
-      showToastNotification("Bukti presensi tersalin! Siap dikirim ke WhatsApp.", "📋");
+      showToastNotification("Membuka WhatsApp dan bukti tersalin...", "📲");
     }).catch(() => {
       fallbackCopyText(text);
     });
   } else {
     fallbackCopyText(text);
   }
+
+  // Arahkan langsung ke WhatsApp dengan teks bukti terisi
+  const waUrl = "https://api.whatsapp.com/send?text=" + encodeURIComponent(text);
+  window.open(waUrl, "_blank");
+}
+
+function sendAttendanceProofWA() {
+  copyAttendanceProof();
 }
 
 function fallbackCopyText(text) {
