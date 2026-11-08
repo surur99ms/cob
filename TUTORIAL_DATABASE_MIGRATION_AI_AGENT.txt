@@ -1,0 +1,224 @@
+================================================================================
+PANDUAN LENGKAP: MEMBANGUN SISTEM DATABASE MIGRATION DENGAN BANTUAN AI AGENT
+Studi Kasus: PHP Native + MySQL + Laragon (Lokal) + cPanel Auto-Deploy (Produksi)
+Dibuat Khusus Untuk: Bos Surur
+Disusun Oleh: Pasep (Partner Coding Setia Bos Surur)
+================================================================================
+
+DAFTAR ISI:
+1. Pengantar & Kenapa Butuh Database Migration
+2. Prinsip Dasar Memberi Perintah (Prompt) ke AI Agent
+3. Rangkaian Prompt Langkah demi Langkah (Step-by-Step Prompts)
+   - Tahap 1: Analisis Struktur Proyek & Rekomendasi Solusi
+   - Tahap 2: Pembuatan Migration Runner (migrate.php) & Initial Schema
+   - Tahap 3: Pemisahan Kredensial Dinamis (Tanpa Hardcode Password)
+   - Tahap 4: Integrasi Otomatis ke Skrip Auto-Deploy Server cPanel
+   - Tahap 5: Pembuatan Konsol Web Trigger (migrate_web.php)
+   - Tahap 6: Prompt Troubleshooting Kendala Server / Hosting
+4. Cara Menambah Tabel Baru di Masa Depan (Workflow Harian)
+5. Tips Tambahan untuk Menjaga Kerja Sama AI yang Efektif
+
+--------------------------------------------------------------------------------
+1. PENGANTAR: KENAPA BUTUH DATABASE MIGRATION?
+--------------------------------------------------------------------------------
+Di web development tradisional, developer sering membuat tabel lewat phpMyAdmin
+di laptop, tapi lupa membuatnya di server hosting. Akibatnya website di server error.
+
+Dengan "Database Migration", perubahan skema database dikelola persis seperti kode
+program:
+- Disimpan dalam bentuk file skrip PHP berstempel waktu (timestamp).
+- Bisa dilacak riwayatnya oleh Git.
+- Bisa otomatis dieksekusi saat proses deployment dari GitHub ke cPanel.
+
+
+--------------------------------------------------------------------------------
+2. PRINSIP DASAR MEMBERI PERINTAH (PROMPT) KE AI AGENT
+--------------------------------------------------------------------------------
+Agar AI Agent (seperti Pasep) menghasilkan kode yang langsung tepat sasaran dan
+tidak merusak file lain yang sudah berjalan, ikuti 3 aturan emas ini:
+
+A. Berikan Konteks Lingkungan (Environment Context)
+   Jelaskan di mana kode berjalan: PHP versi berapa, server lokal apa (Laragon/XAMPP),
+   dan jenis hosting produksi (cPanel shared hosting, VPS, dll).
+
+B. Berikan Batasan Jelas (Constraints)
+   Tegaskan batasan, contoh: "Jangan gunakan composer jika proyek native",
+   "Jangan ubah kode koneksi yang sudah ada", "Simpan kredensial terpisah dari Git".
+
+C. Gunakan Alur Bertahap (Iterative Prompting)
+   Jangan minta AI mengerjakan 10 hal sekaligus dalam 1 prompt panjang yang rumit.
+   Pecah menjadi tahapan: Analisis -> Pembuatan Runner -> Skema Awal -> Integrasi Deploy.
+
+
+--------------------------------------------------------------------------------
+3. RANGKAIAN PROMPT LANGKAH DEMI LANGKAH (COPY-PASTE READY)
+--------------------------------------------------------------------------------
+
+================================================================================
+TAHAP 1: PROMPT ANALISIS STRUKTUR PROYEK & REKOMENDASI SOLUSI
+================================================================================
+Tujuan: Meminta AI mempelajari struktur folder proyek dan merekomendasikan solusi
+migrasi yang paling ringan tanpa dependensi berat (zero external dependency).
+
+>>> COPY PROMPT INI:
+--------------------------------------------------------------------------------
+"Halo AI, tolong analisis struktur proyek saya saat ini. Proyek saya menggunakan
+PHP Native tanpa framework, berjalan di Laragon (Windows) untuk lokal, dan di
+cPanel Shared Hosting untuk server produksi dengan auto-deploy dari GitHub.
+
+Saya ingin menerapkan konsep Database Migration agar skema database saya dikelola
+seperti kode program dan bisa otomatis update di hosting saat deploy.
+
+Pertanyaan:
+1. Identifikasi pustaka/library atau pendekatan apa yang paling cocok dan ringan
+   untuk stack proyek ini (tanpa perlu dependensi vendor Composer yang berat).
+2. Berikan rancangan struktur folder yang rapi untuk sistem migrasi ini."
+--------------------------------------------------------------------------------
+
+
+================================================================================
+TAHAP 2: PROMPT PEMBUATAN MIGRATION RUNNER & INITIAL MIGRATION
+================================================================================
+Tujuan: Menginstruksikan AI membuat script eksekusi (migrate.php) dan satu file
+migrasi pertama yang merangkum tabel-tabel utama yang sudah ada.
+
+>>> COPY PROMPT INI:
+--------------------------------------------------------------------------------
+"Rekomendasi kamu sangat bagus. Sekarang tolong buatkan implementasinya:
+
+1. Buat folder 'database/migrations/'.
+2. Buatkan file runner 'migrate.php' yang mendukung perintah CLI:
+   - 'php migrate.php' atau 'php migrate.php up' (menjalankan migrasi pending)
+   - 'php migrate.php rollback' (membatalkan batch terakhir)
+   - 'php migrate.php status' (menampilkan tabel status file migrasi)
+   - 'php migrate.php make [nama]' (membuat template file migrasi baru)
+3. Buatkan file migration pertama (initial migration) di dalam folder migrations
+   berdasarkan tabel-tabel yang sudah ada di proyek saya (dan tambahkan contoh
+   tabel users jika belum ada).
+4. Pastikan file migrasi menggunakan class dengan method up() dan down()."
+--------------------------------------------------------------------------------
+
+
+================================================================================
+TAHAP 3: PROMPT PEMISAHAN KREDENSIAL DINAMIS (KEAMANAN GITHUB)
+================================================================================
+Tujuan: Menjamin username dan password database tidak bocor ke Git repository.
+
+>>> COPY PROMPT INI:
+--------------------------------------------------------------------------------
+"Pastikan file migrate.php TIDAK menyimpan username dan password database secara
+hardcoded di dalamnya!
+
+migrate.php harus otomatis mendeteksi dan membaca koneksi PDO dari file koneksi
+yang sudah ada (seperti koneksi.php atau config.php).
+Karena file koneksi.php sudah diabaikan (.gitignore), maka kredensial aman berbeda
+antara laptop Laragon saya dan cPanel hosting."
+--------------------------------------------------------------------------------
+
+
+================================================================================
+TAHAP 4: PROMPT INTEGRASI KE AUTO-DEPLOY HOSTING CPANEL
+================================================================================
+Tujuan: Menghubungkan proses migrasi ke script deployment server.
+
+>>> COPY PROMPT INI:
+--------------------------------------------------------------------------------
+"Ini adalah isi file script auto-deploy saya yang ada di server cPanel:
+[PASTE ISI FILE autodeploy.sh DI SINI]
+
+Tolong beritahu saya:
+Di baris sebelah mana saya harus menyisipkan perintah agar setiap kali proses
+deploy selesai menyalin file, server otomatis menjalankan 'php migrate.php'
+untuk menerapkan migrasi baru? Tolong jangan ubah script yang sudah berjalan,
+hanya sisipkan bagian migrasinya saja."
+--------------------------------------------------------------------------------
+
+
+================================================================================
+TAHAP 5: PROMPT KONSOL WEB TRIGGER (migrate_web.php)
+================================================================================
+Tujuan: Menyediakan antarmuka web dengan token rahasia sehingga Bos Surur bisa
+memantau atau memicu migrasi langsung dari browser tanpa harus membuka terminal SSH.
+
+>>> COPY PROMPT INI:
+--------------------------------------------------------------------------------
+"Buatkan satu file 'migrate_web.php' untuk memicu dan melihat status migrasi lewat
+browser dengan proteksi Secret Token.
+
+Fitur yang diinginkan:
+1. Jika dibuka tanpa parameter token rahasia (contoh: ?token=rahasia123), sistem
+   menolak dengan pesan '403 Akses Ditolak'.
+2. Tampilkan antarmuka konsol yang rapi dengan tombol:
+   - [Jalankan Migrasi]
+   - [Cek Status Migrasi]
+3. Jalankan runner migrate.php dan tampilkan log hasilnya di dalam tag <pre>."
+--------------------------------------------------------------------------------
+
+
+================================================================================
+TAHAP 6: PROMPT TROUBLESHOOTING JIKA MENGALAMI KENDALA DI HOSTING
+================================================================================
+Tujuan: Meminta bantuan AI mendiagnosis jika database di hosting belum berubah
+atau jika ada kendala koneksi/firewall.
+
+>>> COPY PROMPT INI:
+--------------------------------------------------------------------------------
+"Saya sudah selesai deploy ke cPanel, tetapi setelah saya cek di phpMyAdmin
+cPanel tabelnya belum berubah/muncul.
+
+Berikut adalah isi file koneksi.php saya di cPanel:
+[PASTE ISI koneksi.php CPANEL]
+
+Dan ini daftar database yang ada di phpMyAdmin cPanel saya:
+[SEBUTKAN NAMA DATABASE ATAU LAMPIRKAN TANGKAPAN LAYAR]
+
+Tolong bantu identifikasi di mana letak ketidaksesuaiannya dan bagaimana langkah
+perbaikannya secara bertahap."
+--------------------------------------------------------------------------------
+
+
+--------------------------------------------------------------------------------
+4. CARA MENAMBAH TABEL / KOLOM BARU DI MASA DEPAN (WORKFLOW HARIAN)
+--------------------------------------------------------------------------------
+Setelah sistem migrasi terpasang, jika suatu hari Bos Surur ingin menambah tabel
+atau kolom baru, ikuti alur praktis ini:
+
+Langkah 1 (Buka Terminal Laragon):
+   Ketik:
+   php migrate.php make buat_tabel_peserta
+
+Langkah 2 (Edit File Migrasi):
+   Buka file yang baru saja terbuat di folder 'database/migrations/'.
+   Tuliskan query CREATE TABLE di fungsi up(), dan DROP TABLE di fungsi down().
+
+Langkah 3 (Terapkan di Laptop):
+   Ketik:
+   php migrate.php
+   -> Tabel langsung otomatis terbuat di database Laragon lokal!
+
+Langkah 4 (Push ke GitHub):
+   git add .
+   git commit -m "feat: tambah tabel peserta"
+   git push origin main
+
+Selesai! Script auto-deploy cPanel akan otomatis mengeksekusi file migrasi tersebut
+dan tabel baru langsung muncul di phpMyAdmin cPanel tanpa Bos Surur perlu repot!
+
+
+--------------------------------------------------------------------------------
+5. TIPS TAMBAHAN UNTUK KERJA SAMA EFEKTIF DENGAN AI AGENT
+--------------------------------------------------------------------------------
+1. Beri Panggilan Personal:
+   Beri nama pada AI Agent Anda (misalnya 'Pasep') dan tetapkan identitas Anda
+   (misalnya 'Bos Surur') agar komunikasi terasa lebih akrab dan konsisten.
+2. Lampirkan Bukti Log/Screenshot:
+   Jika ada error, cukup paste pesan error atau upload screenshot phpMyAdmin/cPanel.
+   AI agent membaca screenshot jauh lebih cepat untuk menemukan 'biang kerok' masalah.
+3. Gunakan Git Branch:
+   Setiap kali bereksperimen dengan fitur baru bersama AI, minta AI membuatkan
+   branch baru (misal: feature-db-migration) agar branch main selalu aman.
+
+================================================================================
+Salam Sukses & Selamat Koding!
+Pasep - Partner Coding Setia Bos Surur
+================================================================================
