@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Keyboard Master — Latihan Ketik 10 Jari | SantriKoding</title>
+  <!-- Favicon -->
+  <link rel="icon" href="../favicon.png" type="image/png">
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts: Inter & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="bg-slate-950 text-slate-100 flex flex-col min-h-screen">
+
+  <!-- Header & Navigation -->
+  <header class="border-b border-slate-800 bg-slate-900/80 backdrop-blur sticky top-0 z-40">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      <div class="flex items-center gap-4">
+        <a href="../katalog.php" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white text-xs font-medium transition-colors flex items-center gap-2 border border-slate-700">
+          <i class="fas fa-arrow-left"></i> Katalog Aplikasi
+        </a>
+        <div class="h-4 w-px bg-slate-700 hidden sm:block"></div>
+        <h1 class="font-serif text-lg sm:text-xl font-bold tracking-tight text-white flex items-center gap-2">
+          <i class="fas fa-keyboard text-emerald-400"></i> Keyboard <span class="text-rose-500">Master</span>
+        </h1>
+      </div>
+
+      <div class="flex items-center gap-3">
+        <!-- Sound Toggle -->
+        <button id="soundToggleBtn" class="w-10 h-10 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 flex items-center justify-center transition-colors">
+          <i class="fas fa-volume-up text-emerald-400"></i>
+        </button>
+        <!-- Retry Button -->
+        <button id="retryHeaderBtn" class="px-4 py-2 rounded-xl bg-rose-600 hover:bg-rose-500 text-white text-sm font-semibold transition-all shadow-md flex items-center gap-2">
+          <i class="fas fa-redo-alt text-xs"></i> <span class="hidden sm:inline">Ulangi</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content Area -->
+  <main class="flex-grow max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full flex flex-col justify-center">
+
+    <!-- Mode Selector Pills -->
+    <div class="flex items-center justify-center gap-2 overflow-x-auto pb-4 mb-6 scrollbar-hide">
+      <button class="mode-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all bg-accent text-white shadow-sm" data-mode="words_id">
+        <i class="fas fa-font mr-1"></i> Kata Indonesia
+      </button>
+      <button class="mode-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all bg-slate-800 text-slate-300 hover:bg-slate-700" data-mode="homerow">
+        <i class="fas fa-home mr-1"></i> Home Row (ASDF JKL;)
+      </button>
+      <button class="mode-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all bg-slate-800 text-slate-300 hover:bg-slate-700" data-mode="toprow">
+        <i class="fas fa-arrow-up mr-1"></i> Baris Atas (QWERTY)
+      </button>
+      <button class="mode-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all bg-slate-800 text-slate-300 hover:bg-slate-700" data-mode="bottomrow">
+        <i class="fas fa-arrow-down mr-1"></i> Baris Bawah (ZXCV)
+      </button>
+      <button class="mode-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all bg-slate-800 text-slate-300 hover:bg-slate-700" data-mode="coding">
+        <i class="fas fa-code mr-1"></i> Koding & Simbol
+      </button>
+      <button class="mode-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all bg-slate-800 text-slate-300 hover:bg-slate-700" data-mode="quotes">
+        <i class="fas fa-quote-left mr-1"></i> Kata Mutiara
+      </button>
+    </div>
+
+    <!-- Live Metrics Dashboard -->
+    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 mb-6">
+      <!-- WPM -->
+      <div class="bg-slate-900/90 border border-slate-800 p-4 rounded-2xl flex items-center gap-4 shadow-sm">
+        <div class="w-12 h-12 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400 text-xl font-bold">
+          <i class="fas fa-bolt"></i>
+        </div>
+        <div>
+          <span class="text-xs text-slate-400 font-medium block">Kecepatan (WPM)</span>
+          <span id="wpmDisplay" class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">0</span>
+        </div>
+      </div>
+
+      <!-- Accuracy -->
+      <div class="bg-slate-900/90 border border-slate-800 p-4 rounded-2xl flex items-center gap-4 shadow-sm">
+        <div class="w-12 h-12 rounded-xl bg-sky-500/10 border border-sky-500/20 flex items-center justify-center text-sky-400 text-xl font-bold">
+          <i class="fas fa-bullseye"></i>
+        </div>
+        <div>
+          <span class="text-xs text-slate-400 font-medium block">Akurasi</span>
+          <span id="accuracyDisplay" class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">100%</span>
+        </div>
+      </div>
+
+      <!-- Errors -->
+      <div class="bg-slate-900/90 border border-slate-800 p-4 rounded-2xl flex items-center gap-4 shadow-sm">
+        <div class="w-12 h-12 rounded-xl bg-rose-500/10 border border-rose-500/20 flex items-center justify-center text-rose-400 text-xl font-bold">
+          <i class="fas fa-times-circle"></i>
+        </div>
+        <div>
+          <span class="text-xs text-slate-400 font-medium block">Kesalahan</span>
+          <span id="errorsDisplay" class="text-2xl sm:text-3xl font-extrabold text-rose-400 tracking-tight">0</span>
+        </div>
+      </div>
+
+      <!-- Timer -->
+      <div class="bg-slate-900/90 border border-slate-800 p-4 rounded-2xl flex items-center gap-4 shadow-sm">
+        <div class="w-12 h-12 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400 text-xl font-bold">
+          <i class="fas fa-stopwatch"></i>
+        </div>
+        <div>
+          <span class="text-xs text-slate-400 font-medium block">Waktu</span>
+          <span id="timerDisplay" class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">00:00</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Typing Interactive Area -->
+    <div id="typingAreaWrapper" class="typing-box rounded-2xl p-6 sm:p-8 mb-6 relative cursor-text shadow-xl border border-slate-800 transition-all">
+      <input type="text" id="hiddenInput" class="absolute opacity-0 pointer-events-none" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+      
+      <!-- Real-time Text Container -->
+      <div id="textDisplay" class="font-mono text-xl sm:text-2xl md:text-3xl leading-relaxed text-slate-400 tracking-wide select-none min-h-[90px] flex flex-wrap gap-y-2">
+        <!-- Rendered by JS -->
+      </div>
+
+      <div class="mt-4 pt-4 border-t border-slate-800/80 flex flex-wrap items-center justify-between gap-4 text-xs text-slate-400">
+        <div class="flex items-center gap-2">
+          <i class="fas fa-info-circle text-slate-500"></i>
+          <span>Ketik langsung di keyboard fisik Anda. Spasi untuk lanjut kata berikutnya.</span>
+        </div>
+        
+        <!-- Live Finger Hint Banner -->
+        <div class="flex items-center gap-2 bg-slate-800/90 border border-slate-700/80 px-3 py-1.5 rounded-lg text-emerald-400 font-medium">
+          <span>☝️ Pemandu:</span>
+          <span id="fingerGuideText" class="font-bold text-white">Telunjuk Kiri</span>
+          <span class="text-slate-500">•</span>
+          <span id="fingerGuideHand" class="text-slate-300">Tangan Kiri</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Virtual Keyboard Section -->
+    <div class="keyboard-wrapper rounded-3xl p-4 sm:p-6 mb-6">
+      <!-- Finger Legend -->
+      <div class="flex flex-wrap items-center justify-center gap-2 sm:gap-4 mb-5 text-xs">
+        <span class="badge-finger"><span class="dot dot-pinky"></span> Kelingking</span>
+        <span class="badge-finger"><span class="dot dot-ring"></span> Jari Manis</span>
+        <span class="badge-finger"><span class="dot dot-middle"></span> Jari Tengah</span>
+        <span class="badge-finger"><span class="dot dot-index"></span> Telunjuk</span>
+        <span class="badge-finger"><span class="dot dot-thumb"></span> Jempol (Spasi)</span>
+      </div>
+
+      <!-- QWERTY Keyboard Keys -->
+      <div class="keyboard-container overflow-x-auto pb-2">
+        <!-- Row 1: Numbers -->
+        <div class="keyboard-row">
+          <div class="key finger-pinky-left" data-key="Backquote"><span class="key-sub">~</span>`</div>
+          <div class="key finger-pinky-left" data-key="Digit1"><span class="key-sub">!</span>1</div>
+          <div class="key finger-ring-left" data-key="Digit2"><span class="key-sub">@</span>2</div>
+          <div class="key finger-middle-left" data-key="Digit3"><span class="key-sub">#</span>3</div>
+          <div class="key finger-index-left" data-key="Digit4"><span class="key-sub">$</span>4</div>
+          <div class="key finger-index-left" data-key="Digit5"><span class="key-sub">%</span>5</div>
+          <div class="key finger-index-right" data-key="Digit6"><span class="key-sub">^</span>6</div>
+          <div class="key finger-index-right" data-key="Digit7"><span class="key-sub">&</span>7</div>
+          <div class="key finger-middle-right" data-key="Digit8"><span class="key-sub">*</span>8</div>
+          <div class="key finger-ring-right" data-key="Digit9"><span class="key-sub">(</span>9</div>
+          <div class="key finger-pinky-right" data-key="Digit0"><span class="key-sub">)</span>0</div>
+          <div class="key finger-pinky-right" data-key="Minus"><span class="key-sub">_</span>-</div>
+          <div class="key finger-pinky-right" data-key="Equal"><span class="key-sub">+</span>=</div>
+          <div class="key key-backspace" data-key="Backspace"><i class="fas fa-backspace"></i></div>
+        </div>
+
+        <!-- Row 2: Top Row -->
+        <div class="keyboard-row">
+          <div class="key key-tab" data-key="Tab">Tab</div>
+          <div class="key finger-pinky-left" data-key="KeyQ">Q</div>
+          <div class="key finger-ring-left" data-key="KeyW">W</div>
+          <div class="key finger-middle-left" data-key="KeyE">E</div>
+          <div class="key finger-index-left" data-key="KeyR">R</div>
+          <div class="key finger-index-left" data-key="KeyT">T</div>
+          <div class="key finger-index-right" data-key="KeyY">Y</div>
+          <div class="key finger-index-right" data-key="KeyU">U</div>
+          <div class="key finger-middle-right" data-key="KeyI">I</div>
+          <div class="key finger-ring-right" data-key="KeyO">O</div>
+          <div class="key finger-pinky-right" data-key="KeyP">P</div>
+          <div class="key finger-pinky-right" data-key="BracketLeft"><span class="key-sub">{</span>[</div>
+          <div class="key finger-pinky-right" data-key="BracketRight"><span class="key-sub">}</span>]</div>
+          <div class="key key-modifier" data-key="Backslash"><span class="key-sub">|</span>\</div>
+        </div>
+
+        <!-- Row 3: Home Row -->
+        <div class="keyboard-row">
+          <div class="key key-caps" data-key="CapsLock">Caps</div>
+          <div class="key finger-pinky-left font-bold" data-key="KeyA">A</div>
+          <div class="key finger-ring-left font-bold" data-key="KeyS">S</div>
+          <div class="key finger-middle-left font-bold" data-key="KeyD">D</div>
+          <div class="key finger-index-left font-bold relative" data-key="KeyF">F <span class="absolute bottom-1 w-2 h-0.5 bg-slate-400 rounded"></span></div>
+          <div class="key finger-index-left" data-key="KeyG">G</div>
+          <div class="key finger-index-right" data-key="KeyH">H</div>
+          <div class="key finger-index-right font-bold relative" data-key="KeyJ">J <span class="absolute bottom-1 w-2 h-0.5 bg-slate-400 rounded"></span></div>
+          <div class="key finger-middle-right font-bold" data-key="KeyK">K</div>
+          <div class="key finger-ring-right font-bold" data-key="KeyL">L</div>
+          <div class="key finger-pinky-right" data-key="Semicolon"><span class="key-sub">:</span>;</div>
+          <div class="key finger-pinky-right" data-key="Quote"><span class="key-sub">"</span>'</div>
+          <div class="key key-enter font-bold text-emerald-400" data-key="Enter">Enter ↵</div>
+        </div>
+
+        <!-- Row 4: Bottom Row -->
+        <div class="keyboard-row">
+          <div class="key key-shift-left" data-key="ShiftLeft">Shift</div>
+          <div class="key finger-pinky-left" data-key="KeyZ">Z</div>
+          <div class="key finger-ring-left" data-key="KeyX">X</div>
+          <div class="key finger-middle-left" data-key="KeyC">C</div>
+          <div class="key finger-index-left" data-key="KeyV">V</div>
+          <div class="key finger-index-left" data-key="KeyB">B</div>
+          <div class="key finger-index-right" data-key="KeyN">N</div>
+          <div class="key finger-index-right" data-key="KeyM">M</div>
+          <div class="key finger-middle-right" data-key="Comma"><span class="key-sub">&lt;</span>,</div>
+          <div class="key finger-ring-right" data-key="Period"><span class="key-sub">&gt;</span>.</div>
+          <div class="key finger-pinky-right" data-key="Slash"><span class="key-sub">?</span>/</div>
+          <div class="key key-shift-right" data-key="ShiftRight">Shift</div>
+        </div>
+
+        <!-- Row 5: Space Bar -->
+        <div class="keyboard-row">
+          <div class="key key-modifier" data-key="ControlLeft">Ctrl</div>
+          <div class="key key-modifier" data-key="MetaLeft">Win</div>
+          <div class="key key-modifier" data-key="AltLeft">Alt</div>
+          <div class="key key-space finger-thumb font-bold" data-key="Space">SPACE</div>
+          <div class="key key-modifier" data-key="AltRight">Alt</div>
+          <div class="key key-modifier" data-key="MetaRight">Fn</div>
+          <div class="key key-modifier" data-key="ControlRight">Ctrl</div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="border-t border-slate-900 bg-slate-950 py-6 text-center text-xs text-slate-500">
+    <p>© 2026 SantriKoding & Corefive Portofolio • Dibuat khusus oleh Pasep untuk Bos Surur.</p>
+  </footer>
+
+  <!-- Result Scorecard Modal -->
+  <div id="resultModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm hidden">
+    <div class="bg-slate-900 border border-slate-800 rounded-3xl p-6 sm:p-8 max-w-md w-full shadow-2xl text-center transform transition-all animate-bounce-short">
+      <div class="w-16 h-16 rounded-2xl bg-emerald-500/20 border border-emerald-500/40 text-emerald-400 text-3xl flex items-center justify-center mx-auto mb-4">
+        <i class="fas fa-trophy"></i>
+      </div>
+      <h3 class="text-2xl font-serif font-bold text-white mb-1">Latihan Selesai!</h3>
+      <p id="finalTier" class="text-sm font-semibold text-emerald-400 mb-6">Sultan Ngetik 10 Jari</p>
+
+      <div class="grid grid-cols-2 gap-3 mb-6 bg-slate-950/60 p-4 rounded-2xl border border-slate-800">
+        <div class="text-left">
+          <span class="text-xs text-slate-400 block">Kecepatan:</span>
+          <span id="finalWpm" class="text-2xl font-extrabold text-white">0</span> <span class="text-xs text-slate-400">WPM</span>
+        </div>
+        <div class="text-left">
+          <span class="text-xs text-slate-400 block">Akurasi:</span>
+          <span id="finalAccuracy" class="text-2xl font-extrabold text-sky-400">100%</span>
+        </div>
+        <div class="text-left">
+          <span class="text-xs text-slate-400 block">Kesalahan:</span>
+          <span id="finalErrors" class="text-xl font-bold text-rose-400">0</span>
+        </div>
+        <div class="text-left">
+          <span class="text-xs text-slate-400 block">Waktu:</span>
+          <span id="finalTime" class="text-xl font-bold text-slate-200">00:00</span>
+        </div>
+      </div>
+
+      <div class="flex flex-col gap-3">
+        <button id="restartBtn" class="w-full py-3.5 bg-rose-600 hover:bg-rose-500 text-white font-bold rounded-xl transition-all shadow-lg flex items-center justify-center gap-2">
+          <i class="fas fa-redo-alt"></i> Latihan Lagi
+        </button>
+        <a id="shareWaBtn" href="#" target="_blank" class="w-full py-3.5 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-xl transition-all flex items-center justify-center gap-2">
+          <i class="fab fa-whatsapp text-lg"></i> Bagikan Hasil Skor ke WA
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
