@@ -37,6 +37,7 @@ $pdo->exec("
     CREATE TABLE IF NOT EXISTS `rekening_transfers` (
         `id` INT AUTO_INCREMENT PRIMARY KEY,
         `nama` VARCHAR(150) NOT NULL,
+        `jabatan` VARCHAR(100) DEFAULT '-',
         `wilayah` VARCHAR(50) DEFAULT '-',
         `nominal` DECIMAL(15, 2) NOT NULL DEFAULT 0,
         `rekening` VARCHAR(50) NOT NULL,
@@ -46,6 +47,14 @@ $pdo->exec("
         `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 ");
+
+// Pastikan kolom jabatan tersedia jika tabel sudah pernah dibuat sebelumnya
+try {
+    $checkCol = $pdo->query("SHOW COLUMNS FROM `rekening_transfers` LIKE 'jabatan'")->fetch();
+    if (!$checkCol) {
+        $pdo->exec("ALTER TABLE `rekening_transfers` ADD COLUMN `jabatan` VARCHAR(100) DEFAULT '-' AFTER `nama`");
+    }
+} catch (Throwable $e) {}
 
 $action = $_GET['action'] ?? 'list';
 
@@ -58,12 +67,13 @@ switch ($action) {
             $search = trim($_GET['q'] ?? '');
             $filterStatus = trim($_GET['status'] ?? 'all');
             $filterWilayah = trim($_GET['wilayah'] ?? 'all');
+            $filterJabatan = trim($_GET['jabatan'] ?? 'all');
 
             $sql = "SELECT * FROM `rekening_transfers` WHERE 1=1";
             $params = [];
 
             if ($search !== '') {
-                $sql .= " AND (`nama` LIKE :q OR `rekening` LIKE :q OR `wilayah` LIKE :q)";
+                $sql .= " AND (`nama` LIKE :q OR `jabatan` LIKE :q OR `rekening` LIKE :q OR `wilayah` LIKE :q)";
                 $params[':q'] = "%$search%";
             }
 
@@ -77,11 +87,16 @@ switch ($action) {
                 $params[':wilayah'] = $filterWilayah;
             }
 
+            if ($filterJabatan !== 'all' && $filterJabatan !== '') {
+                $sql .= " AND `jabatan` = :jabatan";
+                $params[':jabatan'] = $filterJabatan;
+            }
+
             $sql .= " ORDER BY `id` ASC";
 
             $stmt = $pdo->prepare($sql);
             $stmt->execute($params);
-            $rows = $stmt->fetchAll();
+            $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
             // Hitung statistik
             $statStmt = $pdo->query("SELECT 
@@ -92,16 +107,20 @@ switch ($action) {
                 COALESCE(SUM(CASE WHEN UPPER(status_tf) != 'SUDAH' THEN 1 ELSE 0 END), 0) as count_belum,
                 COALESCE(SUM(CASE WHEN UPPER(status_tf) != 'SUDAH' THEN nominal ELSE 0 END), 0) as nominal_belum
             FROM `rekening_transfers`");
-            $stats = $statStmt->fetch();
+            $stats = $statStmt->fetch(PDO::FETCH_ASSOC);
 
             // Ambil daftar wilayah unik untuk filter
             $wilayahList = $pdo->query("SELECT DISTINCT `wilayah` FROM `rekening_transfers` WHERE `wilayah` IS NOT NULL AND `wilayah` != '' ORDER BY `wilayah` ASC")->fetchAll(PDO::FETCH_COLUMN);
+
+            // Ambil daftar jabatan unik untuk filter
+            $jabatanList = $pdo->query("SELECT DISTINCT `jabatan` FROM `rekening_transfers` WHERE `jabatan` IS NOT NULL AND `jabatan` != '' ORDER BY `jabatan` ASC")->fetchAll(PDO::FETCH_COLUMN);
 
             echo json_encode([
                 'status' => 'success',
                 'data' => $rows,
                 'stats' => $stats,
-                'wilayah_list' => $wilayahList
+                'wilayah_list' => $wilayahList,
+                'jabatan_list' => $jabatanList
             ]);
         } catch (PDOException $e) {
             http_response_code(500);
@@ -151,7 +170,10 @@ switch ($action) {
             $input = json_decode(file_get_contents('php://input'), true);
             $id = intval($input['id'] ?? 0);
             $nama = trim($input['nama'] ?? '');
+            $jabatan = trim($input['jabatan'] ?? '-');
+            if ($jabatan === '') $jabatan = '-';
             $wilayah = trim($input['wilayah'] ?? '-');
+            if ($wilayah === '') $wilayah = '-';
             $nominal = floatval($input['nominal'] ?? 0);
             $rekening = preg_replace('/[^0-9]/', '', $input['rekening'] ?? '');
             $statusTf = strtoupper(trim($input['status_tf'] ?? 'BELUM'));
@@ -166,6 +188,7 @@ switch ($action) {
                 // Update
                 $sql = "UPDATE `rekening_transfers` SET 
                     `nama` = :nama, 
+                    `jabatan` = :jabatan, 
                     `wilayah` = :wilayah, 
                     `nominal` = :nominal, 
                     `rekening` = :rekening, 
@@ -175,6 +198,7 @@ switch ($action) {
                 $stmt = $pdo->prepare($sql);
                 $stmt->execute([
                     ':nama' => $nama,
+                    ':jabatan' => $jabatan,
                     ':wilayah' => $wilayah,
                     ':nominal' => $nominal,
                     ':rekening' => $rekening,
@@ -183,11 +207,12 @@ switch ($action) {
                 ]);
             } else {
                 // Insert Baru
-                $sql = "INSERT INTO `rekening_transfers` (`nama`, `wilayah`, `nominal`, `rekening`, `status_tf`) 
-                    VALUES (:nama, :wilayah, :nominal, :rekening, :status_tf)";
+                $sql = "INSERT INTO `rekening_transfers` (`nama`, `jabatan`, `wilayah`, `nominal`, `rekening`, `status_tf`) 
+                    VALUES (:nama, :jabatan, :wilayah, :nominal, :rekening, :status_tf)";
                 $stmt = $pdo->prepare($sql);
                 $stmt->execute([
                     ':nama' => $nama,
+                    ':jabatan' => $jabatan,
                     ':wilayah' => $wilayah,
                     ':nominal' => $nominal,
                     ':rekening' => $rekening,
@@ -249,13 +274,16 @@ switch ($action) {
             }
 
             $insertStmt = $pdo->prepare("INSERT INTO `rekening_transfers` 
-                (`nama`, `wilayah`, `nominal`, `rekening`, `status_tf`) 
-                VALUES (:nama, :wilayah, :nominal, :rekening, :status_tf)");
+                (`nama`, `jabatan`, `wilayah`, `nominal`, `rekening`, `status_tf`) 
+                VALUES (:nama, :jabatan, :wilayah, :nominal, :rekening, :status_tf)");
 
             $insertedCount = 0;
             foreach ($rows as $r) {
                 $nama = trim($r['nama'] ?? '');
+                $jabatan = trim($r['jabatan'] ?? '-');
+                if ($jabatan === '') $jabatan = '-';
                 $wilayah = trim($r['wilayah'] ?? '-');
+                if ($wilayah === '') $wilayah = '-';
                 $nominalRaw = str_replace([',', '.', 'Rp', 'rp', ' '], '', strval($r['nominal'] ?? '0'));
                 $nominal = floatval($nominalRaw);
                 $rekening = preg_replace('/[^0-9]/', '', strval($r['rekening'] ?? ''));
@@ -265,6 +293,7 @@ switch ($action) {
                 if ($nama !== '' && $rekening !== '') {
                     $insertStmt->execute([
                         ':nama' => $nama,
+                        ':jabatan' => $jabatan,
                         ':wilayah' => $wilayah,
                         ':nominal' => $nominal,
                         ':rekening' => $rekening,
@@ -308,4 +337,3 @@ switch ($action) {
         echo json_encode(['status' => 'error', 'message' => 'Action tidak dikenali']);
         break;
 }
-
