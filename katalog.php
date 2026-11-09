@@ -262,6 +262,17 @@ session_start();
                 techStack: ["PHP", "MySQL", "JavaScript", "HTML5", "CSS3", "SheetJS"],
                 image: "https://images.unsplash.com/photo-1531482615713-2afd69097998?q=80&w=800&auto=format&fit=crop",
                 url: "halacoding/"
+            },
+            {
+                id: 6,
+                title: "Keyboard Master - Latihan Ketik 10 Jari",
+                category: "Web",
+                price: "Free Access",
+                numericPrice: 0,
+                description: "Aplikasi latihan mengetik 10 jari interaktif dengan visual keyboard QWERTY, panduan posisi jari (finger placement), indikator kecepatan real-time (WPM & Akurasi), efek suara mesin ketik, serta materi latihan mulai dari Home Row hingga sintaks koding.",
+                techStack: ["JavaScript", "HTML5", "CSS3", "Web Audio API", "Tailwind CSS"],
+                image: "https://images.unsplash.com/photo-1587829741301-dc798b83add3?q=80&w=800&auto=format&fit=crop",
+                url: "keyboard/"
             }
         ];
 

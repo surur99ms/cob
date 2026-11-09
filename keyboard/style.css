@@ -1,0 +1,241 @@
+/* ============================================================
+   Keyboard Master — Styling & Animations
+   Corefive / SantriKoding 10-Finger Typing Practice
+   ============================================================ */
+
+:root {
+  --bg-primary: #0f172a;
+  --bg-secondary: #1e293b;
+  --bg-card: #1e293b;
+  --text-main: #f8fafc;
+  --text-muted: #94a3b8;
+  --accent: #E65A4B;
+  --accent-hover: #cf4c3f;
+
+  /* Finger Color Codes */
+  --finger-pinky: #f43f5e;
+  --finger-ring: #f59e0b;
+  --finger-middle: #eab308;
+  --finger-index: #10b981;
+  --finger-thumb: #06b6d4;
+}
+
+body {
+  background-color: var(--bg-primary);
+  color: var(--text-main);
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  user-select: none;
+  min-height: 100vh;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #0f172a;
+}
+::-webkit-scrollbar-thumb {
+  background: #334155;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #475569;
+}
+
+/* Text Display & Typing Area */
+.typing-box {
+  background: rgba(30, 41, 59, 0.7);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.char {
+  position: relative;
+  transition: color 0.1s ease;
+}
+
+.char.correct {
+  color: #10b981; /* emerald-500 */
+}
+
+.char.incorrect {
+  color: #ef4444; /* red-500 */
+  background: rgba(239, 68, 68, 0.2);
+  border-radius: 2px;
+}
+
+.char.current {
+  color: #38bdf8; /* sky-400 */
+  font-weight: 700;
+}
+
+.char.current::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: -2px;
+  width: 100%;
+  height: 3px;
+  background-color: #38bdf8;
+  border-radius: 2px;
+  animation: pulse-cursor 1s infinite ease-in-out;
+}
+
+@keyframes pulse-cursor {
+  0%, 100% { opacity: 1; transform: scaleY(1); }
+  50% { opacity: 0.3; transform: scaleY(0.7); }
+}
+
+/* Virtual Keyboard Layout */
+.keyboard-wrapper {
+  background: rgba(15, 23, 42, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.5);
+}
+
+.keyboard-row {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  margin-bottom: 6px;
+}
+
+.key {
+  height: 52px;
+  min-width: 48px;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 600;
+  background: #334155;
+  color: #cbd5e1;
+  border-bottom: 3px solid #1e293b;
+  position: relative;
+  transition: all 0.08s ease;
+  padding: 0 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.25);
+}
+
+.key-sub {
+  font-size: 10px;
+  opacity: 0.6;
+  margin-bottom: -2px;
+}
+
+/* Special Key Widths */
+.key-backspace { min-width: 90px; }
+.key-tab { min-width: 70px; }
+.key-caps { min-width: 82px; }
+.key-enter { min-width: 95px; }
+.key-shift-left { min-width: 105px; }
+.key-shift-right { min-width: 110px; }
+.key-space { min-width: 290px; }
+.key-modifier { min-width: 60px; font-size: 11px; }
+
+/* Finger Color Accents (Subtle borders/glow) */
+.finger-pinky-left, .finger-pinky-right {
+  border-top: 3px solid var(--finger-pinky);
+}
+.finger-ring-left, .finger-ring-right {
+  border-top: 3px solid var(--finger-ring);
+}
+.finger-middle-left, .finger-middle-right {
+  border-top: 3px solid var(--finger-middle);
+}
+.finger-index-left, .finger-index-right {
+  border-top: 3px solid var(--finger-index);
+}
+.finger-thumb {
+  border-top: 3px solid var(--finger-thumb);
+}
+
+/* Target Key (The key user should press next) */
+.key.target {
+  background: #3b82f6 !important;
+  color: #ffffff !important;
+  border-bottom-color: #1d4ed8 !important;
+  box-shadow: 0 0 16px rgba(59, 130, 246, 0.7);
+  transform: translateY(-2px);
+  animation: key-pulse 1.2s infinite alternate ease-in-out;
+}
+
+@keyframes key-pulse {
+  from {
+    box-shadow: 0 0 10px rgba(59, 130, 246, 0.6);
+  }
+  to {
+    box-shadow: 0 0 22px rgba(59, 130, 246, 0.95);
+  }
+}
+
+/* Physical Key Pressed Active State */
+.key.pressed {
+  background: #10b981 !important;
+  color: #ffffff !important;
+  border-bottom: 0 solid transparent !important;
+  transform: translateY(3px) !important;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3) !important;
+}
+
+.key.pressed-wrong {
+  background: #ef4444 !important;
+  color: #ffffff !important;
+  border-bottom: 0 solid transparent !important;
+  transform: translateY(3px) !important;
+  box-shadow: 0 0 14px rgba(239, 68, 68, 0.8) !important;
+}
+
+/* Finger Legend Badges */
+.badge-finger {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 9999px;
+  font-size: 11px;
+  font-weight: 500;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+.dot-pinky { background-color: var(--finger-pinky); }
+.dot-ring { background-color: var(--finger-ring); }
+.dot-middle { background-color: var(--finger-middle); }
+.dot-index { background-color: var(--finger-index); }
+.dot-thumb { background-color: var(--finger-thumb); }
+
+/* Responsive adjustments */
+@media (max-width: 1024px) {
+  .key {
+    height: 44px;
+    min-width: 36px;
+    font-size: 12px;
+  }
+  .key-space { min-width: 200px; }
+}
+
+@media (max-width: 768px) {
+  .key {
+    height: 36px;
+    min-width: 26px;
+    font-size: 10px;
+    padding: 0 4px;
+  }
+  .key-sub { display: none; }
+  .key-backspace { min-width: 50px; }
+  .key-tab { min-width: 40px; }
+  .key-caps { min-width: 45px; }
+  .key-enter { min-width: 55px; }
+  .key-shift-left, .key-shift-right { min-width: 60px; }
+  .key-space { min-width: 140px; }
+}
+
