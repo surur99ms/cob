@@ -63,140 +63,162 @@
       <div class="flex items-center gap-3 sm:gap-4">
         <a href="../katalog.php" class="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold transition-all">
           <i class="fas fa-arrow-left text-[11px]"></i>
-          <span>Katalog</span>
+          <span class="hidden sm:inline">Katalog</span>
         </a>
         <div class="h-4 w-px bg-slate-200 hidden sm:block"></div>
         <div class="flex items-center gap-2.5">
-          <div class="w-9 h-9 rounded-xl bg-emerald-600 text-white flex items-center justify-center shadow-sm shadow-emerald-500/20">
+          <div class="w-9 h-9 rounded-xl bg-emerald-600 text-white flex items-center justify-center shadow-sm shadow-emerald-500/20 flex-shrink-0">
             <i class="fas fa-money-check-alt text-sm"></i>
           </div>
           <div>
-            <h1 class="text-sm sm:text-base font-bold text-slate-900 leading-tight">Rekap Transfer & Salin Rekening</h1>
-            <p class="text-[11px] text-slate-500 hidden sm:block">Kelola transfer m-Banking & salin rekening 1-klik</p>
+            <h1 class="text-sm sm:text-base font-bold text-slate-900 leading-tight">Rekap Transfer & Rekening</h1>
+            <p class="text-[11px] text-slate-500 hidden sm:block">Salin nomor rekening 1-klik untuk m-Banking</p>
           </div>
         </div>
       </div>
 
-      <div class="flex items-center gap-2.5">
+      <div class="flex items-center gap-2 sm:gap-2.5">
         <button onclick="downloadTemplateExcel()" class="hidden md:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold transition-all">
           <i class="fas fa-file-download text-emerald-600"></i> Unduh Template
         </button>
-        <button onclick="openAddModal()" class="inline-flex items-center gap-2 px-4 py-2 bg-emerald-600 hover:bg-emerald-700 active:scale-95 text-white rounded-xl text-xs sm:text-sm font-semibold transition-all shadow-sm shadow-emerald-600/25">
+        <button onclick="openAddModal()" class="inline-flex items-center gap-1.5 sm:gap-2 px-3.5 sm:px-4 py-2 bg-emerald-600 hover:bg-emerald-700 active:scale-95 text-white rounded-xl text-xs sm:text-sm font-semibold transition-all shadow-sm shadow-emerald-600/25">
           <i class="fas fa-plus"></i>
-          <span>Tambah Data</span>
+          <span>Tambah</span>
         </button>
       </div>
     </div>
   </header>
 
   <!-- Main Content -->
-  <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 w-full">
+  <main class="flex-grow max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-5 sm:py-8 w-full">
 
     <!-- Top Stats Cards -->
-    <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-6 sm:mb-8">
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-4 mb-5 sm:mb-8">
       <!-- Total Penerima -->
-      <div class="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200/80 shadow-xs hover:shadow-md transition-shadow">
-        <div class="flex items-center justify-between mb-3">
-          <span class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Total Penerima</span>
-          <div class="w-8 h-8 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center text-sm">
+      <div class="bg-white p-3.5 sm:p-5 rounded-2xl border border-slate-200/80 shadow-xs hover:shadow-md transition-shadow">
+        <div class="flex items-center justify-between mb-2 sm:mb-3">
+          <span class="text-[11px] sm:text-xs font-semibold text-slate-500 uppercase tracking-wider">Total Penerima</span>
+          <div class="w-7 h-7 sm:w-8 sm:h-8 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center text-xs sm:text-sm">
             <i class="fas fa-users"></i>
           </div>
         </div>
-        <div class="flex items-baseline gap-2">
-          <span id="statTotalItems" class="text-2xl sm:text-3xl font-extrabold text-slate-900 font-mono-num">0</span>
-          <span class="text-xs text-slate-500 font-medium">orang</span>
+        <div class="flex items-baseline gap-1.5 sm:gap-2">
+          <span id="statTotalItems" class="text-xl sm:text-3xl font-extrabold text-slate-900 font-mono-num">0</span>
+          <span class="text-[11px] sm:text-xs text-slate-500 font-medium">orang</span>
         </div>
       </div>
 
       <!-- Total Nominal -->
-      <div class="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200/80 shadow-xs hover:shadow-md transition-shadow">
-        <div class="flex items-center justify-between mb-3">
-          <span class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Total Nominal</span>
-          <div class="w-8 h-8 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-sm">
+      <div class="bg-white p-3.5 sm:p-5 rounded-2xl border border-slate-200/80 shadow-xs hover:shadow-md transition-shadow">
+        <div class="flex items-center justify-between mb-2 sm:mb-3">
+          <span class="text-[11px] sm:text-xs font-semibold text-slate-500 uppercase tracking-wider">Total Nominal</span>
+          <div class="w-7 h-7 sm:w-8 sm:h-8 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-xs sm:text-sm">
             <i class="fas fa-wallet"></i>
           </div>
         </div>
         <div class="flex items-baseline gap-1">
-          <span class="text-xs font-bold text-slate-400">Rp</span>
-          <span id="statTotalNominal" class="text-xl sm:text-2xl font-extrabold text-slate-900 font-mono-num truncate">0</span>
+          <span class="text-[11px] sm:text-xs font-bold text-slate-400">Rp</span>
+          <span id="statTotalNominal" class="text-lg sm:text-2xl font-extrabold text-slate-900 font-mono-num truncate">0</span>
         </div>
       </div>
 
       <!-- Sudah Transfer -->
-      <div class="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200/80 shadow-xs hover:shadow-md transition-shadow">
-        <div class="flex items-center justify-between mb-3">
-          <span class="text-xs font-semibold text-emerald-600 uppercase tracking-wider">Sudah Transfer</span>
-          <div class="w-8 h-8 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-sm">
+      <div class="bg-white p-3.5 sm:p-5 rounded-2xl border border-slate-200/80 shadow-xs hover:shadow-md transition-shadow">
+        <div class="flex items-center justify-between mb-2 sm:mb-3">
+          <span class="text-[11px] sm:text-xs font-semibold text-emerald-600 uppercase tracking-wider">Sudah Transfer</span>
+          <div class="w-7 h-7 sm:w-8 sm:h-8 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-xs sm:text-sm">
             <i class="fas fa-check-circle"></i>
           </div>
         </div>
-        <div class="flex items-baseline gap-2">
-          <span id="statSudahTf" class="text-2xl sm:text-3xl font-extrabold text-emerald-600 font-mono-num">0</span>
-          <span class="text-xs text-slate-500 font-medium">selesai</span>
+        <div class="flex items-baseline gap-1.5 sm:gap-2">
+          <span id="statSudahTf" class="text-xl sm:text-3xl font-extrabold text-emerald-600 font-mono-num">0</span>
+          <span class="text-[11px] sm:text-xs text-slate-500 font-medium">selesai</span>
         </div>
       </div>
 
       <!-- Belum Transfer -->
-      <div class="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200/80 shadow-xs hover:shadow-md transition-shadow">
-        <div class="flex items-center justify-between mb-3">
-          <span class="text-xs font-semibold text-amber-600 uppercase tracking-wider">Belum Transfer</span>
-          <div class="w-8 h-8 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center text-sm">
+      <div class="bg-white p-3.5 sm:p-5 rounded-2xl border border-slate-200/80 shadow-xs hover:shadow-md transition-shadow">
+        <div class="flex items-center justify-between mb-2 sm:mb-3">
+          <span class="text-[11px] sm:text-xs font-semibold text-amber-600 uppercase tracking-wider">Belum Transfer</span>
+          <div class="w-7 h-7 sm:w-8 sm:h-8 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center text-xs sm:text-sm">
             <i class="fas fa-clock"></i>
           </div>
         </div>
-        <div class="flex items-baseline gap-2">
-          <span id="statBelumTf" class="text-2xl sm:text-3xl font-extrabold text-amber-600 font-mono-num">0</span>
-          <span class="text-xs text-slate-500 font-medium">pending</span>
+        <div class="flex items-baseline gap-1.5 sm:gap-2">
+          <span id="statBelumTf" class="text-xl sm:text-3xl font-extrabold text-amber-600 font-mono-num">0</span>
+          <span class="text-[11px] sm:text-xs text-slate-500 font-medium">pending</span>
         </div>
       </div>
     </div>
 
-    <!-- Modern Action Bar & Controls -->
-    <div class="bg-white p-3.5 sm:p-4 rounded-2xl border border-slate-200/80 shadow-xs mb-6 flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3 sm:gap-4">
-      <!-- Search Input -->
-      <div class="relative flex-grow max-w-sm">
-        <i class="fas fa-search absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
-        <input type="text" id="searchInput" placeholder="Cari nama, jabatan, rekening..." 
-          class="w-full pl-9 pr-4 py-2 bg-slate-50 hover:bg-slate-100/70 border border-slate-200 rounded-xl text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 focus:bg-white transition-all text-slate-800 placeholder-slate-400">
+    <!-- Action Bar & Controls -->
+    <div class="bg-white p-3.5 sm:p-4 rounded-2xl border border-slate-200/80 shadow-xs mb-5 flex flex-col gap-3">
+      <!-- Top Row: Search & View Mode Switcher -->
+      <div class="flex items-center justify-between gap-3">
+        <!-- Search Input -->
+        <div class="relative flex-grow max-w-md">
+          <i class="fas fa-search absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
+          <input type="text" id="searchInput" placeholder="Cari nama, jabatan, rekening..." 
+            class="w-full pl-9 pr-4 py-2 bg-slate-50 hover:bg-slate-100/70 border border-slate-200 rounded-xl text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 focus:bg-white transition-all text-slate-800 placeholder-slate-400">
+        </div>
+
+        <!-- View Mode Switcher (Kartu vs Tabel) -->
+        <div class="inline-flex p-1 bg-slate-100 rounded-xl border border-slate-200 flex-shrink-0">
+          <button id="btnViewCard" onclick="setViewMode('card')" title="Tampilan Kartu (Sangat Nyaman di HP)" class="px-2.5 sm:px-3 py-1.5 text-xs font-bold rounded-lg transition-all flex items-center gap-1.5">
+            <i class="fas fa-th-large text-xs"></i>
+            <span class="hidden sm:inline">Kartu</span>
+          </button>
+          <button id="btnViewTable" onclick="setViewMode('table')" title="Tampilan Tabel (Lebar)" class="px-2.5 sm:px-3 py-1.5 text-xs font-bold rounded-lg transition-all flex items-center gap-1.5">
+            <i class="fas fa-table text-xs"></i>
+            <span class="hidden sm:inline">Tabel</span>
+          </button>
+        </div>
       </div>
 
-      <!-- Filters & Action Buttons -->
-      <div class="flex flex-wrap items-center gap-2 justify-end">
-        <!-- Filter Status -->
-        <select id="filterStatus" class="px-3 py-2 bg-slate-50 hover:bg-slate-100/70 border border-slate-200 rounded-xl text-xs font-semibold text-slate-700 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all cursor-pointer">
-          <option value="all">Semua Status</option>
-          <option value="SUDAH">Status: SUDAH</option>
-          <option value="BELUM">Status: BELUM</option>
-        </select>
+      <!-- Bottom Row: Filters, Import & Export -->
+      <div class="flex flex-wrap items-center gap-2 justify-between pt-1 border-t border-slate-100">
+        <div class="flex flex-wrap items-center gap-2">
+          <!-- Filter Status -->
+          <select id="filterStatus" class="px-2.5 sm:px-3 py-1.5 sm:py-2 bg-slate-50 hover:bg-slate-100/70 border border-slate-200 rounded-xl text-xs font-semibold text-slate-700 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all cursor-pointer">
+            <option value="all">Semua Status</option>
+            <option value="SUDAH">Status: SUDAH</option>
+            <option value="BELUM">Status: BELUM</option>
+          </select>
 
-        <!-- Filter Jabatan -->
-        <select id="filterJabatan" class="px-3 py-2 bg-slate-50 hover:bg-slate-100/70 border border-slate-200 rounded-xl text-xs font-semibold text-slate-700 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all cursor-pointer">
-          <option value="all">Semua Jabatan</option>
-        </select>
+          <!-- Filter Jabatan -->
+          <select id="filterJabatan" class="px-2.5 sm:px-3 py-1.5 sm:py-2 bg-slate-50 hover:bg-slate-100/70 border border-slate-200 rounded-xl text-xs font-semibold text-slate-700 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all cursor-pointer">
+            <option value="all">Semua Jabatan</option>
+          </select>
 
-        <!-- Filter Wilayah -->
-        <select id="filterWilayah" class="px-3 py-2 bg-slate-50 hover:bg-slate-100/70 border border-slate-200 rounded-xl text-xs font-semibold text-slate-700 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all cursor-pointer">
-          <option value="all">Semua Wilayah</option>
-        </select>
+          <!-- Filter Wilayah -->
+          <select id="filterWilayah" class="px-2.5 sm:px-3 py-1.5 sm:py-2 bg-slate-50 hover:bg-slate-100/70 border border-slate-200 rounded-xl text-xs font-semibold text-slate-700 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all cursor-pointer">
+            <option value="all">Semua Wilayah</option>
+          </select>
+        </div>
 
-        <div class="h-6 w-px bg-slate-200 mx-1 hidden sm:block"></div>
+        <div class="flex items-center gap-2">
+          <!-- Import Excel -->
+          <button onclick="openImportModal()" class="inline-flex items-center gap-1.5 px-3 py-1.5 sm:py-2 bg-slate-900 hover:bg-slate-800 text-white rounded-xl text-xs font-semibold transition-all shadow-xs">
+            <i class="fas fa-file-import text-emerald-400 text-xs"></i>
+            <span>Import</span>
+          </button>
 
-        <!-- Import Excel -->
-        <button onclick="openImportModal()" class="inline-flex items-center gap-2 px-3.5 py-2 bg-slate-900 hover:bg-slate-800 text-white rounded-xl text-xs font-semibold transition-all shadow-xs">
-          <i class="fas fa-file-import text-emerald-400 text-xs"></i>
-          <span>Import Excel</span>
-        </button>
-
-        <!-- Export Excel -->
-        <button onclick="exportToExcel()" class="inline-flex items-center gap-2 px-3.5 py-2 bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 rounded-xl text-xs font-semibold transition-all shadow-xs hover:border-slate-300">
-          <i class="fas fa-file-excel text-emerald-600 text-xs"></i>
-          <span>Export Excel</span>
-        </button>
+          <!-- Export Excel -->
+          <button onclick="exportToExcel()" class="inline-flex items-center gap-1.5 px-3 py-1.5 sm:py-2 bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 rounded-xl text-xs font-semibold transition-all shadow-xs hover:border-slate-300">
+            <i class="fas fa-file-excel text-emerald-600 text-xs"></i>
+            <span>Export</span>
+          </button>
+        </div>
       </div>
     </div>
 
-    <!-- Modern Data Table -->
-    <div class="bg-white rounded-2xl border border-slate-200/80 shadow-xs overflow-hidden mb-8">
+    <!-- VIEW CONTAINER 1: Tampilan Kartu (Default untuk Layar HP) -->
+    <div id="cardsViewContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5 mb-8">
+      <!-- Injected by JavaScript -->
+    </div>
+
+    <!-- VIEW CONTAINER 2: Tampilan Tabel (Default untuk Laptop / Desktop) -->
+    <div id="tableViewContainer" class="hidden bg-white rounded-2xl border border-slate-200/80 shadow-xs overflow-hidden mb-8">
       <div class="overflow-x-auto">
         <table class="w-full text-left border-collapse">
           <thead>
@@ -216,22 +238,22 @@
           </tbody>
         </table>
       </div>
+    </div>
 
-      <!-- Empty State -->
-      <div id="emptyState" class="hidden text-center py-16 px-4">
-        <div class="w-14 h-14 rounded-2xl bg-slate-100 text-slate-400 flex items-center justify-center mx-auto mb-3 text-2xl">
-          <i class="fas fa-inbox"></i>
-        </div>
-        <h3 class="text-sm font-bold text-slate-800 mb-1">Belum ada data transfer</h3>
-        <p class="text-xs text-slate-500 max-w-sm mx-auto mb-4">Tambahkan data secara manual atau impor daftar penerima transfer dari file Excel Anda.</p>
-        <div class="flex items-center justify-center gap-2">
-          <button onclick="downloadTemplateExcel()" class="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold">
-            <i class="fas fa-download text-emerald-600"></i> Download Template
-          </button>
-          <button onclick="openImportModal()" class="inline-flex items-center gap-2 px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-semibold shadow-xs">
-            <i class="fas fa-file-import"></i> Import Sekarang
-          </button>
-        </div>
+    <!-- Empty State -->
+    <div id="emptyState" class="hidden bg-white rounded-2xl border border-slate-200/80 p-8 sm:p-12 text-center shadow-xs mb-8">
+      <div class="w-14 h-14 rounded-2xl bg-slate-100 text-slate-400 flex items-center justify-center mx-auto mb-3 text-2xl">
+        <i class="fas fa-inbox"></i>
+      </div>
+      <h3 class="text-sm font-bold text-slate-800 mb-1">Belum ada data transfer</h3>
+      <p class="text-xs text-slate-500 max-w-sm mx-auto mb-4">Tambahkan data secara manual atau impor daftar penerima transfer dari file Excel Anda.</p>
+      <div class="flex items-center justify-center gap-2">
+        <button onclick="downloadTemplateExcel()" class="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold">
+          <i class="fas fa-download text-emerald-600"></i> Download Template
+        </button>
+        <button onclick="openImportModal()" class="inline-flex items-center gap-2 px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-semibold shadow-xs">
+          <i class="fas fa-file-import"></i> Import Sekarang
+        </button>
       </div>
     </div>
 
@@ -252,7 +274,7 @@
 
   <!-- Modal: Import Excel -->
   <div id="importModal" class="fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-sm flex items-center justify-center p-4 hidden">
-    <div class="bg-white rounded-3xl max-w-xl w-full p-6 sm:p-7 shadow-2xl border border-slate-200/80 animate-in fade-in zoom-in-95 duration-150 max-h-[92vh] overflow-y-auto">
+    <div class="bg-white rounded-3xl max-w-xl w-full p-5 sm:p-7 shadow-2xl border border-slate-200/80 animate-in fade-in zoom-in-95 duration-150 max-h-[92vh] overflow-y-auto">
       
       <!-- Modal Header -->
       <div class="flex items-center justify-between pb-4 border-b border-slate-100 mb-5">
@@ -431,6 +453,29 @@
   <script>
     let rawData = [];
     let parsedExcelRows = [];
+    
+    // View mode: default 'card' di HP (lebar < 768px), default 'table' di Laptop / Desktop
+    let currentViewMode = window.innerWidth < 768 ? 'card' : 'table';
+
+    function setViewMode(mode) {
+      currentViewMode = mode;
+      const btnCard = document.getElementById('btnViewCard');
+      const btnTable = document.getElementById('btnViewTable');
+      const cardsContainer = document.getElementById('cardsViewContainer');
+      const tableContainer = document.getElementById('tableViewContainer');
+
+      if (mode === 'card') {
+        cardsContainer.classList.remove('hidden');
+        tableContainer.classList.add('hidden');
+        btnCard.className = "px-2.5 sm:px-3 py-1.5 text-xs font-bold rounded-lg transition-all flex items-center gap-1.5 bg-white text-slate-900 shadow-xs";
+        btnTable.className = "px-2.5 sm:px-3 py-1.5 text-xs font-bold rounded-lg transition-all flex items-center gap-1.5 text-slate-500 hover:text-slate-800";
+      } else {
+        cardsContainer.classList.add('hidden');
+        tableContainer.classList.remove('hidden');
+        btnTable.className = "px-2.5 sm:px-3 py-1.5 text-xs font-bold rounded-lg transition-all flex items-center gap-1.5 bg-white text-slate-900 shadow-xs";
+        btnCard.className = "px-2.5 sm:px-3 py-1.5 text-xs font-bold rounded-lg transition-all flex items-center gap-1.5 text-slate-500 hover:text-slate-800";
+      }
+    }
 
     // --- 1. FETCH & RENDER DATA ---
     async function loadData() {
@@ -445,7 +490,7 @@
 
         if (json.status === 'success') {
           rawData = json.data || [];
-          renderTable(rawData);
+          renderAllViews(rawData);
           renderStats(json.stats);
           updateWilayahFilter(json.wilayah_list, wilayah);
           updateJabatanFilter(json.jabatan_list, jabatan);
@@ -462,25 +507,105 @@
       return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
     }
 
-    function renderTable(items) {
-      const tbody = document.getElementById('tableBody');
+    function renderAllViews(items) {
       const empty = document.getElementById('emptyState');
+      const cardsContainer = document.getElementById('cardsViewContainer');
+      const tableContainer = document.getElementById('tableViewContainer');
+      const tbody = document.getElementById('tableBody');
+
+      cardsContainer.innerHTML = '';
       tbody.innerHTML = '';
 
       if (items.length === 0) {
         empty.classList.remove('hidden');
+        cardsContainer.classList.add('hidden');
+        tableContainer.classList.add('hidden');
         return;
       }
       empty.classList.add('hidden');
+
+      // Terapkan view mode aktif
+      setViewMode(currentViewMode);
 
       items.forEach((item, index) => {
         const isSudah = (item.status_tf || '').toUpperCase() === 'SUDAH';
         const formattedNominal = formatRupiah(item.nominal);
         const initials = getInitials(item.nama);
 
+        // 1. RENDER KARTU UNTUK MOBILE / CARD VIEW (Semua data tampak tanpa perlu geser ke samping!)
+        const card = document.createElement('div');
+        card.className = "bg-white rounded-2xl p-4 border border-slate-200/80 shadow-xs hover:shadow-md transition-all flex flex-col justify-between gap-3 group";
+        card.innerHTML = `
+          <!-- Baris Atas: Nomor, Nama & Jabatan, dan Status Transfer -->
+          <div class="flex items-start justify-between gap-2.5">
+            <div class="flex items-start gap-2.5 min-w-0">
+              <span class="text-xs font-bold text-slate-400 mt-1">#${index + 1}</span>
+              <div class="w-9 h-9 rounded-xl bg-slate-100 text-slate-700 group-hover:bg-emerald-100 group-hover:text-emerald-700 transition-colors flex items-center justify-center font-bold text-xs flex-shrink-0 mt-0.5">
+                ${initials}
+              </div>
+              <div class="min-w-0">
+                <h4 class="font-bold text-slate-900 text-sm leading-snug group-hover:text-emerald-700 transition-colors break-words">${escapeHtml(item.nama)}</h4>
+                <div class="flex flex-wrap items-center gap-1.5 mt-1">
+                  <span class="inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-bold bg-indigo-50 text-indigo-700 border border-indigo-200/60">
+                    <i class="fas fa-briefcase text-[9px] mr-1 opacity-70"></i> ${escapeHtml(item.jabatan || '-')}
+                  </span>
+                  <span class="inline-flex items-center px-1.5 py-0.5 rounded-md text-[10px] font-bold bg-slate-100 text-slate-600">
+                    ${escapeHtml(item.wilayah || '-')}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Tombol Status TF (1-Tap Toggle) -->
+            <button onclick="toggleStatus(${item.id})" title="Klik untuk ubah status transfer" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold flex-shrink-0 transition-all shadow-xs active:scale-95 ${
+              isSudah
+                ? 'bg-emerald-50 text-emerald-700 border border-emerald-200 hover:bg-emerald-100'
+                : 'bg-amber-50 text-amber-700 border border-amber-200 hover:bg-amber-100'
+            }">
+              <span class="w-1.5 h-1.5 rounded-full ${isSudah ? 'bg-emerald-500 animate-pulse' : 'bg-amber-500'}"></span>
+              <span>${escapeHtml(item.status_tf)}</span>
+            </button>
+          </div>
+
+          <!-- Baris Tengah: Nominal Transfer -->
+          <div class="bg-slate-50/80 rounded-xl px-3 py-2 border border-slate-100 flex items-center justify-between">
+            <span class="text-xs text-slate-500 font-medium">Nominal Transfer:</span>
+            <div class="inline-flex items-center gap-1.5">
+              <span class="text-xs text-slate-400 font-bold">Rp</span>
+              <span class="text-sm font-extrabold text-slate-900 font-mono-num">${formattedNominal}</span>
+              <button onclick="copyToClipboard('${item.nominal}', 'Nominal Rp ${formattedNominal} Disalin!')" title="Salin Nominal murni" class="p-1 text-slate-400 hover:text-slate-700 active:scale-90 transition-all">
+                <i class="far fa-copy text-xs"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- Baris Bawah: Kotak Rekening & Tombol Salin Cepat -->
+          <div class="bg-emerald-50/60 border border-emerald-200/80 rounded-xl p-2.5 flex items-center justify-between gap-2">
+            <div class="min-w-0">
+              <span class="text-[10px] font-bold text-emerald-700 uppercase tracking-wider block">No. Rekening / VA:</span>
+              <span class="font-mono-num font-extrabold text-slate-900 text-sm tracking-wide select-all block truncate">${escapeHtml(item.rekening)}</span>
+            </div>
+            <button onclick="copyToClipboard('${item.rekening}', 'Nomor Rekening Tersalin!')" title="Salin Nomor Rekening" class="px-3.5 py-2 bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 text-white rounded-lg text-xs font-bold flex items-center gap-1.5 shadow-xs flex-shrink-0 active:scale-95 transition-all">
+              <i class="fas fa-copy text-xs"></i>
+              <span>Salin</span>
+            </button>
+          </div>
+
+          <!-- Aksi Edit & Hapus -->
+          <div class="flex items-center justify-end gap-3 pt-1 text-xs text-slate-400 border-t border-slate-100">
+            <button onclick="openEditModal(${item.id})" class="inline-flex items-center gap-1 hover:text-blue-600 font-semibold transition-colors">
+              <i class="fas fa-pen text-[10px]"></i> Edit
+            </button>
+            <button onclick="deleteItem(${item.id})" class="inline-flex items-center gap-1 hover:text-rose-600 font-semibold transition-colors">
+              <i class="fas fa-trash-alt text-[10px]"></i> Hapus
+            </button>
+          </div>
+        `;
+        cardsContainer.appendChild(card);
+
+        // 2. RENDER BARIS TABEL UNTUK DESKTOP / TABLE VIEW
         const tr = document.createElement('tr');
         tr.className = `hover:bg-slate-50/80 transition-colors group`;
-
         tr.innerHTML = `
           <!-- No -->
           <td class="py-4 px-4 text-center font-bold text-slate-400 text-xs">
@@ -497,7 +622,7 @@
             </div>
           </td>
 
-          <!-- Jabatan (Setelah Nama) -->
+          <!-- Jabatan -->
           <td class="py-4 px-4">
             <span class="inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-semibold bg-indigo-50 text-indigo-700 border border-indigo-200/60">
               <i class="fas fa-briefcase text-[10px] mr-1.5 opacity-70"></i>
@@ -846,13 +971,11 @@
     function extractCleanRekening(cellVal) {
       if (cellVal === null || cellVal === undefined) return '';
       let str = String(cellVal).trim();
-      // Handle scientific notation e.g. 9.88123E+15
       if (/^[0-9.]+[eE]\+[0-9]+$/.test(str)) {
         try {
           str = BigInt(Math.round(Number(str))).toString();
         } catch (e) {}
       }
-      // Hapus tanda kutip depan, spasi, koma depan (seperti ,1455123717)
       return str.replace(/[^0-9]/g, '');
     }
 
@@ -903,7 +1026,6 @@
             return;
           }
 
-          // Cari index kolom secara akurat & cerdas
           const headers = jsonSheet[0].map(h => String(h || '').trim());
           const cleanHeader = (h) => String(h || '').toUpperCase().replace(/[^A-Z0-9]/g, '');
 
@@ -946,10 +1068,8 @@
             return c.includes('KET') || c.includes('STATUS') || c.includes('TF') || c.includes('TRANSFER');
           });
 
-          // Fallback / Auto-detection pintar jika nama kolom berbeda:
           const sampleRow = jsonSheet[1] || [];
 
-          // Deteksi kolom rekening jika belum ketemu: cari kolom yang berisi angka panjang (>= 8 digit)
           if (rekeningIdx === -1) {
             for (let col = 0; col < sampleRow.length; col++) {
               if (col === namaIdx || col === jabatanIdx || col === wilayahIdx || col === nominalIdx) continue;
@@ -961,7 +1081,6 @@
             }
           }
 
-          // Deteksi nama jika belum ketemu: cari kolom pertama yang berisi huruf
           if (namaIdx === -1) {
             for (let col = 0; col < sampleRow.length; col++) {
               if (col === rekeningIdx || col === nominalIdx) continue;
@@ -1007,7 +1126,6 @@
             document.getElementById('chosenFileName').textContent = `${file.name} (${parsedExcelRows.length} baris valid)`;
             document.getElementById('btnProcessImport').disabled = false;
 
-            // Render Preview Table
             previewTbody.innerHTML = '';
             parsedExcelRows.slice(0, 5).forEach((item) => {
               const tr = document.createElement('tr');
