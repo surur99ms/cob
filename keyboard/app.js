@@ -534,3 +534,4 @@ function updateSoundIcon() {
 
 // Auto start on DOM content loaded
 document.addEventListener('DOMContentLoaded', initApp);
+
