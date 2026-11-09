@@ -169,7 +169,7 @@
           <option value="BELUM">Status: BELUM</option>
         </select>
 
-        <!-- Filter Jabatan (Baru) -->
+        <!-- Filter Jabatan -->
         <select id="filterJabatan" class="px-3 py-2 bg-slate-50 hover:bg-slate-100/70 border border-slate-200 rounded-xl text-xs font-semibold text-slate-700 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all cursor-pointer">
           <option value="all">Semua Jabatan</option>
         </select>
@@ -252,7 +252,7 @@
 
   <!-- Modal: Import Excel -->
   <div id="importModal" class="fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-sm flex items-center justify-center p-4 hidden">
-    <div class="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-7 shadow-2xl border border-slate-200/80 animate-in fade-in zoom-in-95 duration-150">
+    <div class="bg-white rounded-3xl max-w-xl w-full p-6 sm:p-7 shadow-2xl border border-slate-200/80 animate-in fade-in zoom-in-95 duration-150 max-h-[92vh] overflow-y-auto">
       
       <!-- Modal Header -->
       <div class="flex items-center justify-between pb-4 border-b border-slate-100 mb-5">
@@ -288,7 +288,7 @@
 
       <!-- File Upload Dropzone -->
       <div class="space-y-4 mb-6">
-        <div class="border-2 border-dashed border-slate-200 hover:border-emerald-500 rounded-2xl p-6 text-center transition-all cursor-pointer bg-slate-50/70 hover:bg-emerald-50/30 group" onclick="document.getElementById('excelFileInput').click()">
+        <div class="border-2 border-dashed border-slate-200 hover:border-emerald-500 rounded-2xl p-5 text-center transition-all cursor-pointer bg-slate-50/70 hover:bg-emerald-50/30 group" onclick="document.getElementById('excelFileInput').click()">
           <div class="w-12 h-12 rounded-2xl bg-white border border-slate-200 group-hover:border-emerald-200 flex items-center justify-center mx-auto mb-2 text-emerald-600 shadow-xs transition-colors">
             <i class="fas fa-cloud-upload-alt text-xl"></i>
           </div>
@@ -305,8 +305,36 @@
             <span class="px-2 py-0.5 rounded-md bg-indigo-50 border border-indigo-200 font-mono text-indigo-700 font-bold">JABATAN</span>
             <span class="px-2 py-0.5 rounded-md bg-white border border-slate-200 font-mono text-slate-700">WILAYAH</span>
             <span class="px-2 py-0.5 rounded-md bg-white border border-slate-200 font-mono text-slate-700">NOMINAL</span>
-            <span class="px-2 py-0.5 rounded-md bg-white border border-slate-200 font-mono text-slate-700">REKENING</span>
+            <span class="px-2 py-0.5 rounded-md bg-emerald-50 border border-emerald-200 font-mono text-emerald-700 font-bold">REKENING</span>
             <span class="px-2 py-0.5 rounded-md bg-white border border-slate-200 font-mono text-slate-700">KET. TF</span>
+          </div>
+        </div>
+
+        <!-- Live Preview Table (Muncul saat file dipilih) -->
+        <div id="importPreviewBox" class="hidden bg-slate-50 border border-slate-200/80 rounded-2xl p-3.5 space-y-2">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold text-slate-800 flex items-center gap-1.5">
+              <i class="fas fa-check-circle text-emerald-600"></i> Preview Data Terbaca:
+            </span>
+            <span id="previewCountBadge" class="text-[11px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800">
+              0 Data Terbaca
+            </span>
+          </div>
+          <div class="overflow-x-auto max-h-48 border border-slate-200 rounded-xl bg-white shadow-xs">
+            <table class="w-full text-left text-[11px] border-collapse">
+              <thead class="bg-slate-100 text-slate-600 font-bold sticky top-0">
+                <tr>
+                  <th class="p-2 border-b">Nama</th>
+                  <th class="p-2 border-b">Jabatan</th>
+                  <th class="p-2 border-b">Wilayah</th>
+                  <th class="p-2 border-b text-right">Nominal</th>
+                  <th class="p-2 border-b text-emerald-700 font-mono">Nomor Rekening</th>
+                </tr>
+              </thead>
+              <tbody id="previewTableBody" class="divide-y divide-slate-100">
+                <!-- Preview items injected here -->
+              </tbody>
+            </table>
           </div>
         </div>
 
@@ -381,7 +409,7 @@
           </div>
           <div>
             <label class="text-xs font-bold text-slate-700 block mb-1.5">Nominal (Rp)</label>
-            <input type="number" id="formNominal" required placeholder="272750" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs sm:text-sm font-mono-num font-bold focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 focus:bg-white transition-all text-slate-900">
+            <input type="number" id="formNominal" required placeholder="272750" class="w-full pl-3.5 pr-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs sm:text-sm font-mono-num font-bold focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 focus:bg-white transition-all text-slate-900">
           </div>
         </div>
 
@@ -756,7 +784,7 @@
         { wch: 18 },
         { wch: 12 },
         { wch: 15 },
-        { wch: 22 },
+        { wch: 24 },
         { wch: 12 }
       ];
       const wb = XLSX.utils.book_new();
@@ -789,7 +817,7 @@
         { wch: 18 },
         { wch: 12 },
         { wch: 15 },
-        { wch: 22 },
+        { wch: 24 },
         { wch: 12 }
       ];
       const wb = XLSX.utils.book_new();
@@ -806,6 +834,8 @@
       document.getElementById('excelFileInput').value = '';
       document.getElementById('chosenFileName').textContent = 'File .xlsx, .xls, atau .csv';
       document.getElementById('btnProcessImport').disabled = true;
+      document.getElementById('importPreviewBox').classList.add('hidden');
+      document.getElementById('previewTableBody').innerHTML = '';
       document.getElementById('importModal').classList.remove('hidden');
     }
 
@@ -813,60 +843,159 @@
       document.getElementById('importModal').classList.add('hidden');
     }
 
+    function extractCleanRekening(cellVal) {
+      if (cellVal === null || cellVal === undefined) return '';
+      let str = String(cellVal).trim();
+      // Handle scientific notation e.g. 9.88123E+15
+      if (/^[0-9.]+[eE]\+[0-9]+$/.test(str)) {
+        try {
+          str = BigInt(Math.round(Number(str))).toString();
+        } catch (e) {}
+      }
+      // Hapus tanda kutip depan, spasi, koma depan (seperti ,1455123717)
+      return str.replace(/[^0-9]/g, '');
+    }
+
+    function parseNominal(val) {
+      if (typeof val === 'number') return Math.round(val);
+      let str = String(val || '').trim();
+      str = str.replace(/rp/gi, '').replace(/\s+/g, '');
+      if (str.includes(',') && str.includes('.')) {
+        str = str.replace(/,/g, '');
+        return Math.round(parseFloat(str) || 0);
+      }
+      if (str.includes(',')) {
+        const parts = str.split(',');
+        if (parts.length === 2 && (parts[1] === '00' || parts[1] === '0')) {
+          return parseInt(parts[0].replace(/[^0-9]/g, ''), 10) || 0;
+        }
+        return parseInt(str.replace(/[^0-9]/g, ''), 10) || 0;
+      }
+      if (str.includes('.')) {
+        const parts = str.split('.');
+        if (parts.length === 2 && (parts[1] === '00' || parts[1] === '0')) {
+          return parseInt(parts[0].replace(/[^0-9]/g, ''), 10) || 0;
+        }
+        return parseInt(str.replace(/[^0-9]/g, ''), 10) || 0;
+      }
+      return parseInt(str.replace(/[^0-9]/g, ''), 10) || 0;
+    }
+
     function handleFileChosen(e) {
       const file = e.target.files[0];
       if (!file) return;
 
       document.getElementById('chosenFileName').textContent = file.name;
+      const previewBox = document.getElementById('importPreviewBox');
+      const previewTbody = document.getElementById('previewTableBody');
+      const previewCountBadge = document.getElementById('previewCountBadge');
 
       const reader = new FileReader();
       reader.onload = function(evt) {
         try {
           const data = new Uint8Array(evt.target.result);
-          const workbook = XLSX.read(data, { type: 'array' });
+          const workbook = XLSX.read(data, { type: 'array', cellText: true, raw: false });
           const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
-          const jsonSheet = XLSX.utils.sheet_to_json(firstSheet, { header: 1 });
+          const jsonSheet = XLSX.utils.sheet_to_json(firstSheet, { header: 1, raw: false, defval: '' });
 
           if (jsonSheet.length < 2) {
             alert("File Excel kosong atau tidak memiliki baris data!");
             return;
           }
 
-          // Cari index kolom
-          const headers = jsonSheet[0].map(h => String(h || '').trim().toUpperCase());
-          let namaIdx = headers.findIndex(h => h.includes('NAMA'));
-          let jabatanIdx = headers.findIndex(h => h.includes('JABATAN') || h.includes('POSISI') || h.includes('DIVISI'));
-          let wilayahIdx = headers.findIndex(h => h.includes('WILAYAH'));
-          let nominalIdx = headers.findIndex(h => h.includes('NOMINAL') || h.includes('JUMLAH'));
-          let rekeningIdx = headers.findIndex(h => h.includes('REKENING') || h.includes('NO'));
-          let statusIdx = headers.findIndex(h => h.includes('KET') || h.includes('STATUS') || h.includes('TF'));
+          // Cari index kolom secara akurat & cerdas
+          const headers = jsonSheet[0].map(h => String(h || '').trim());
+          const cleanHeader = (h) => String(h || '').toUpperCase().replace(/[^A-Z0-9]/g, '');
 
-          // Fallback jika tidak ada header
-          if (namaIdx === -1) namaIdx = 1;
-          if (jabatanIdx === -1) jabatanIdx = 2;
-          if (wilayahIdx === -1) wilayahIdx = (jabatanIdx === 2 ? 3 : 2);
-          if (nominalIdx === -1) nominalIdx = 4;
-          if (rekeningIdx === -1) rekeningIdx = 5;
-          if (statusIdx === -1) statusIdx = 6;
+          // 1. NAMA
+          let namaIdx = headers.findIndex(h => {
+            const c = cleanHeader(h);
+            return c.includes('NAMA') || c.includes('NAME') || c.includes('PENERIMA');
+          });
+
+          // 2. JABATAN
+          let jabatanIdx = headers.findIndex(h => {
+            const c = cleanHeader(h);
+            return c.includes('JABATAN') || c.includes('POSISI') || c.includes('DIVISI') || c.includes('ROLE');
+          });
+
+          // 3. WILAYAH
+          let wilayahIdx = headers.findIndex(h => {
+            const c = cleanHeader(h);
+            return c.includes('WILAYAH') || c.includes('WIL') || c.includes('DAERAH') || c.includes('RAYON') || c.includes('CABANG');
+          });
+
+          // 4. NOMINAL
+          let nominalIdx = headers.findIndex(h => {
+            const c = cleanHeader(h);
+            return c.includes('NOMINAL') || c.includes('JUMLAH') || c.includes('TOTAL') || c === 'RP';
+          });
+
+          // 5. REKENING (PENTING: Jangan sampai mencocokkan 'NO' urutan!)
+          let rekeningIdx = headers.findIndex(h => {
+            const c = cleanHeader(h);
+            if (c.includes('REKENING') || c.includes('REK')) return true;
+            if (c.includes('ACCOUNT') || c.includes('ACC')) return true;
+            if (c === 'VA' || c.includes('VIRTUAL') || c.includes('NOVA')) return true;
+            return false;
+          });
+
+          // 6. STATUS TF
+          let statusIdx = headers.findIndex(h => {
+            const c = cleanHeader(h);
+            return c.includes('KET') || c.includes('STATUS') || c.includes('TF') || c.includes('TRANSFER');
+          });
+
+          // Fallback / Auto-detection pintar jika nama kolom berbeda:
+          const sampleRow = jsonSheet[1] || [];
+
+          // Deteksi kolom rekening jika belum ketemu: cari kolom yang berisi angka panjang (>= 8 digit)
+          if (rekeningIdx === -1) {
+            for (let col = 0; col < sampleRow.length; col++) {
+              if (col === namaIdx || col === jabatanIdx || col === wilayahIdx || col === nominalIdx) continue;
+              const val = String(sampleRow[col] || '').replace(/[^0-9]/g, '');
+              if (val.length >= 8) {
+                rekeningIdx = col;
+                break;
+              }
+            }
+          }
+
+          // Deteksi nama jika belum ketemu: cari kolom pertama yang berisi huruf
+          if (namaIdx === -1) {
+            for (let col = 0; col < sampleRow.length; col++) {
+              if (col === rekeningIdx || col === nominalIdx) continue;
+              const val = String(sampleRow[col] || '').trim();
+              if (/[a-zA-Z]/.test(val)) {
+                namaIdx = col;
+                break;
+              }
+            }
+          }
+
+          if (rekeningIdx === -1) {
+            alert("Kolom Nomor Rekening tidak ditemukan! Pastikan ada kolom berjudul 'REKENING', 'NO REK', atau kolom berisi nomor rekening (10-16 digit).");
+            return;
+          }
 
           parsedExcelRows = [];
           for (let i = 1; i < jsonSheet.length; i++) {
             const row = jsonSheet[i];
             if (!row || row.length === 0) continue;
 
-            const nama = String(row[namaIdx] || '').trim();
+            const nama = (namaIdx !== -1 && row[namaIdx]) ? String(row[namaIdx]).trim() : '';
             const jabatan = (jabatanIdx !== -1 && row[jabatanIdx]) ? String(row[jabatanIdx]).trim() : '-';
-            const wilayah = String(row[wilayahIdx] || '-').trim();
-            const nominal = String(row[nominalIdx] || '0').replace(/[^0-9]/g, '');
-            const rekening = String(row[rekeningIdx] || '').replace(/[^0-9]/g, '');
-            let statusTf = String(row[statusIdx] || 'BELUM').trim().toUpperCase();
+            const wilayah = (wilayahIdx !== -1 && row[wilayahIdx]) ? String(row[wilayahIdx]).trim() : '-';
+            const nominal = parseNominal(nominalIdx !== -1 ? row[nominalIdx] : 0);
+            const rekening = extractCleanRekening(rekeningIdx !== -1 ? row[rekeningIdx] : '');
+            let statusTf = (statusIdx !== -1 && row[statusIdx]) ? String(row[statusIdx]).trim().toUpperCase() : 'BELUM';
             if (statusTf !== 'SUDAH') statusTf = 'BELUM';
 
             if (nama !== '' && rekening !== '') {
               parsedExcelRows.push({
                 nama: nama,
-                jabatan: jabatan,
-                wilayah: wilayah,
+                jabatan: jabatan || '-',
+                wilayah: wilayah || '-',
                 nominal: nominal,
                 rekening: rekening,
                 status_tf: statusTf
@@ -875,10 +1004,27 @@
           }
 
           if (parsedExcelRows.length > 0) {
-            document.getElementById('chosenFileName').textContent = `${file.name} (${parsedExcelRows.length} baris data terbaca)`;
+            document.getElementById('chosenFileName').textContent = `${file.name} (${parsedExcelRows.length} baris valid)`;
             document.getElementById('btnProcessImport').disabled = false;
+
+            // Render Preview Table
+            previewTbody.innerHTML = '';
+            parsedExcelRows.slice(0, 5).forEach((item) => {
+              const tr = document.createElement('tr');
+              tr.innerHTML = `
+                <td class="p-2 font-semibold text-slate-800">${escapeHtml(item.nama)}</td>
+                <td class="p-2 text-slate-600">${escapeHtml(item.jabatan)}</td>
+                <td class="p-2 text-slate-600">${escapeHtml(item.wilayah)}</td>
+                <td class="p-2 text-right font-mono text-slate-700">Rp ${formatRupiah(item.nominal)}</td>
+                <td class="p-2 font-mono font-bold text-emerald-700 bg-emerald-50/60">${escapeHtml(item.rekening)}</td>
+              `;
+              previewTbody.appendChild(tr);
+            });
+            previewCountBadge.textContent = `${parsedExcelRows.length} Data Terbaca`;
+            previewBox.classList.remove('hidden');
           } else {
-            alert("Tidak ada data valid yang bisa dibaca. Pastikan terdapat kolom NAMA dan REKENING!");
+            previewBox.classList.add('hidden');
+            alert("Tidak ada baris data valid yang memiliki Nama dan Nomor Rekening.");
           }
         } catch (err) {
           alert("Gagal membaca file Excel: " + err.message);
