@@ -13,7 +13,19 @@
  * ============================================================================
  */
 
-// 1. Memuat konfigurasi database secara dinamis dari koneksi.php atau config.php
+// 1. Keamanan: Batasi HANYA bisa dieksekusi via CLI (Terminal / Cron Job Backend)
+// Mencegah segala bentuk akses/eksekusi dari browser publik demi keamanan database 100%
+if (php_sapi_name() !== 'cli') {
+    http_response_code(403);
+    header('Content-Type: text/plain; charset=utf-8');
+    die("Akses ditolak: File migrate.php hanya dapat dijalankan melalui CLI (Terminal / Cron Job).\n");
+}
+
+echo "=====================================================\n";
+echo "           DATABASE MIGRATION RUNNER                 \n";
+echo "=====================================================\n";
+
+// 2. Memuat konfigurasi database secara dinamis dari koneksi.php atau config.php
 $connectionFiles = [
     __DIR__ . '/koneksi.php',
     __DIR__ . '/config.php',
@@ -29,26 +41,6 @@ foreach ($connectionFiles as $file) {
         break;
     }
 }
-
-// 2. Keamanan: Batasi akses via CLI (Terminal) atau Web dengan Secret Key
-// Token default adalah 'corefive2026', atau bisa didefinisikan MIGRATION_KEY di koneksi.php
-$secretKey = defined('MIGRATION_KEY') ? MIGRATION_KEY : 'corefive2026';
-$isCli = (php_sapi_name() === 'cli');
-$isWebAuth = (isset($_GET['key']) && $_GET['key'] === $secretKey);
-
-if (!$isCli && !$isWebAuth) {
-    http_response_code(403);
-    header('Content-Type: text/plain; charset=utf-8');
-    die("Akses ditolak: File migrate.php hanya dapat dijalankan melalui CLI (Terminal) atau Web dengan Secret Key yang valid (?key=...).\n");
-}
-
-if (!$isCli) {
-    header('Content-Type: text/plain; charset=utf-8');
-}
-
-echo "=====================================================\n";
-echo "           DATABASE MIGRATION RUNNER                 \n";
-echo "=====================================================\n";
 
 if (!$loadedFile) {
     fwrite(STDERR, "[ERROR] File koneksi (koneksi.php atau config.php) tidak ditemukan!\n");
@@ -111,13 +103,8 @@ if (!is_dir($migrationsDir)) {
 
 initMigrationTable($pdo);
 
-// Ambil argument command (mendukung CLI maupun Web Trigger)
-$command = 'up';
-if ($isCli) {
-    $command = isset($argv[1]) ? strtolower(trim($argv[1])) : 'up';
-} else {
-    $command = isset($_GET['action']) ? strtolower(trim($_GET['action'])) : 'up';
-}
+// Ambil argument command CLI
+$command = isset($argv[1]) ? strtolower(trim($argv[1])) : 'up';
 
 switch ($command) {
     case 'up':
@@ -135,15 +122,17 @@ switch ($command) {
         break;
 
     case 'make':
-        $name = $isCli ? (isset($argv[2]) ? trim($argv[2]) : null) : (isset($_GET['name']) ? trim($_GET['name']) : null);
+        $name = isset($argv[2]) ? trim($argv[2]) : null;
         runMake($name, $migrationsDir);
         break;
 
     default:
         echo "Perintah tidak dikenal: $command\n\n";
         echo "Perintah yang dapat digunakan:\n";
-        echo "  CLI : php migrate.php [up|rollback|status|make]\n";
-        echo "  Web : ?key=$secretKey&action=[up|rollback|status|make]\n";
+        echo "  php migrate.php            -> Jalankan semua migrasi baru\n";
+        echo "  php migrate.php rollback   -> Batalkan batch migrasi terakhir\n";
+        echo "  php migrate.php status     -> Tampilkan daftar status migrasi\n";
+        echo "  php migrate.php make [nama]-> Buat template migrasi baru\n";
         exit(1);
 }
 
