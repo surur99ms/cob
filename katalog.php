@@ -273,6 +273,17 @@ session_start();
                 techStack: ["JavaScript", "HTML5", "CSS3", "Web Audio API", "Tailwind CSS"],
                 image: "https://images.unsplash.com/photo-1587829741301-dc798b83add3?q=80&w=800&auto=format&fit=crop",
                 url: "keyboard/"
+            },
+            {
+                id: 7,
+                title: "Rekap Transfer & Salin Rekening",
+                category: "Web",
+                price: "Free Access",
+                numericPrice: 0,
+                description: "Aplikasi praktis pengelolaan data transfer bank dan salin nomor rekening 1-klik untuk m-Banking. Dilengkapi fitur import & export file Excel (.xlsx), filter wilayah, update status transfer (Sudah/Belum), serta rekap total nominal otomatis.",
+                techStack: ["PHP", "MySQL", "JavaScript", "SheetJS (Excel)", "Tailwind CSS"],
+                image: "https://images.unsplash.com/photo-1554224155-6726b3ff858f?q=80&w=800&auto=format&fit=crop",
+                url: "rekening/"
             }
         ];
 
