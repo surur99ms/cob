@@ -8,230 +8,327 @@
   <link rel="icon" href="../favicon.png" type="image/png">
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
-  <!-- Google Fonts: Inter & JetBrains Mono -->
+  <!-- Google Fonts: Plus Jakarta Sans & JetBrains Mono -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
   <!-- Font Awesome -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <!-- SheetJS (Excel Parser & Generator) -->
   <script src="xlsx.full.min.js"></script>
 
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'system-ui', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace'],
+          },
+          colors: {
+            brand: {
+              50: '#ecfdf5',
+              100: '#d1fae5',
+              500: '#10b981',
+              600: '#059669',
+              700: '#047857',
+            }
+          }
+        }
+      }
+    }
+  </script>
+
   <style>
-    body { font-family: 'Inter', system-ui, sans-serif; background-color: #f8fafc; color: #1e293b; }
-    .font-mono-num { font-family: 'JetBrains Mono', monospace; }
-    /* Excel Table Styling matching the screenshot */
-    .table-cell-header {
-      background-color: #ffffff;
-      border: 1px solid #000000;
-      color: #000000;
-      font-weight: 700;
-      text-align: center;
-      padding: 10px 14px;
+    body {
+      font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+      background-color: #f8fafc;
+      color: #0f172a;
     }
-    .table-cell-data {
-      border: 1px solid #000000;
-      padding: 8px 12px;
-      vertical-align: middle;
+    .font-mono-num {
+      font-family: 'JetBrains Mono', monospace;
     }
-    .row-peach {
-      background-color: #FCE5CD; /* Warna peach persis seperti gambar Bos Surur */
-    }
-    .row-white {
-      background-color: #ffffff;
-    }
+    /* Smooth modern scrollbar */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: #f1f5f9; }
+    ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 9999px; }
+    ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
   </style>
 </head>
-<body class="min-h-screen flex flex-col">
+<body class="min-h-screen flex flex-col bg-slate-50/50">
 
   <!-- Header / Navigation -->
-  <header class="bg-white border-b border-slate-200 sticky top-0 z-40 shadow-sm">
+  <header class="bg-white/80 backdrop-blur-md border-b border-slate-200/80 sticky top-0 z-40">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-      <div class="flex items-center gap-4">
-        <a href="../katalog.php" class="px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold transition-colors flex items-center gap-2 border border-slate-300">
-          <i class="fas fa-arrow-left"></i> Katalog Aplikasi
+      <div class="flex items-center gap-3 sm:gap-4">
+        <a href="../katalog.php" class="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold transition-all">
+          <i class="fas fa-arrow-left text-[11px]"></i>
+          <span>Katalog</span>
         </a>
-        <div class="h-4 w-px bg-slate-300 hidden sm:block"></div>
-        <h1 class="text-base sm:text-lg font-bold text-slate-900 flex items-center gap-2">
-          <i class="fas fa-money-check-alt text-emerald-600"></i> Rekap Transfer & Salin Rekening
-        </h1>
+        <div class="h-4 w-px bg-slate-200 hidden sm:block"></div>
+        <div class="flex items-center gap-2.5">
+          <div class="w-9 h-9 rounded-xl bg-emerald-600 text-white flex items-center justify-center shadow-sm shadow-emerald-500/20">
+            <i class="fas fa-money-check-alt text-sm"></i>
+          </div>
+          <div>
+            <h1 class="text-sm sm:text-base font-bold text-slate-900 leading-tight">Rekap Transfer & Salin Rekening</h1>
+            <p class="text-[11px] text-slate-500 hidden sm:block">Kelola transfer m-Banking & salin rekening 1-klik</p>
+          </div>
+        </div>
       </div>
 
-      <div class="flex items-center gap-2">
-        <button onclick="openAddModal()" class="px-3.5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs sm:text-sm font-semibold transition-all shadow-sm flex items-center gap-2">
-          <i class="fas fa-plus"></i> <span class="hidden sm:inline">Tambah Data</span>
+      <div class="flex items-center gap-2.5">
+        <button onclick="downloadTemplateExcel()" class="hidden md:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold transition-all">
+          <i class="fas fa-file-download text-emerald-600"></i> Unduh Template
+        </button>
+        <button onclick="openAddModal()" class="inline-flex items-center gap-2 px-4 py-2 bg-emerald-600 hover:bg-emerald-700 active:scale-95 text-white rounded-xl text-xs sm:text-sm font-semibold transition-all shadow-sm shadow-emerald-600/25">
+          <i class="fas fa-plus"></i>
+          <span>Tambah Data</span>
         </button>
       </div>
     </div>
   </header>
 
   <!-- Main Content -->
-  <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
+  <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 w-full">
 
     <!-- Top Stats Cards -->
-    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-6 sm:mb-8">
       <!-- Total Penerima -->
-      <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex items-center gap-4">
-        <div class="w-12 h-12 rounded-xl bg-blue-50 border border-blue-200 flex items-center justify-center text-blue-600 text-xl">
-          <i class="fas fa-users"></i>
+      <div class="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200/80 shadow-xs hover:shadow-md transition-shadow">
+        <div class="flex items-center justify-between mb-3">
+          <span class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Total Penerima</span>
+          <div class="w-8 h-8 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center text-sm">
+            <i class="fas fa-users"></i>
+          </div>
         </div>
-        <div>
-          <span class="text-xs text-slate-500 font-medium block">Total Penerima</span>
-          <span id="statTotalItems" class="text-xl sm:text-2xl font-bold text-slate-800 font-mono-num">0</span>
+        <div class="flex items-baseline gap-2">
+          <span id="statTotalItems" class="text-2xl sm:text-3xl font-extrabold text-slate-900 font-mono-num">0</span>
+          <span class="text-xs text-slate-500 font-medium">orang</span>
         </div>
       </div>
 
       <!-- Total Nominal -->
-      <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex items-center gap-4">
-        <div class="w-12 h-12 rounded-xl bg-emerald-50 border border-emerald-200 flex items-center justify-center text-emerald-600 text-xl">
-          <i class="fas fa-wallet"></i>
+      <div class="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200/80 shadow-xs hover:shadow-md transition-shadow">
+        <div class="flex items-center justify-between mb-3">
+          <span class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Total Nominal</span>
+          <div class="w-8 h-8 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-sm">
+            <i class="fas fa-wallet"></i>
+          </div>
         </div>
-        <div>
-          <span class="text-xs text-slate-500 font-medium block">Total Nominal</span>
-          <span id="statTotalNominal" class="text-xl sm:text-2xl font-bold text-slate-800 font-mono-num">Rp 0</span>
+        <div class="flex items-baseline gap-1">
+          <span class="text-xs font-bold text-slate-400">Rp</span>
+          <span id="statTotalNominal" class="text-xl sm:text-2xl font-extrabold text-slate-900 font-mono-num truncate">0</span>
         </div>
       </div>
 
       <!-- Sudah Transfer -->
-      <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex items-center gap-4">
-        <div class="w-12 h-12 rounded-xl bg-green-50 border border-green-200 flex items-center justify-center text-green-600 text-xl">
-          <i class="fas fa-check-circle"></i>
+      <div class="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200/80 shadow-xs hover:shadow-md transition-shadow">
+        <div class="flex items-center justify-between mb-3">
+          <span class="text-xs font-semibold text-emerald-600 uppercase tracking-wider">Sudah Transfer</span>
+          <div class="w-8 h-8 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-sm">
+            <i class="fas fa-check-circle"></i>
+          </div>
         </div>
-        <div>
-          <span class="text-xs text-slate-500 font-medium block">Sudah Ditransfer</span>
-          <span id="statSudahTf" class="text-xl sm:text-2xl font-bold text-emerald-600 font-mono-num">0</span>
+        <div class="flex items-baseline gap-2">
+          <span id="statSudahTf" class="text-2xl sm:text-3xl font-extrabold text-emerald-600 font-mono-num">0</span>
+          <span class="text-xs text-slate-500 font-medium">selesai</span>
         </div>
       </div>
 
       <!-- Belum Transfer -->
-      <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex items-center gap-4">
-        <div class="w-12 h-12 rounded-xl bg-rose-50 border border-rose-200 flex items-center justify-center text-rose-600 text-xl">
-          <i class="fas fa-clock"></i>
+      <div class="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200/80 shadow-xs hover:shadow-md transition-shadow">
+        <div class="flex items-center justify-between mb-3">
+          <span class="text-xs font-semibold text-amber-600 uppercase tracking-wider">Belum Transfer</span>
+          <div class="w-8 h-8 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center text-sm">
+            <i class="fas fa-clock"></i>
+          </div>
         </div>
-        <div>
-          <span class="text-xs text-slate-500 font-medium block">Belum Ditransfer</span>
-          <span id="statBelumTf" class="text-xl sm:text-2xl font-bold text-rose-600 font-mono-num">0</span>
+        <div class="flex items-baseline gap-2">
+          <span id="statBelumTf" class="text-2xl sm:text-3xl font-extrabold text-amber-600 font-mono-num">0</span>
+          <span class="text-xs text-slate-500 font-medium">pending</span>
         </div>
       </div>
     </div>
 
-    <!-- Action Bar & Controls -->
-    <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm mb-6 flex flex-col md:flex-row items-center justify-between gap-4">
+    <!-- Modern Action Bar & Controls -->
+    <div class="bg-white p-3.5 sm:p-4 rounded-2xl border border-slate-200/80 shadow-xs mb-6 flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3 sm:gap-4">
       <!-- Search Input -->
-      <div class="w-full md:w-80 relative">
-        <i class="fas fa-search absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400"></i>
-        <input type="text" id="searchInput" placeholder="Cari nama / nomor rekening..." 
-          class="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition-all">
+      <div class="relative flex-grow max-w-md">
+        <i class="fas fa-search absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
+        <input type="text" id="searchInput" placeholder="Cari nama, rekening, atau wilayah..." 
+          class="w-full pl-9 pr-4 py-2 bg-slate-50 hover:bg-slate-100/70 border border-slate-200 rounded-xl text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 focus:bg-white transition-all text-slate-800 placeholder-slate-400">
       </div>
 
-      <!-- Filters & Excel Buttons -->
-      <div class="flex flex-wrap items-center gap-2.5 w-full md:w-auto justify-end">
+      <!-- Filters & Action Buttons -->
+      <div class="flex flex-wrap items-center gap-2 justify-end">
         <!-- Filter Status -->
-        <select id="filterStatus" class="px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs sm:text-sm font-medium text-slate-700 focus:outline-none focus:ring-2 focus:ring-emerald-500">
+        <select id="filterStatus" class="px-3 py-2 bg-slate-50 hover:bg-slate-100/70 border border-slate-200 rounded-xl text-xs font-semibold text-slate-700 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all cursor-pointer">
           <option value="all">Semua Status</option>
           <option value="SUDAH">Status: SUDAH</option>
           <option value="BELUM">Status: BELUM</option>
         </select>
 
         <!-- Filter Wilayah -->
-        <select id="filterWilayah" class="px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs sm:text-sm font-medium text-slate-700 focus:outline-none focus:ring-2 focus:ring-emerald-500">
+        <select id="filterWilayah" class="px-3 py-2 bg-slate-50 hover:bg-slate-100/70 border border-slate-200 rounded-xl text-xs font-semibold text-slate-700 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all cursor-pointer">
           <option value="all">Semua Wilayah</option>
         </select>
 
+        <div class="h-6 w-px bg-slate-200 mx-1 hidden sm:block"></div>
+
         <!-- Import Excel -->
-        <button onclick="openImportModal()" class="px-3.5 py-2 bg-slate-800 hover:bg-slate-900 text-white rounded-xl text-xs sm:text-sm font-semibold transition-all shadow-sm flex items-center gap-2">
-          <i class="fas fa-file-import text-emerald-400"></i> Import Excel
+        <button onclick="openImportModal()" class="inline-flex items-center gap-2 px-3.5 py-2 bg-slate-900 hover:bg-slate-800 text-white rounded-xl text-xs font-semibold transition-all shadow-xs">
+          <i class="fas fa-file-import text-emerald-400 text-xs"></i>
+          <span>Import Excel</span>
         </button>
 
         <!-- Export Excel -->
-        <button onclick="exportToExcel()" class="px-3.5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs sm:text-sm font-semibold transition-all shadow-sm flex items-center gap-2">
-          <i class="fas fa-file-export"></i> Export Excel
+        <button onclick="exportToExcel()" class="inline-flex items-center gap-2 px-3.5 py-2 bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 rounded-xl text-xs font-semibold transition-all shadow-xs hover:border-slate-300">
+          <i class="fas fa-file-excel text-emerald-600 text-xs"></i>
+          <span>Export Excel</span>
         </button>
       </div>
     </div>
 
-    <!-- Table Container (Mirip Format Gambar Bos Surur) -->
-    <div class="bg-white rounded-2xl border border-slate-300 shadow-sm overflow-hidden mb-8">
+    <!-- Modern Data Table -->
+    <div class="bg-white rounded-2xl border border-slate-200/80 shadow-xs overflow-hidden mb-8">
       <div class="overflow-x-auto">
-        <table class="w-full border-collapse text-sm">
+        <table class="w-full text-left border-collapse">
           <thead>
-            <tr>
-              <th class="table-cell-header w-14">No</th>
-              <th class="table-cell-header text-left">NAMA</th>
-              <th class="table-cell-header w-24">WILAYAH</th>
-              <th class="table-cell-header text-right w-44">NOMINAL</th>
-              <th class="table-cell-header text-left w-64">REKENING</th>
-              <th class="table-cell-header w-28">KET. TF</th>
-              <th class="table-cell-header w-28 text-center">AKSI</th>
+            <tr class="bg-slate-50/80 border-b border-slate-200/80 text-[11px] uppercase tracking-wider font-bold text-slate-500">
+              <th class="py-3.5 px-4 text-center w-14">No</th>
+              <th class="py-3.5 px-4">Nama Penerima</th>
+              <th class="py-3.5 px-4 text-center w-28">Wilayah</th>
+              <th class="py-3.5 px-4 text-right w-48">Nominal</th>
+              <th class="py-3.5 px-4 w-72">Nomor Rekening</th>
+              <th class="py-3.5 px-4 text-center w-32">Status TF</th>
+              <th class="py-3.5 px-4 text-center w-24">Aksi</th>
             </tr>
           </thead>
-          <tbody id="tableBody">
-            <!-- Data baris akan di-render oleh JS -->
+          <tbody id="tableBody" class="divide-y divide-slate-100 text-sm">
+            <!-- Rendered by JavaScript -->
           </tbody>
         </table>
       </div>
 
       <!-- Empty State -->
-      <div id="emptyState" class="hidden text-center py-16">
-        <i class="fas fa-folder-open text-slate-300 text-5xl mb-3"></i>
-        <h3 class="text-base font-bold text-slate-700">Tidak ada data ditemukan</h3>
-        <p class="text-xs text-slate-500">Silakan tambah data manual atau import dari file Excel.</p>
+      <div id="emptyState" class="hidden text-center py-16 px-4">
+        <div class="w-14 h-14 rounded-2xl bg-slate-100 text-slate-400 flex items-center justify-center mx-auto mb-3 text-2xl">
+          <i class="fas fa-inbox"></i>
+        </div>
+        <h3 class="text-sm font-bold text-slate-800 mb-1">Belum ada data transfer</h3>
+        <p class="text-xs text-slate-500 max-w-sm mx-auto mb-4">Tambahkan data secara manual atau impor daftar penerima transfer dari file Excel Anda.</p>
+        <div class="flex items-center justify-center gap-2">
+          <button onclick="downloadTemplateExcel()" class="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold">
+            <i class="fas fa-download text-emerald-600"></i> Download Template
+          </button>
+          <button onclick="openImportModal()" class="inline-flex items-center gap-2 px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-semibold shadow-xs">
+            <i class="fas fa-file-import"></i> Import Sekarang
+          </button>
+        </div>
       </div>
     </div>
 
   </main>
 
-  <!-- Toast Notification (Feedback Salin Rekening) -->
-  <div id="toastNotification" class="fixed bottom-6 right-6 z-50 transform translate-y-24 opacity-0 transition-all duration-300 bg-slate-900 text-white px-5 py-3.5 rounded-2xl shadow-2xl flex items-center gap-3 border border-slate-700">
-    <div class="w-7 h-7 rounded-full bg-emerald-500 flex items-center justify-center text-white text-xs font-bold">
-      <i class="fas fa-check"></i>
-    </div>
-    <div>
-      <h4 id="toastTitle" class="font-bold text-xs text-emerald-400">Nomor Rekening Tersalin!</h4>
-      <p id="toastMessage" class="text-xs text-slate-300">Siap di-paste ke m-Banking.</p>
+  <!-- Toast Notification -->
+  <div id="toastNotification" class="fixed bottom-6 right-6 z-50 transform translate-y-24 opacity-0 transition-all duration-300 pointer-events-none">
+    <div class="bg-slate-900/95 backdrop-blur-md text-white px-4 py-3 rounded-2xl shadow-xl border border-slate-700 flex items-center gap-3">
+      <div class="w-7 h-7 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-xs font-bold border border-emerald-500/40">
+        <i class="fas fa-check"></i>
+      </div>
+      <div>
+        <h4 id="toastTitle" class="font-bold text-xs text-white leading-tight">Berhasil Disalin!</h4>
+        <p id="toastMessage" class="text-[11px] text-slate-300 font-mono-num mt-0.5">Siap di-paste ke m-Banking</p>
+      </div>
     </div>
   </div>
 
   <!-- Modal: Import Excel -->
-  <div id="importModal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 hidden">
-    <div class="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-8 shadow-2xl border border-slate-200">
-      <div class="flex items-center justify-between pb-4 border-b border-slate-100 mb-6">
-        <h3 class="text-lg font-bold text-slate-900 flex items-center gap-2">
-          <i class="fas fa-file-excel text-emerald-600"></i> Import Data dari Excel
-        </h3>
-        <button onclick="closeImportModal()" class="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 flex items-center justify-center">
-          <i class="fas fa-times"></i>
+  <div id="importModal" class="fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-sm flex items-center justify-center p-4 hidden">
+    <div class="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-7 shadow-2xl border border-slate-200/80 animate-in fade-in zoom-in-95 duration-150">
+      
+      <!-- Modal Header -->
+      <div class="flex items-center justify-between pb-4 border-b border-slate-100 mb-5">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-lg">
+            <i class="fas fa-file-excel"></i>
+          </div>
+          <div>
+            <h3 class="text-base font-bold text-slate-900 leading-tight">Import Data dari Excel</h3>
+            <p class="text-xs text-slate-500">Mendukung format .xlsx, .xls, dan .csv</p>
+          </div>
+        </div>
+        <button onclick="closeImportModal()" class="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 flex items-center justify-center transition-colors">
+          <i class="fas fa-times text-xs"></i>
         </button>
       </div>
 
+      <!-- Template Excel Download Banner -->
+      <div class="bg-gradient-to-r from-emerald-50 to-teal-50 border border-emerald-200/80 rounded-2xl p-4 mb-5 flex items-center justify-between gap-3">
+        <div class="flex items-center gap-3">
+          <div class="w-9 h-9 rounded-xl bg-emerald-600 text-white flex items-center justify-center text-sm shadow-xs flex-shrink-0">
+            <i class="fas fa-file-download"></i>
+          </div>
+          <div>
+            <h4 class="text-xs font-bold text-slate-900">Belum punya format Excel?</h4>
+            <p class="text-[11px] text-slate-600">Unduh template siap pakai agar susunan kolom sesuai.</p>
+          </div>
+        </div>
+        <button type="button" onclick="downloadTemplateExcel()" class="inline-flex items-center gap-1.5 px-3 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold transition-all shadow-xs flex-shrink-0 active:scale-95">
+          <i class="fas fa-download text-[11px]"></i> Template
+        </button>
+      </div>
+
+      <!-- File Upload Dropzone -->
       <div class="space-y-4 mb-6">
-        <p class="text-xs text-slate-500">Pilih file Excel (<strong>.xlsx</strong> atau <strong>.csv</strong>) yang berisi kolom: <em>NAMA, WILAYAH, NOMINAL, REKENING, KET. TF</em>.</p>
-        
-        <div class="border-2 border-dashed border-slate-300 rounded-2xl p-6 text-center hover:border-emerald-500 transition-colors cursor-pointer bg-slate-50" onclick="document.getElementById('excelFileInput').click()">
-          <i class="fas fa-cloud-upload-alt text-4xl text-emerald-500 mb-2"></i>
-          <span class="block text-sm font-semibold text-slate-700">Klik untuk memilih file Excel</span>
-          <span id="chosenFileName" class="text-xs text-slate-400 mt-1 block">Mendukung file .xlsx dan .csv</span>
+        <div class="border-2 border-dashed border-slate-200 hover:border-emerald-500 rounded-2xl p-6 text-center transition-all cursor-pointer bg-slate-50/70 hover:bg-emerald-50/30 group" onclick="document.getElementById('excelFileInput').click()">
+          <div class="w-12 h-12 rounded-2xl bg-white border border-slate-200 group-hover:border-emerald-200 flex items-center justify-center mx-auto mb-2 text-emerald-600 shadow-xs transition-colors">
+            <i class="fas fa-cloud-upload-alt text-xl"></i>
+          </div>
+          <span class="block text-xs sm:text-sm font-bold text-slate-800">Klik untuk memilih file Excel</span>
+          <span id="chosenFileName" class="text-[11px] text-slate-400 mt-1 block">File .xlsx, .xls, atau .csv</span>
         </div>
         <input type="file" id="excelFileInput" accept=".xlsx, .xls, .csv" class="hidden" onchange="handleFileChosen(event)">
 
-        <div class="pt-2">
-          <label class="text-xs font-semibold text-slate-700 block mb-2">Metode Impor:</label>
-          <div class="grid grid-cols-2 gap-3">
-            <label class="flex items-center gap-2 p-3 border border-slate-200 rounded-xl text-xs cursor-pointer bg-slate-50 hover:bg-slate-100">
-              <input type="radio" name="importMode" value="append" checked class="text-emerald-600">
-              <span>Tambahkan ke data yang ada (Append)</span>
+        <!-- Column Guide -->
+        <div class="bg-slate-50 border border-slate-200/80 rounded-xl p-3 text-[11px] text-slate-600">
+          <span class="font-bold text-slate-700 block mb-1">Susunan Kolom yang Dibaca:</span>
+          <div class="flex flex-wrap gap-1.5">
+            <span class="px-2 py-0.5 rounded-md bg-white border border-slate-200 font-mono text-slate-700">NAMA</span>
+            <span class="px-2 py-0.5 rounded-md bg-white border border-slate-200 font-mono text-slate-700">WILAYAH</span>
+            <span class="px-2 py-0.5 rounded-md bg-white border border-slate-200 font-mono text-slate-700">NOMINAL</span>
+            <span class="px-2 py-0.5 rounded-md bg-white border border-slate-200 font-mono text-slate-700">REKENING</span>
+            <span class="px-2 py-0.5 rounded-md bg-white border border-slate-200 font-mono text-slate-700">KET. TF</span>
+          </div>
+        </div>
+
+        <!-- Import Mode -->
+        <div>
+          <label class="text-xs font-bold text-slate-700 block mb-2">Metode Impor:</label>
+          <div class="grid grid-cols-2 gap-2.5">
+            <label class="flex items-start gap-2.5 p-3 border border-slate-200 rounded-xl text-xs cursor-pointer bg-slate-50 hover:bg-slate-100 transition-colors">
+              <input type="radio" name="importMode" value="append" checked class="mt-0.5 text-emerald-600 focus:ring-emerald-500">
+              <div>
+                <span class="font-bold text-slate-800 block">Append</span>
+                <span class="text-[10px] text-slate-500">Tambah ke data yang sudah ada</span>
+              </div>
             </label>
-            <label class="flex items-center gap-2 p-3 border border-slate-200 rounded-xl text-xs cursor-pointer bg-slate-50 hover:bg-slate-100">
-              <input type="radio" name="importMode" value="replace" class="text-emerald-600">
-              <span>Ganti semua data lama (Replace)</span>
+            <label class="flex items-start gap-2.5 p-3 border border-slate-200 rounded-xl text-xs cursor-pointer bg-slate-50 hover:bg-slate-100 transition-colors">
+              <input type="radio" name="importMode" value="replace" class="mt-0.5 text-emerald-600 focus:ring-emerald-500">
+              <div>
+                <span class="font-bold text-slate-800 block">Replace</span>
+                <span class="text-[10px] text-slate-500">Hapus data lama & ganti baru</span>
+              </div>
             </label>
           </div>
         </div>
       </div>
 
-      <div class="flex gap-3">
-        <button onclick="closeImportModal()" class="w-1/2 py-2.5 rounded-xl border border-slate-300 text-slate-700 font-semibold text-sm hover:bg-slate-50">Batal</button>
-        <button id="btnProcessImport" onclick="processImport()" disabled class="w-1/2 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-sm shadow-sm disabled:opacity-50 disabled:cursor-not-allowed">
+      <!-- Action Buttons -->
+      <div class="flex gap-2.5">
+        <button type="button" onclick="closeImportModal()" class="w-1/2 py-2.5 rounded-xl border border-slate-200 hover:bg-slate-50 text-slate-700 font-semibold text-xs transition-colors">Batal</button>
+        <button type="button" id="btnProcessImport" onclick="processImport()" disabled class="w-1/2 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-xs transition-all shadow-xs disabled:opacity-50 disabled:cursor-not-allowed">
           Mulai Impor
         </button>
       </div>
@@ -239,12 +336,12 @@
   </div>
 
   <!-- Modal: Tambah / Edit Data Manual -->
-  <div id="dataModal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 hidden">
-    <div class="bg-white rounded-3xl max-w-md w-full p-6 sm:p-8 shadow-2xl border border-slate-200">
-      <div class="flex items-center justify-between pb-4 border-b border-slate-100 mb-6">
-        <h3 id="modalFormTitle" class="text-lg font-bold text-slate-900">Tambah Data Transfer</h3>
-        <button onclick="closeDataModal()" class="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 flex items-center justify-center">
-          <i class="fas fa-times"></i>
+  <div id="dataModal" class="fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-sm flex items-center justify-center p-4 hidden">
+    <div class="bg-white rounded-3xl max-w-md w-full p-6 sm:p-7 shadow-2xl border border-slate-200/80 animate-in fade-in zoom-in-95 duration-150">
+      <div class="flex items-center justify-between pb-4 border-b border-slate-100 mb-5">
+        <h3 id="modalFormTitle" class="text-base font-bold text-slate-900">Tambah Data Penerima</h3>
+        <button onclick="closeDataModal()" class="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 flex items-center justify-center transition-colors">
+          <i class="fas fa-times text-xs"></i>
         </button>
       </div>
 
@@ -252,38 +349,41 @@
         <input type="hidden" id="formId" value="">
 
         <div>
-          <label class="text-xs font-semibold text-slate-700 block mb-1">Nama Lengkap</label>
-          <input type="text" id="formNama" required placeholder="Contoh: ABD MAJID" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
+          <label class="text-xs font-bold text-slate-700 block mb-1.5">Nama Lengkap</label>
+          <input type="text" id="formNama" required placeholder="Contoh: ABD MAJID" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 focus:bg-white transition-all text-slate-900 font-semibold">
         </div>
 
         <div class="grid grid-cols-2 gap-3">
           <div>
-            <label class="text-xs font-semibold text-slate-700 block mb-1">Wilayah</label>
-            <input type="text" id="formWilayah" placeholder="Contoh: J-1" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
+            <label class="text-xs font-bold text-slate-700 block mb-1.5">Wilayah</label>
+            <input type="text" id="formWilayah" placeholder="Contoh: J-1" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 focus:bg-white transition-all text-slate-900 font-semibold">
           </div>
           <div>
-            <label class="text-xs font-semibold text-slate-700 block mb-1">Status Transfer</label>
-            <select id="formStatus" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
-              <option value="SUDAH">SUDAH</option>
+            <label class="text-xs font-bold text-slate-700 block mb-1.5">Status Transfer</label>
+            <select id="formStatus" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 focus:bg-white transition-all text-slate-900 font-semibold">
               <option value="BELUM">BELUM</option>
+              <option value="SUDAH">SUDAH</option>
             </select>
           </div>
         </div>
 
         <div>
-          <label class="text-xs font-semibold text-slate-700 block mb-1">Nominal Transfer (Rp)</label>
-          <input type="number" id="formNominal" required placeholder="Contoh: 272750" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-sm font-mono-num focus:outline-none focus:ring-2 focus:ring-emerald-500">
+          <label class="text-xs font-bold text-slate-700 block mb-1.5">Nominal Transfer (Rp)</label>
+          <div class="relative">
+            <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-xs font-bold text-slate-400">Rp</span>
+            <input type="number" id="formNominal" required placeholder="272750" class="w-full pl-10 pr-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs sm:text-sm font-mono-num font-bold focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 focus:bg-white transition-all text-slate-900">
+          </div>
         </div>
 
         <div>
-          <label class="text-xs font-semibold text-slate-700 block mb-1">Nomor Rekening / Virtual Account</label>
-          <input type="text" id="formRekening" required placeholder="Contoh: 17451201715123" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-sm font-mono-num focus:outline-none focus:ring-2 focus:ring-emerald-500">
-          <span class="text-[11px] text-slate-400 mt-1 block">Hanya angka (10–16 digit), tanpa tanda titik/koma.</span>
+          <label class="text-xs font-bold text-slate-700 block mb-1.5">Nomor Rekening / Virtual Account</label>
+          <input type="text" id="formRekening" required placeholder="Contoh: 17451201715123" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs sm:text-sm font-mono-num font-bold focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 focus:bg-white transition-all text-slate-900">
+          <span class="text-[11px] text-slate-400 mt-1 block">Nomor rekening saja (10-16 digit) tanpa titik/spasi.</span>
         </div>
 
-        <div class="pt-4 flex gap-3">
-          <button type="button" onclick="closeDataModal()" class="w-1/2 py-2.5 rounded-xl border border-slate-300 text-slate-700 font-semibold text-sm hover:bg-slate-50">Batal</button>
-          <button type="submit" class="w-1/2 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-sm shadow-sm">Simpan</button>
+        <div class="pt-3 flex gap-2.5">
+          <button type="button" onclick="closeDataModal()" class="w-1/2 py-2.5 rounded-xl border border-slate-200 hover:bg-slate-50 text-slate-700 font-semibold text-xs transition-colors">Batal</button>
+          <button type="submit" class="w-1/2 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-xs transition-all shadow-xs">Simpan</button>
         </div>
       </form>
     </div>
@@ -315,6 +415,13 @@
       }
     }
 
+    function getInitials(name) {
+      if (!name) return '??';
+      const parts = name.trim().split(/\s+/);
+      if (parts.length === 1) return parts[0].substring(0, 2).toUpperCase();
+      return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+    }
+
     function renderTable(items) {
       const tbody = document.getElementById('tableBody');
       const empty = document.getElementById('emptyState');
@@ -327,50 +434,80 @@
       empty.classList.add('hidden');
 
       items.forEach((item, index) => {
-        const isPeach = index % 2 === 0;
-        const rowClass = isPeach ? 'row-peach' : 'row-white';
-
         const isSudah = (item.status_tf || '').toUpperCase() === 'SUDAH';
-        const badgeClass = isSudah 
-          ? 'bg-emerald-100 text-emerald-800 border-emerald-300' 
-          : 'bg-amber-100 text-amber-800 border-amber-300';
-
         const formattedNominal = formatRupiah(item.nominal);
+        const initials = getInitials(item.nama);
 
         const tr = document.createElement('tr');
-        tr.className = `${rowClass} hover:opacity-90 transition-opacity`;
+        tr.className = `hover:bg-slate-50/80 transition-colors group`;
+
         tr.innerHTML = `
-          <td class="table-cell-data text-center font-bold text-slate-800">${index + 1}</td>
-          <td class="table-cell-data font-semibold text-slate-900">${escapeHtml(item.nama)}</td>
-          <td class="table-cell-data text-center font-bold text-slate-700">${escapeHtml(item.wilayah || '-')}</td>
-          <td class="table-cell-data text-right font-mono-num font-bold text-slate-900">
-            <div class="flex items-center justify-end gap-2">
+          <!-- No -->
+          <td class="py-4 px-4 text-center font-bold text-slate-400 text-xs">
+            ${index + 1}
+          </td>
+
+          <!-- Nama -->
+          <td class="py-4 px-4">
+            <div class="flex items-center gap-3">
+              <div class="w-8 h-8 rounded-xl bg-slate-100 text-slate-700 group-hover:bg-emerald-100 group-hover:text-emerald-700 transition-colors flex items-center justify-center font-bold text-xs flex-shrink-0">
+                ${initials}
+              </div>
+              <span class="font-bold text-slate-900 group-hover:text-emerald-700 transition-colors">${escapeHtml(item.nama)}</span>
+            </div>
+          </td>
+
+          <!-- Wilayah -->
+          <td class="py-4 px-4 text-center">
+            <span class="inline-flex items-center px-2.5 py-0.5 rounded-lg text-xs font-bold bg-slate-100 text-slate-600 border border-slate-200/60">
+              ${escapeHtml(item.wilayah || '-')}
+            </span>
+          </td>
+
+          <!-- Nominal -->
+          <td class="py-4 px-4 text-right">
+            <div class="inline-flex items-center justify-end gap-1.5 font-mono-num font-bold text-slate-900">
+              <span class="text-xs text-slate-400 font-sans">Rp</span>
               <span>${formattedNominal}</span>
-              <button onclick="copyToClipboard('${item.nominal}', 'Nominal Rp ${formattedNominal} Disalin!')" title="Salin Nominal murni" class="w-6 h-6 rounded bg-black/5 hover:bg-black/15 flex items-center justify-center text-slate-600 text-xs transition-colors">
-                <i class="far fa-copy"></i>
+              <button onclick="copyToClipboard('${item.nominal}', 'Nominal Rp ${formattedNominal} Disalin!')" title="Salin Nominal murni" class="opacity-0 group-hover:opacity-100 p-1 text-slate-400 hover:text-slate-700 rounded-md transition-all">
+                <i class="far fa-copy text-xs"></i>
               </button>
             </div>
           </td>
-          <td class="table-cell-data font-mono-num font-bold text-slate-900">
-            <div class="flex items-center justify-between gap-2">
-              <span class="tracking-wide">${escapeHtml(item.rekening)}</span>
-              <button onclick="copyToClipboard('${item.rekening}', 'Nomor Rekening Tersalin!')" title="Salin Rekening" class="px-2.5 py-1 bg-emerald-600 hover:bg-emerald-700 text-white rounded text-xs font-semibold transition-all shadow-sm flex items-center gap-1.5 active:scale-95">
-                <i class="fas fa-copy text-[10px]"></i> Salin
+
+          <!-- Rekening (1-Click Salin) -->
+          <td class="py-4 px-4">
+            <div class="inline-flex items-center gap-2 bg-slate-50 hover:bg-emerald-50/50 border border-slate-200/80 hover:border-emerald-300 px-3 py-1.5 rounded-xl transition-all">
+              <span class="font-mono-num font-bold text-slate-900 tracking-wide text-xs sm:text-sm select-all">
+                ${escapeHtml(item.rekening)}
+              </span>
+              <button onclick="copyToClipboard('${item.rekening}', 'Nomor Rekening Tersalin!')" title="Salin Nomor Rekening" class="ml-1 inline-flex items-center gap-1 px-2.5 py-1 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-bold transition-all shadow-xs active:scale-95">
+                <i class="fas fa-copy text-[10px]"></i>
+                <span>Salin</span>
               </button>
             </div>
           </td>
-          <td class="table-cell-data text-center">
-            <button onclick="toggleStatus(${item.id})" title="Klik untuk mengubah status" class="px-3 py-1 rounded border text-xs font-bold transition-all shadow-xs ${badgeClass}">
-              ${escapeHtml(item.status_tf)}
+
+          <!-- Status Transfer (Click to Toggle) -->
+          <td class="py-4 px-4 text-center">
+            <button onclick="toggleStatus(${item.id})" title="Klik untuk ubah status transfer" class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold transition-all cursor-pointer shadow-xs active:scale-95 ${
+              isSudah
+                ? 'bg-emerald-50 text-emerald-700 border border-emerald-200 hover:bg-emerald-100'
+                : 'bg-amber-50 text-amber-700 border border-amber-200 hover:bg-amber-100'
+            }">
+              <span class="w-1.5 h-1.5 rounded-full ${isSudah ? 'bg-emerald-500 animate-pulse' : 'bg-amber-500'}"></span>
+              <span>${escapeHtml(item.status_tf)}</span>
             </button>
           </td>
-          <td class="table-cell-data text-center">
-            <div class="flex items-center justify-center gap-2">
-              <button onclick="openEditModal(${item.id})" class="text-blue-600 hover:text-blue-800 text-xs font-bold p-1">
-                <i class="fas fa-edit"></i>
+
+          <!-- Aksi (Edit & Delete) -->
+          <td class="py-4 px-4 text-center">
+            <div class="inline-flex items-center gap-1 text-slate-400">
+              <button onclick="openEditModal(${item.id})" title="Edit data" class="p-1.5 hover:text-blue-600 rounded-lg hover:bg-blue-50 transition-colors">
+                <i class="fas fa-pen text-xs"></i>
               </button>
-              <button onclick="deleteItem(${item.id})" class="text-rose-600 hover:text-rose-800 text-xs font-bold p-1">
-                <i class="fas fa-trash-alt"></i>
+              <button onclick="deleteItem(${item.id})" title="Hapus data" class="p-1.5 hover:text-rose-600 rounded-lg hover:bg-rose-50 transition-colors">
+                <i class="fas fa-trash-alt text-xs"></i>
               </button>
             </div>
           </td>
@@ -382,7 +519,7 @@
     function renderStats(stats) {
       if (!stats) return;
       document.getElementById('statTotalItems').textContent = stats.total_items || 0;
-      document.getElementById('statTotalNominal').textContent = 'Rp ' + formatRupiah(stats.total_nominal);
+      document.getElementById('statTotalNominal').textContent = formatRupiah(stats.total_nominal);
       document.getElementById('statSudahTf').textContent = stats.count_sudah || 0;
       document.getElementById('statBelumTf').textContent = stats.count_belum || 0;
     }
@@ -453,12 +590,12 @@
           loadData();
         }
       } catch (e) {
-        alert("Gagal mengubah status: " + e.getMessage());
+        console.error("Gagal mengubah status:", e);
       }
     }
 
     function openAddModal() {
-      document.getElementById('modalFormTitle').textContent = 'Tambah Data Transfer';
+      document.getElementById('modalFormTitle').textContent = 'Tambah Data Penerima';
       document.getElementById('formId').value = '';
       document.getElementById('formNama').value = '';
       document.getElementById('formWilayah').value = 'J-1';
@@ -472,7 +609,7 @@
       const item = rawData.find(d => d.id === id);
       if (!item) return;
 
-      document.getElementById('modalFormTitle').textContent = 'Edit Data Transfer';
+      document.getElementById('modalFormTitle').textContent = 'Edit Data Penerima';
       document.getElementById('formId').value = item.id;
       document.getElementById('formNama').value = item.nama;
       document.getElementById('formWilayah').value = item.wilayah;
@@ -517,7 +654,7 @@
     }
 
     async function deleteItem(id) {
-      if (!confirm("Apakah Anda yakin ingin menghapus baris data ini?")) return;
+      if (!confirm("Apakah Anda yakin ingin menghapus data ini?")) return;
 
       try {
         const res = await fetch('api.php?action=delete', {
@@ -528,14 +665,66 @@
         const json = await res.json();
         if (json.status === 'success') {
           loadData();
-          showToast("Data Terhapus", "Baris berhasil dihapus");
+          showToast("Data Dihapus", "Baris berhasil dihapus");
         }
       } catch (e) {
         alert("Gagal menghapus data");
       }
     }
 
-    // --- 4. EXPORT TO EXCEL ---
+    // --- 4. DOWNLOAD TEMPLATE EXCEL ---
+    function downloadTemplateExcel() {
+      const templateData = [
+        {
+          "No": 1,
+          "NAMA": "ABD MAJID",
+          "WILAYAH": "J-1",
+          "NOMINAL": 272750,
+          "REKENING": "17451201715123",
+          "KET. TF": "BELUM"
+        },
+        {
+          "No": 2,
+          "NAMA": "ABD WAHID",
+          "WILAYAH": "J-1",
+          "NOMINAL": 154950,
+          "REKENING": "9881230208204356",
+          "KET. TF": "BELUM"
+        },
+        {
+          "No": 3,
+          "NAMA": "AHMAD IDRIS",
+          "WILAYAH": "J-1",
+          "NOMINAL": 110550,
+          "REKENING": "17453742019647",
+          "KET. TF": "BELUM"
+        },
+        {
+          "No": 4,
+          "NAMA": "AHMAD ZAINI",
+          "WILAYAH": "J-1",
+          "NOMINAL": 335100,
+          "REKENING": "115810018",
+          "KET. TF": "SUDAH"
+        }
+      ];
+
+      const ws = XLSX.utils.json_to_sheet(templateData);
+      ws['!cols'] = [
+        { wch: 6 },
+        { wch: 26 },
+        { wch: 12 },
+        { wch: 15 },
+        { wch: 22 },
+        { wch: 12 }
+      ];
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, "Template_Rekap");
+      XLSX.writeFile(wb, "Template_Import_Rekening.xlsx");
+      showToast("Template Diunduh!", "Template_Import_Rekening.xlsx siap diedit");
+    }
+
+    // --- 5. EXPORT TO EXCEL ---
     function exportToExcel() {
       if (rawData.length === 0) {
         alert("Belum ada data untuk diekspor!");
@@ -552,18 +741,27 @@
       }));
 
       const ws = XLSX.utils.json_to_sheet(rowsForExcel);
+      ws['!cols'] = [
+        { wch: 6 },
+        { wch: 26 },
+        { wch: 12 },
+        { wch: 15 },
+        { wch: 22 },
+        { wch: 12 }
+      ];
       const wb = XLSX.utils.book_new();
       XLSX.utils.book_append_sheet(wb, ws, "Rekap Transfer");
 
       const today = new Date().toISOString().slice(0, 10);
       XLSX.writeFile(wb, `Rekap_Transfer_Rekening_${today}.xlsx`);
+      showToast("Export Berhasil!", `File Excel Rekap berhasil diunduh`);
     }
 
-    // --- 5. IMPORT FROM EXCEL ---
+    // --- 6. IMPORT FROM EXCEL ---
     function openImportModal() {
       parsedExcelRows = [];
       document.getElementById('excelFileInput').value = '';
-      document.getElementById('chosenFileName').textContent = 'Mendukung file .xlsx dan .csv';
+      document.getElementById('chosenFileName').textContent = 'File .xlsx, .xls, atau .csv';
       document.getElementById('btnProcessImport').disabled = true;
       document.getElementById('importModal').classList.remove('hidden');
     }
@@ -630,10 +828,10 @@
           }
 
           if (parsedExcelRows.length > 0) {
-            document.getElementById('chosenFileName').textContent = `${file.name} (${parsedExcelRows.length} data terbaca)`;
+            document.getElementById('chosenFileName').textContent = `${file.name} (${parsedExcelRows.length} baris data terbaca)`;
             document.getElementById('btnProcessImport').disabled = false;
           } else {
-            alert("Tidak ada data valid yang bisa dibaca dari file Excel tersebut.");
+            alert("Tidak ada data valid yang bisa dibaca. Pastikan terdapat kolom NAMA dan REKENING!");
           }
         } catch (err) {
           alert("Gagal membaca file Excel: " + err.message);
@@ -676,10 +874,10 @@
       }
     }
 
-    // --- 6. UTILITIES ---
+    // --- 7. UTILITIES ---
     function formatRupiah(val) {
       const num = parseFloat(val) || 0;
-      return num.toLocaleString('en-US'); // Format 272,750 seperti pada gambar
+      return num.toLocaleString('id-ID');
     }
 
     function escapeHtml(text) {
@@ -698,4 +896,3 @@
   </script>
 </body>
 </html>
-
