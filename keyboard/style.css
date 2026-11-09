@@ -12,12 +12,12 @@
   --accent: #E65A4B;
   --accent-hover: #cf4c3f;
 
-  /* Finger Color Codes */
-  --finger-pinky: #f43f5e;
-  --finger-ring: #f59e0b;
-  --finger-middle: #eab308;
-  --finger-index: #10b981;
-  --finger-thumb: #06b6d4;
+  /* Finger Color Codes - Warna Kontras Tinggi untuk Setiap Jari */
+  --finger-pinky: #f43f5e;  /* Merah / Rose */
+  --finger-ring: #f97316;   /* Oranye Terang */
+  --finger-middle: #a855f7; /* Ungu Cerah / Purple */
+  --finger-index: #10b981;  /* Hijau Emerald */
+  --finger-thumb: #06b6d4;  /* Biru Cyan */
 }
 
 body {
