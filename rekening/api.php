@@ -11,7 +11,7 @@ header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
 header('Access-Control-Allow-Headers: Content-Type');
 
-if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+if (($_SERVER['REQUEST_METHOD'] ?? '') === 'OPTIONS') {
     http_response_code(200);
     exit;
 }
@@ -246,6 +246,81 @@ switch ($action) {
             $stmt->execute([':id' => $id]);
 
             echo json_encode(['status' => 'success', 'deleted_id' => $id]);
+        } catch (PDOException $e) {
+            http_response_code(500);
+            echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
+        }
+        break;
+
+    // ----------------------------------------------------
+    // POST: Hapus data berdasarkan jabatan yang dipilih
+    // ----------------------------------------------------
+    case 'delete_by_jabatan':
+        try {
+            $input = json_decode(file_get_contents('php://input'), true);
+            $selectedJabatan = $input['jabatan'] ?? [];
+            $deleteAll = !empty($input['delete_all']);
+
+            if ($deleteAll) {
+                $pdo->exec("TRUNCATE TABLE `rekening_transfers`");
+                echo json_encode([
+                    'status' => 'success',
+                    'deleted_count' => 'all',
+                    'message' => 'Seluruh data rekap transfer berhasil dihapus'
+                ]);
+                exit;
+            }
+
+            if (!is_array($selectedJabatan) || empty($selectedJabatan)) {
+                http_response_code(400);
+                echo json_encode(['status' => 'error', 'message' => 'Pilih minimal satu jabatan yang ingin dihapus!']);
+                exit;
+            }
+
+            $hasDash = in_array('-', $selectedJabatan, true) || in_array('', $selectedJabatan, true);
+            $specificJabatan = array_values(array_filter($selectedJabatan, function($j) {
+                return $j !== '-' && $j !== '';
+            }));
+
+            $whereClauses = [];
+            $params = [];
+
+            if (!empty($specificJabatan)) {
+                $placeholders = [];
+                foreach ($specificJabatan as $idx => $jab) {
+                    $ph = ":jab_$idx";
+                    $placeholders[] = $ph;
+                    $params[$ph] = trim($jab);
+                }
+                $whereClauses[] = "`jabatan` IN (" . implode(', ', $placeholders) . ")";
+            }
+
+            if ($hasDash) {
+                $whereClauses[] = "(`jabatan` = '-' OR `jabatan` = '' OR `jabatan` IS NULL)";
+            }
+
+            if (empty($whereClauses)) {
+                http_response_code(400);
+                echo json_encode(['status' => 'error', 'message' => 'Pilih minimal satu jabatan yang valid!']);
+                exit;
+            }
+
+            $whereSql = implode(' OR ', $whereClauses);
+
+            // Hitung total baris yang akan dihapus
+            $countStmt = $pdo->prepare("SELECT COUNT(*) FROM `rekening_transfers` WHERE $whereSql");
+            $countStmt->execute($params);
+            $deletedCount = (int)$countStmt->fetchColumn();
+
+            // Eksekusi penghapusan
+            $delStmt = $pdo->prepare("DELETE FROM `rekening_transfers` WHERE $whereSql");
+            $delStmt->execute($params);
+
+            echo json_encode([
+                'status' => 'success',
+                'deleted_count' => $deletedCount,
+                'message' => "Berhasil menghapus $deletedCount data penerima dengan jabatan terpilih"
+            ]);
         } catch (PDOException $e) {
             http_response_code(500);
             echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);

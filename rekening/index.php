@@ -85,6 +85,10 @@
           <i class="fas fa-plus"></i>
           <span>Tambah</span>
         </button>
+        <button onclick="openDeleteByJabatanModal()" class="inline-flex items-center gap-1.5 sm:gap-2 px-3 sm:px-3.5 py-2 bg-rose-50 hover:bg-rose-100 active:scale-95 text-rose-600 border border-rose-200 rounded-xl text-xs sm:text-sm font-semibold transition-all shadow-xs" title="Hapus data berdasarkan pilihan jabatan">
+          <i class="fas fa-trash-alt text-xs"></i>
+          <span>Hapus Data</span>
+        </button>
       </div>
     </div>
   </header>
@@ -446,6 +450,60 @@
           <button type="submit" class="w-1/2 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-xs transition-all shadow-xs">Simpan</button>
         </div>
       </form>
+    </div>
+  </div>
+
+  <!-- Modal: Hapus Data Berdasarkan Jabatan -->
+  <div id="deleteByJabatanModal" class="fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-sm flex items-center justify-center p-4 hidden">
+    <div class="bg-white rounded-3xl max-w-md w-full p-5 sm:p-7 shadow-2xl border border-slate-200/80 animate-in fade-in zoom-in-95 duration-150 max-h-[92vh] overflow-y-auto">
+      
+      <!-- Modal Header -->
+      <div class="flex items-center justify-between pb-4 border-b border-slate-100 mb-4">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-2xl bg-rose-50 text-rose-600 flex items-center justify-center text-lg">
+            <i class="fas fa-trash-alt"></i>
+          </div>
+          <div>
+            <h3 class="text-base font-bold text-slate-900 leading-tight">Hapus Data Transfer</h3>
+            <p class="text-xs text-slate-500">Pilih data yang ingin dihapus sesuai jabatan</p>
+          </div>
+        </div>
+        <button onclick="closeDeleteByJabatanModal()" class="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 flex items-center justify-center transition-colors">
+          <i class="fas fa-times text-xs"></i>
+        </button>
+      </div>
+
+      <!-- Jabatan Selection List -->
+      <div class="space-y-3 mb-5">
+        <div class="flex items-center justify-between">
+          <label class="text-xs font-bold text-slate-700">Pilih Jabatan untuk Dihapus:</label>
+          <button type="button" onclick="toggleSelectAllDeleteJabatan()" id="btnToggleSelectAllJabatan" class="text-[11px] font-bold text-emerald-600 hover:text-emerald-700">
+            Pilih Semua
+          </button>
+        </div>
+
+        <!-- Container for Checkboxes -->
+        <div id="deleteJabatanListContainer" class="space-y-2 max-h-56 overflow-y-auto pr-1">
+          <!-- Injected dynamically by JS -->
+        </div>
+
+        <!-- Warning Alert Box -->
+        <div class="bg-rose-50 border border-rose-200/80 rounded-2xl p-3.5 flex items-start gap-2.5 text-rose-800 text-xs">
+          <i class="fas fa-exclamation-triangle text-rose-500 mt-0.5 text-sm flex-shrink-0"></i>
+          <div>
+            <span class="font-bold block">Tindakan ini tidak dapat dibatalkan!</span>
+            <span class="text-[11px] text-rose-700">Data penerima transfer dari jabatan yang dicentang akan dihapus secara permanen dari database.</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="flex gap-2.5">
+        <button type="button" onclick="closeDeleteByJabatanModal()" class="w-1/2 py-2.5 rounded-xl border border-slate-200 hover:bg-slate-50 text-slate-700 font-semibold text-xs transition-colors">Batal</button>
+        <button type="button" id="btnExecuteDeleteJabatan" onclick="executeDeleteByJabatan()" disabled class="w-1/2 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-semibold text-xs transition-all shadow-xs disabled:opacity-50 disabled:cursor-not-allowed">
+          Hapus Terpilih
+        </button>
+      </div>
     </div>
   </div>
 
@@ -858,6 +916,157 @@
         }
       } catch (e) {
         alert("Gagal menghapus data");
+      }
+    }
+
+    // --- 3B. HAPUS DATA BERDASARKAN JABATAN ---
+    function openDeleteByJabatanModal() {
+      const container = document.getElementById('deleteJabatanListContainer');
+      const btnDelete = document.getElementById('btnExecuteDeleteJabatan');
+      const btnToggle = document.getElementById('btnToggleSelectAllJabatan');
+      container.innerHTML = '';
+      btnDelete.disabled = true;
+      btnDelete.textContent = "Hapus Terpilih";
+      if (btnToggle) btnToggle.textContent = 'Pilih Semua';
+
+      if (!rawData || rawData.length === 0) {
+        container.innerHTML = `
+          <div class="p-4 text-center text-xs text-slate-400 bg-slate-50 rounded-xl border border-slate-200">
+            Tidak ada data untuk dihapus.
+          </div>
+        `;
+        document.getElementById('deleteByJabatanModal').classList.remove('hidden');
+        return;
+      }
+
+      // Hitung ringkasan data per jabatan
+      const summary = {};
+      rawData.forEach(item => {
+        const jab = (item.jabatan || '-').trim() || '-';
+        if (!summary[jab]) {
+          summary[jab] = { count: 0, nominal: 0 };
+        }
+        summary[jab].count += 1;
+        summary[jab].nominal += parseFloat(item.nominal) || 0;
+      });
+
+      const jabatanKeys = Object.keys(summary).sort();
+
+      jabatanKeys.forEach(jab => {
+        const data = summary[jab];
+        const label = document.createElement('label');
+        label.className = "flex items-center justify-between p-3 border border-slate-200 rounded-xl text-xs cursor-pointer hover:bg-slate-50 transition-colors group";
+        label.innerHTML = `
+          <div class="flex items-center gap-2.5 min-w-0">
+            <input type="checkbox" name="deleteJabatanCheckbox" value="${escapeHtml(jab)}" onchange="updateDeleteJabatanButtonState()" class="w-4 h-4 text-rose-600 rounded focus:ring-rose-500 border-slate-300">
+            <div class="min-w-0">
+              <span class="font-bold text-slate-800 block truncate group-hover:text-rose-600 transition-colors">
+                ${escapeHtml(jab)}
+              </span>
+              <span class="text-[10px] text-slate-400">Total: Rp ${formatRupiah(data.nominal)}</span>
+            </div>
+          </div>
+          <span class="px-2 py-0.5 rounded-full text-[11px] font-bold bg-slate-100 text-slate-600 flex-shrink-0">
+            ${data.count} orang
+          </span>
+        `;
+        container.appendChild(label);
+      });
+
+      document.getElementById('deleteByJabatanModal').classList.remove('hidden');
+    }
+
+    function closeDeleteByJabatanModal() {
+      document.getElementById('deleteByJabatanModal').classList.add('hidden');
+    }
+
+    function updateDeleteJabatanButtonState() {
+      const checkboxes = document.querySelectorAll('input[name="deleteJabatanCheckbox"]:checked');
+      const allCheckboxes = document.querySelectorAll('input[name="deleteJabatanCheckbox"]');
+      const btnDelete = document.getElementById('btnExecuteDeleteJabatan');
+      const btnToggle = document.getElementById('btnToggleSelectAllJabatan');
+      const count = checkboxes.length;
+
+      if (btnToggle && allCheckboxes.length > 0) {
+        btnToggle.textContent = (count === allCheckboxes.length) ? 'Batal Pilih' : 'Pilih Semua';
+      }
+
+      if (count > 0) {
+        let totalOrang = 0;
+        const selectedJabs = Array.from(checkboxes).map(c => c.value);
+        rawData.forEach(item => {
+          const jab = (item.jabatan || '-').trim() || '-';
+          if (selectedJabs.includes(jab)) totalOrang++;
+        });
+
+        btnDelete.disabled = false;
+        btnDelete.textContent = `Hapus ${totalOrang} Data Terpilih`;
+      } else {
+        btnDelete.disabled = true;
+        btnDelete.textContent = "Hapus Terpilih";
+      }
+    }
+
+    function toggleSelectAllDeleteJabatan() {
+      const checkboxes = document.querySelectorAll('input[name="deleteJabatanCheckbox"]');
+      if (checkboxes.length === 0) return;
+
+      const allChecked = Array.from(checkboxes).every(c => c.checked);
+      checkboxes.forEach(c => c.checked = !allChecked);
+
+      const btn = document.getElementById('btnToggleSelectAllJabatan');
+      if (btn) btn.textContent = allChecked ? 'Pilih Semua' : 'Batal Pilih';
+      updateDeleteJabatanButtonState();
+    }
+
+    async function executeDeleteByJabatan() {
+      const checkboxes = document.querySelectorAll('input[name="deleteJabatanCheckbox"]:checked');
+      const selected = Array.from(checkboxes).map(c => c.value);
+
+      if (selected.length === 0) return;
+
+      const allCheckboxes = document.querySelectorAll('input[name="deleteJabatanCheckbox"]');
+      const isAll = (selected.length === allCheckboxes.length);
+
+      let totalOrang = 0;
+      rawData.forEach(item => {
+        const jab = (item.jabatan || '-').trim() || '-';
+        if (selected.includes(jab)) totalOrang++;
+      });
+
+      let confirmMsg = isAll 
+        ? `PERINGATAN: Anda memilih SEMUA jabatan (${totalOrang} orang). Ini akan MENGOSONGKAN SELURUH data transfer! Apakah Anda yakin?`
+        : `Apakah Anda yakin ingin menghapus ${totalOrang} data penerima dengan jabatan: "${selected.join(', ')}"?`;
+
+      if (!confirm(confirmMsg)) return;
+
+      const btn = document.getElementById('btnExecuteDeleteJabatan');
+      btn.disabled = true;
+      btn.textContent = "Menghapus...";
+
+      try {
+        const res = await fetch('api.php?action=delete_by_jabatan', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            jabatan: selected,
+            delete_all: isAll
+          })
+        });
+
+        const json = await res.json();
+        if (json.status === 'success') {
+          closeDeleteByJabatanModal();
+          await loadData();
+          showToast("Data Berhasil Dihapus", json.message || "Data jabatan terpilih berhasil dihapus");
+        } else {
+          alert("Gagal menghapus data: " + json.message);
+        }
+      } catch (e) {
+        alert("Gagal menghubungi server saat menghapus data.");
+      } finally {
+        btn.disabled = false;
+        btn.textContent = "Hapus Terpilih";
       }
     }
 
