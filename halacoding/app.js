@@ -639,13 +639,17 @@ function handleIdLookup() {
       if (feedbackInput && !feedbackInput.value && currentMeetingRecord.kritikSaran) {
         feedbackInput.value = currentMeetingRecord.kritikSaran;
       }
+      const btnText = document.getElementById("btnSubmitPresensiText");
+      if (btnText) btnText.textContent = `Perbarui Masukan Pertemuan ${selectedPesertaPertemuan}`;
     } else {
       if (attendedAlert) attendedAlert.style.display = "none";
       if (statusBadge) statusBadge.className = "status-indicator-badge";
       if (statusText) statusText.textContent = `Siap Presensi (P${selectedPesertaPertemuan})`;
+      const btnText = document.getElementById("btnSubmitPresensiText");
+      if (btnText) btnText.textContent = `Konfirmasi Presensi Pertemuan ${selectedPesertaPertemuan}`;
     }
 
-    helperText.innerHTML = `<span style="color: var(--success); font-weight: 600;">✓ Data ditemukan: ${match.nama} (Siap untuk Pertemuan ${selectedPesertaPertemuan})</span>`;
+    helperText.innerHTML = `<span style="color: var(--success); font-weight: 600;">✓ Data ditemukan: ${match.nama} (Sesi Pertemuan ${selectedPesertaPertemuan})</span>`;
   } else {
     currentMatchedPeserta = null;
     detailBox.className = "peserta-detail-box state-empty";
@@ -660,6 +664,16 @@ function resetFormPeserta() {
   document.getElementById("inputPesertaId").value = "";
   document.getElementById("inputKritikSaran").value = "";
   currentMatchedPeserta = null;
+  userManuallyChangedPertemuan = false;
+  selectedPesertaPertemuan = activePertemuan;
+
+  for (let i = 1; i <= 4; i++) {
+    const pill = document.getElementById("pillP" + i);
+    if (pill) {
+      if (i === selectedPesertaPertemuan) pill.classList.add("active");
+      else pill.classList.remove("active");
+    }
+  }
 
   const emptyState = document.getElementById("emptyStateLookup");
   const profileCard = document.getElementById("profileCard");
