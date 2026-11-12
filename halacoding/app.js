@@ -312,7 +312,7 @@ function updateSessionUI() {
   const adminBatchSelect = document.getElementById("adminActiveBatchSelect");
   if (adminBatchSelect) {
     const prevVal = adminBatchSelect.value;
-    adminBatchSelect.innerHTML = availableBatches.map(b => 
+    adminBatchSelect.innerHTML = availableBatches.map(b =>
       `<option value="${escapeHtml(b)}"${b === activeBatch ? ' selected' : ''}>${escapeHtml(b)}</option>`
     ).join("");
     if (availableBatches.includes(prevVal) && !availableBatches.includes(activeBatch)) {
@@ -534,7 +534,7 @@ function handleAdminLogout() {
   if (confirm("Apakah Anda yakin ingin keluar dari sesi Admin?")) {
     isAdminAuthenticated = false;
     sessionStorage.removeItem("halacoding_admin_session");
-    
+
     // Switch to Peserta
     switchRole("peserta");
   }
@@ -598,7 +598,7 @@ function handleIdLookup() {
 
     // Periksa status kehadiran untuk 4 pertemuan di batch ini
     for (let p = 1; p <= 4; p++) {
-      const pRecord = rekapPresensi.find(r => 
+      const pRecord = rekapPresensi.find(r =>
         r.idPeserta.toUpperCase() === match.id.toUpperCase() &&
         (r.batch || "Batch 1").toLowerCase() === activeBatch.toLowerCase() &&
         Number(r.pertemuan || 1) === p
@@ -617,7 +617,7 @@ function handleIdLookup() {
     }
 
     // Check if participant has already attended the SELECTED meeting in active batch
-    const currentMeetingRecord = rekapPresensi.find(r => 
+    const currentMeetingRecord = rekapPresensi.find(r =>
       r.idPeserta.toUpperCase() === match.id.toUpperCase() &&
       (r.batch || "Batch 1").toLowerCase() === activeBatch.toLowerCase() &&
       Number(r.pertemuan || 1) === Number(selectedPesertaPertemuan)
@@ -700,8 +700,8 @@ async function handlePresensiSubmit(event) {
   // Check if existing record for this participant, batch, and meeting
   const existingIdx = rekapPresensi.findIndex(
     r => r.idPeserta.toUpperCase() === currentMatchedPeserta.id.toUpperCase() &&
-         (r.batch || "Batch 1").toLowerCase() === activeBatch.toLowerCase() &&
-         Number(r.pertemuan || 1) === Number(selectedPesertaPertemuan)
+      (r.batch || "Batch 1").toLowerCase() === activeBatch.toLowerCase() &&
+      Number(r.pertemuan || 1) === Number(selectedPesertaPertemuan)
   );
 
   const attendanceData = {
@@ -790,8 +790,8 @@ function showSuccessModal(data) {
 
   const elProgress = document.getElementById("modalProgressHadir");
   if (elProgress) {
-    const attendedCount = [1, 2, 3, 4].filter(p => 
-      rekapPresensi.some(r => 
+    const attendedCount = [1, 2, 3, 4].filter(p =>
+      rekapPresensi.some(r =>
         r.idPeserta.toUpperCase() === data.idPeserta.toUpperCase() &&
         (r.batch || "Batch 1").toLowerCase() === (data.batch || activeBatch).toLowerCase() &&
         Number(r.pertemuan || 1) === p
@@ -897,8 +897,8 @@ function updateTrackFilterOptions() {
   if (!select) return;
   const currentVal = select.value;
   const uniqueTracks = [...new Set(masterPeserta.map(p => p.track).filter(Boolean))];
-  const tracksToUse = uniqueTracks.length > 0 
-    ? uniqueTracks 
+  const tracksToUse = uniqueTracks.length > 0
+    ? uniqueTracks
     : ["Web Programing Dasar", "Fullstack Web Developer", "Mobile App Development"];
   select.innerHTML = `<option value="ALL">Semua Kelas / Track</option>` +
     tracksToUse.map(t => `<option value="${escapeHtml(t)}">${escapeHtml(t)}</option>`).join("");
@@ -920,14 +920,14 @@ function renderAdminStats() {
   const filterBatchVal = document.getElementById("filterBatch")?.value || activeBatch;
 
   // Rekap data sesuai batch yang difilter
-  const batchRecords = rekapPresensi.filter(r => 
+  const batchRecords = rekapPresensi.filter(r =>
     filterBatchVal === "all" || (r.batch || "Batch 1").toLowerCase() === filterBatchVal.toLowerCase()
   );
 
   // Hadir di sesi pertemuan aktif hari ini
-  const hadirSesiAktif = masterPeserta.filter(p => 
-    batchRecords.some(r => 
-      r.idPeserta.toUpperCase() === p.id.toUpperCase() && 
+  const hadirSesiAktif = masterPeserta.filter(p =>
+    batchRecords.some(r =>
+      r.idPeserta.toUpperCase() === p.id.toUpperCase() &&
       Number(r.pertemuan || 1) === Number(activePertemuan)
     )
   ).length;
@@ -984,7 +984,7 @@ function renderAdminTable() {
 
     let list = masterPeserta.map(p => {
       const pRecords = [1, 2, 3, 4].map(pNum => {
-        return rekapPresensi.find(r => 
+        return rekapPresensi.find(r =>
           r.idPeserta.toUpperCase() === p.id.toUpperCase() &&
           (filterBatchVal === "all" || (r.batch || "Batch 1").toLowerCase() === filterBatchVal.toLowerCase()) &&
           Number(r.pertemuan || 1) === pNum
@@ -1013,7 +1013,7 @@ function renderAdminTable() {
 
     // Filter Search
     if (searchQuery) {
-      list = list.filter(item => 
+      list = list.filter(item =>
         item.nama.toLowerCase().includes(searchQuery) ||
         item.id.toLowerCase().includes(searchQuery) ||
         (item.whatsapp && item.whatsapp.toLowerCase().includes(searchQuery)) ||
@@ -1136,13 +1136,13 @@ function renderAdminTable() {
     // Cari record presensi
     let record = null;
     if (isSingleMeetingMode) {
-      record = rekapPresensi.find(r => 
+      record = rekapPresensi.find(r =>
         r.idPeserta.toUpperCase() === p.id.toUpperCase() &&
         (filterBatchVal === "all" || (r.batch || "Batch 1").toLowerCase() === filterBatchVal.toLowerCase()) &&
         Number(r.pertemuan || 1) === selectedPNum
       );
     } else {
-      record = rekapPresensi.find(r => 
+      record = rekapPresensi.find(r =>
         r.idPeserta.toUpperCase() === p.id.toUpperCase() &&
         (filterBatchVal === "all" || (r.batch || "Batch 1").toLowerCase() === filterBatchVal.toLowerCase())
       );
@@ -1178,7 +1178,7 @@ function renderAdminTable() {
 
   // Apply search query
   if (searchQuery) {
-    list = list.filter(item => 
+    list = list.filter(item =>
       item.nama.toLowerCase().includes(searchQuery) ||
       item.id.toLowerCase().includes(searchQuery) ||
       (item.whatsapp && item.whatsapp.toLowerCase().includes(searchQuery)) ||
@@ -1346,7 +1346,7 @@ function quickAbsenMatriks(id, pertemuanNum) {
     status: "HADIR"
   };
 
-  const existingIdx = rekapPresensi.findIndex(r => 
+  const existingIdx = rekapPresensi.findIndex(r =>
     r.idPeserta.toUpperCase() === id.toUpperCase() &&
     (r.batch || "Batch 1").toLowerCase() === targetBatch.toLowerCase() &&
     Number(r.pertemuan || 1) === p
@@ -1379,7 +1379,7 @@ function quickAbsenDariAdmin(id) {
 function hapusPresensiSingle(id, batchName, pertemuanNum) {
   const b = batchName || activeBatch;
   const p = pertemuanNum ? Number(pertemuanNum) : null;
-  const msg = p 
+  const msg = p
     ? `Batalkan presensi untuk peserta ID ${id} pada ${b} Pertemuan ${p}?`
     : `Batalkan riwayat presensi peserta ID ${id} pada ${b}?`;
 
@@ -1450,7 +1450,7 @@ function confirmResetData() {
 
     if (IS_SERVER_ENV) {
       const payload = isAll ? {} : { batch: fBatch };
-      fetch(`${PRESENSI_API_URL}?action=reset_rekap`, { 
+      fetch(`${PRESENSI_API_URL}?action=reset_rekap`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload)
@@ -1510,8 +1510,8 @@ function exportDataExcel() {
   // SHEET 1: MATRIKS 4 PERTEMUAN (P1 - P4)
   // ----------------------------------------------------
   const matrixRows = masterPeserta.map((p, idx) => {
-    const pRecords = [1, 2, 3, 4].map(pNum => 
-      rekapPresensi.find(r => 
+    const pRecords = [1, 2, 3, 4].map(pNum =>
+      rekapPresensi.find(r =>
         r.idPeserta.toUpperCase() === p.id.toUpperCase() &&
         (targetBatch === "all" || (r.batch || "Batch 1").toLowerCase() === targetBatch.toLowerCase()) &&
         Number(r.pertemuan || 1) === pNum
@@ -1560,7 +1560,7 @@ function exportDataExcel() {
   // ----------------------------------------------------
   // SHEET 2: RIWAYAT DETAIL PRESENSI & ULASAN
   // ----------------------------------------------------
-  const filteredRekap = rekapPresensi.filter(r => 
+  const filteredRekap = rekapPresensi.filter(r =>
     targetBatch === "all" || (r.batch || "Batch 1").toLowerCase() === targetBatch.toLowerCase()
   );
 
@@ -1605,10 +1605,10 @@ function exportDataExcel() {
 function exportDataCSV() {
   const targetBatch = document.getElementById("filterBatch")?.value || activeBatch;
   const headers = ["No", "ID Peserta", "Nama Peserta", "No. WhatsApp", "Track", "Instansi", "Batch", "Pertemuan 1", "Pertemuan 2", "Pertemuan 3", "Pertemuan 4", "Total Hadir", "Persentase"];
-  
+
   const rows = masterPeserta.map((p, idx) => {
-    const pRecords = [1, 2, 3, 4].map(pNum => 
-      rekapPresensi.find(r => 
+    const pRecords = [1, 2, 3, 4].map(pNum =>
+      rekapPresensi.find(r =>
         r.idPeserta.toUpperCase() === p.id.toUpperCase() &&
         (targetBatch === "all" || (r.batch || "Batch 1").toLowerCase() === targetBatch.toLowerCase()) &&
         Number(r.pertemuan || 1) === pNum
@@ -1746,7 +1746,7 @@ function downloadTemplateCSV() {
     ["HC-115", "Gilang Pratama Putra", "0819-2345-6715", "Universitas Gadjah Mada", "Cloud & DevOps", "Kak Kevin (Cloud Architect)", "Batch 4 - 2026"]
   ];
 
-  const csvContent = "data:text/csv;charset=utf-8,\uFEFF" + 
+  const csvContent = "data:text/csv;charset=utf-8,\uFEFF" +
     [headers.join(","), ...rows.map(r => r.map(c => `"${c.replace(/"/g, '""')}"`).join(","))].join("\n");
 
   const encodedUri = encodeURI(csvContent);
@@ -1876,7 +1876,7 @@ function processImportFile(file) {
 
   if (fileName.endsWith(".csv") && typeof XLSX === "undefined") {
     // Pure CSV fallback reader
-    reader.onload = function(e) {
+    reader.onload = function (e) {
       try {
         const text = e.target.result;
         const rows = parseCSVText(text);
@@ -1890,7 +1890,7 @@ function processImportFile(file) {
     reader.readAsText(file);
   } else {
     // SheetJS reader (handles .xlsx, .xls, and .csv seamlessly)
-    reader.onload = function(e) {
+    reader.onload = function (e) {
       try {
         const data = new Uint8Array(e.target.result);
         const workbook = XLSX.read(data, { type: "array" });
@@ -2206,11 +2206,11 @@ function showToastNotification(message, icon = "✓") {
 // 7. UTILITY & AUDIO / ANIMATION HELPERS
 // ========================================================
 function formatDateTime(date) {
-  const options = { 
-    day: "numeric", 
-    month: "short", 
-    year: "numeric", 
-    hour: "2-digit", 
+  const options = {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+    hour: "2-digit",
     minute: "2-digit",
     hour12: false
   };
@@ -2292,7 +2292,7 @@ function launchConfetti() {
 
   const particles = [];
   const colors = [
-    "#10b981", "#059669", "#34d399", "#6ee7b7", 
+    "#10b981", "#059669", "#34d399", "#6ee7b7",
     "#06b6d4", "#3b82f6", "#8b5cf6", "#f59e0b", "#fbbf24", "#f43f5e"
   ];
   const particleCount = 110;
