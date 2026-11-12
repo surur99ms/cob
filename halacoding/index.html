@@ -48,6 +48,35 @@
           <p class="hero-desc">Masukkan ID Peserta Anda untuk memuat data profil otomatis, isi ulasan, lalu konfirmasi
             kehadiran.</p>
 
+          <!-- Sesi Pelatihan Aktif & Pilihan Pertemuan 1 - 4 -->
+          <div class="session-selector-card">
+            <div class="session-selector-header">
+              <div class="session-batch-badge">
+                <span class="pulse-dot"></span>
+                <span id="activeBatchDisplay">Generasi 1 (Batch 1)</span>
+              </div>
+              <span class="session-hint">Pilih sesi pertemuan presensi Anda:</span>
+            </div>
+            <div class="pertemuan-pills" id="pertemuanPillContainer">
+              <button type="button" class="pertemuan-pill-btn active" id="pillP1" onclick="selectPesertaPertemuan(1)">
+                <span class="pill-num">P1</span>
+                <span class="pill-label">Pertemuan 1</span>
+              </button>
+              <button type="button" class="pertemuan-pill-btn" id="pillP2" onclick="selectPesertaPertemuan(2)">
+                <span class="pill-num">P2</span>
+                <span class="pill-label">Pertemuan 2</span>
+              </button>
+              <button type="button" class="pertemuan-pill-btn" id="pillP3" onclick="selectPesertaPertemuan(3)">
+                <span class="pill-num">P3</span>
+                <span class="pill-label">Pertemuan 3</span>
+              </button>
+              <button type="button" class="pertemuan-pill-btn" id="pillP4" onclick="selectPesertaPertemuan(4)">
+                <span class="pill-num">P4</span>
+                <span class="pill-label">Pertemuan 4</span>
+              </button>
+            </div>
+          </div>
+
           <!-- Quick ID Chips for Easy Mobile Testing -->
           <div class="quick-id-container">
             <span class="quick-label">⚡ Contoh ID Cepat:</span>
@@ -142,6 +171,43 @@
                   </div>
                 </div>
 
+                <!-- 4 Pertemuan Attendance Tracker for this Participant -->
+                <div class="meeting-tracker-box">
+                  <div class="meeting-tracker-header">
+                    <span class="tracker-title">📅 Status 4 Pertemuan di <strong id="trackerBatchName">Batch 1</strong>:</span>
+                  </div>
+                  <div class="meeting-tracker-grid" id="profileMeetingTracker">
+                    <div class="tracker-item" id="trackerP1">
+                      <span class="tracker-badge-p">P1</span>
+                      <div class="tracker-info">
+                        <span class="tracker-pname">Pertemuan 1</span>
+                        <span class="tracker-pstatus" id="trackerStatusP1">Belum Hadir</span>
+                      </div>
+                    </div>
+                    <div class="tracker-item" id="trackerP2">
+                      <span class="tracker-badge-p">P2</span>
+                      <div class="tracker-info">
+                        <span class="tracker-pname">Pertemuan 2</span>
+                        <span class="tracker-pstatus" id="trackerStatusP2">Belum Hadir</span>
+                      </div>
+                    </div>
+                    <div class="tracker-item" id="trackerP3">
+                      <span class="tracker-badge-p">P3</span>
+                      <div class="tracker-info">
+                        <span class="tracker-pname">Pertemuan 3</span>
+                        <span class="tracker-pstatus" id="trackerStatusP3">Belum Hadir</span>
+                      </div>
+                    </div>
+                    <div class="tracker-item" id="trackerP4">
+                      <span class="tracker-badge-p">P4</span>
+                      <div class="tracker-info">
+                        <span class="tracker-pname">Pertemuan 4</span>
+                        <span class="tracker-pstatus" id="trackerStatusP4">Belum Hadir</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
                 <!-- Warning if already attended -->
                 <div id="alreadyAttendedAlert" class="alert-box alert-warning" style="display: none;">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -150,7 +216,7 @@
                     <line x1="12" y1="16" x2="12.01" y2="16"></line>
                   </svg>
                   <div>
-                    <strong>Pemberitahuan:</strong> Peserta ini sudah melakukan presensi hari ini pada <span
+                    <strong>Pemberitahuan:</strong> Peserta ini sudah melakukan presensi <span id="prevAttendedPertemuanLabel">Pertemuan 1</span> pada <span
                       id="prevAttendedTime">-</span>. Anda dapat memperbarui kritik & saran jika diperlukan.
                   </div>
                 </div>
@@ -194,7 +260,7 @@
                     <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
                     <polyline points="22 4 12 14.01 9 11.01"></polyline>
                   </svg>
-                  <span>Konfirmasi</span>
+                  <span id="btnSubmitPresensiText">Konfirmasi Presensi Pertemuan 1</span>
                 </button>
               </div>
             </div>
@@ -356,6 +422,43 @@
           </div>
         </div>
 
+        <!-- Active Session Settings Panel for Admin -->
+        <div class="card session-settings-bar">
+          <div class="session-settings-left">
+            <div class="session-control-title">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18">
+                <circle cx="12" cy="12" r="10"></circle>
+                <polyline points="12 6 12 12 16 14"></polyline>
+              </svg>
+              <span>Atur Sesi Aktif Pelatihan:</span>
+            </div>
+            <div class="session-inputs-wrap">
+              <div class="session-input-item">
+                <label for="adminActiveBatchSelect">Batch:</label>
+                <select id="adminActiveBatchSelect" onchange="handleAdminActiveSessionChange()">
+                  <option value="Batch 1">Batch 1</option>
+                </select>
+                <button type="button" class="btn-xs-action" onclick="promptAddNewBatch()" title="Tambah Batch Baru">+ Batch</button>
+              </div>
+              <div class="session-input-item">
+                <label>Pertemuan Aktif Hari Ini:</label>
+                <div class="admin-pertemuan-toggle" id="adminPertemuanToggle">
+                  <button type="button" class="admin-p-btn active" data-p="1" onclick="setAdminActivePertemuan(1)">P1</button>
+                  <button type="button" class="admin-p-btn" data-p="2" onclick="setAdminActivePertemuan(2)">P2</button>
+                  <button type="button" class="admin-p-btn" data-p="3" onclick="setAdminActivePertemuan(3)">P3</button>
+                  <button type="button" class="admin-p-btn" data-p="4" onclick="setAdminActivePertemuan(4)">P4</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="session-settings-right">
+            <div class="session-badge-active">
+              <span class="pulse-dot"></span>
+              <span>Sesi Aktif: <strong id="adminCurrentActiveSessionBadge">Batch 1 • Pertemuan 1</strong></span>
+            </div>
+          </div>
+        </div>
+
         <!-- Metric Stat Cards -->
         <div class="stats-grid">
           <div class="stat-card">
@@ -428,6 +531,22 @@
             </div>
 
             <div class="filter-controls">
+              <!-- Filter Batch -->
+              <select id="filterBatch" onchange="renderAdminTable()">
+                <option value="all">Semua Batch</option>
+                <option value="Batch 1" selected>Batch 1</option>
+              </select>
+
+              <!-- Filter Pertemuan / Matriks 4 Pertemuan -->
+              <select id="filterPertemuan" onchange="renderAdminTable()">
+                <option value="matrix" selected>📊 Matriks 4 Pertemuan (P1 - P4)</option>
+                <option value="1">Pertemuan 1</option>
+                <option value="2">Pertemuan 2</option>
+                <option value="3">Pertemuan 3</option>
+                <option value="4">Pertemuan 4</option>
+                <option value="all">Semua Riwayat (List)</option>
+              </select>
+
               <select id="filterTrack" onchange="renderAdminTable()">
                 <option value="ALL">Semua Kelas / Track</option>
                 <option value="Web Programing Dasar">Web Programing Dasar</option>
@@ -446,7 +565,7 @@
           <!-- Attendance Table Responsive -->
           <div class="table-responsive">
             <table class="data-table">
-              <thead>
+              <thead id="adminTableHead">
                 <tr>
                   <th>No</th>
                   <th>ID Peserta</th>
@@ -542,6 +661,19 @@
               <div class="pass-col">
                 <span class="pass-label">WAKTU PRESENSI</span>
                 <strong class="pass-val text-mono" id="modalTimestamp">-</strong>
+              </div>
+            </div>
+
+            <div class="pass-divider"></div>
+
+            <div class="pass-row">
+              <div class="pass-col">
+                <span class="pass-label">SESI PELATIHAN</span>
+                <strong class="pass-val text-brand" id="modalBatchPertemuan">Batch 1 • Pertemuan 1</strong>
+              </div>
+              <div class="pass-col">
+                <span class="pass-label">TOTAL KEHADIRAN</span>
+                <span class="pass-id-badge" id="modalProgressHadir">1 / 4 Sesi</span>
               </div>
             </div>
 
