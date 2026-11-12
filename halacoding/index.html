@@ -48,35 +48,6 @@
           <p class="hero-desc">Masukkan ID Peserta Anda untuk memuat data profil otomatis, isi ulasan, lalu konfirmasi
             kehadiran.</p>
 
-          <!-- Sesi Pelatihan Aktif & Pilihan Pertemuan 1 - 4 -->
-          <div class="session-selector-card">
-            <div class="session-selector-header">
-              <div class="session-batch-badge">
-                <span class="pulse-dot"></span>
-                <span id="activeBatchDisplay">Generasi 1 (Batch 1)</span>
-              </div>
-              <span class="session-hint">Pilih sesi pertemuan presensi Anda:</span>
-            </div>
-            <div class="pertemuan-pills" id="pertemuanPillContainer">
-              <button type="button" class="pertemuan-pill-btn active" id="pillP1" onclick="selectPesertaPertemuan(1)">
-                <span class="pill-num">P1</span>
-                <span class="pill-label">Pertemuan 1</span>
-              </button>
-              <button type="button" class="pertemuan-pill-btn" id="pillP2" onclick="selectPesertaPertemuan(2)">
-                <span class="pill-num">P2</span>
-                <span class="pill-label">Pertemuan 2</span>
-              </button>
-              <button type="button" class="pertemuan-pill-btn" id="pillP3" onclick="selectPesertaPertemuan(3)">
-                <span class="pill-num">P3</span>
-                <span class="pill-label">Pertemuan 3</span>
-              </button>
-              <button type="button" class="pertemuan-pill-btn" id="pillP4" onclick="selectPesertaPertemuan(4)">
-                <span class="pill-num">P4</span>
-                <span class="pill-label">Pertemuan 4</span>
-              </button>
-            </div>
-          </div>
-
           <!-- Quick ID Chips for Easy Mobile Testing -->
           <div class="quick-id-container">
             <span class="quick-label">⚡ Contoh ID Cepat:</span>
@@ -205,6 +176,35 @@
                         <span class="tracker-pstatus" id="trackerStatusP4">Belum Hadir</span>
                       </div>
                     </div>
+                  </div>
+                </div>
+
+                <!-- Pemilihan Sesi Pertemuan (Muncul Setelah ID Dimasukkan) -->
+                <div class="session-selector-card">
+                  <div class="session-selector-header">
+                    <div class="session-batch-badge">
+                      <span class="pulse-dot"></span>
+                      <span id="activeBatchDisplay">Generasi 1 (Batch 1)</span>
+                    </div>
+                    <span class="session-hint">Pilih sesi pertemuan presensi Anda:</span>
+                  </div>
+                  <div class="pertemuan-pills" id="pertemuanPillContainer">
+                    <button type="button" class="pertemuan-pill-btn active" id="pillP1" onclick="selectPesertaPertemuan(1)">
+                      <span class="pill-num">P1</span>
+                      <span class="pill-label">Pertemuan 1</span>
+                    </button>
+                    <button type="button" class="pertemuan-pill-btn" id="pillP2" onclick="selectPesertaPertemuan(2)">
+                      <span class="pill-num">P2</span>
+                      <span class="pill-label">Pertemuan 2</span>
+                    </button>
+                    <button type="button" class="pertemuan-pill-btn" id="pillP3" onclick="selectPesertaPertemuan(3)">
+                      <span class="pill-num">P3</span>
+                      <span class="pill-label">Pertemuan 3</span>
+                    </button>
+                    <button type="button" class="pertemuan-pill-btn" id="pillP4" onclick="selectPesertaPertemuan(4)">
+                      <span class="pill-num">P4</span>
+                      <span class="pill-label">Pertemuan 4</span>
+                    </button>
                   </div>
                 </div>
 
