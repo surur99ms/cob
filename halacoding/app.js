@@ -125,6 +125,14 @@ let pendingImportData = [];
 let toastTimeout = null;
 let autoSyncRekapTimer = null;
 
+// Multi-Batch & 4 Pertemuan State
+let activeBatch = "Batch 1";
+let activePertemuan = 1;
+let selectedPesertaPertemuan = 1;
+let userManuallyChangedPertemuan = false;
+let availableBatches = ["Batch 1"];
+let pertemuanStats = { 1: 0, 2: 0, 3: 0, 4: 0 };
+
 // Default Admin Credentials
 const ADMIN_CREDENTIALS = {
   username: "admin",
@@ -141,6 +149,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
   initData();
   updateBadgeCounts();
+  updateSessionUI();
 
   // Sinkronisasi otomatis rekap setiap 6 detik saat terhubung ke server hosting
   if (IS_SERVER_ENV) {
@@ -175,6 +184,14 @@ function initData() {
     }
   }
 
+  // Ambil daftar batch yang ada dari master peserta jika tersedia
+  const masterBatches = [...new Set(masterPeserta.map(p => p.batch).filter(Boolean))];
+  masterBatches.forEach(b => {
+    // Normalisasikan label batch seperti "Batch 1 - 2026" atau "Batch 1"
+    let cleanB = b.split("-")[0].trim();
+    if (!availableBatches.includes(cleanB)) availableBatches.push(cleanB);
+  });
+
   // 2. Muat riwayat presensi lokal (fast initial render)
   const storedRekap = localStorage.getItem(STORAGE_REKAP_KEY);
   if (storedRekap) {
@@ -205,18 +222,42 @@ async function syncRekapFromServer(isSilent = true) {
     });
     if (!res.ok) return;
     const data = await res.json();
-    if (data.status === "success" && Array.isArray(data.rekap)) {
-      const changed = JSON.stringify(rekapPresensi) !== JSON.stringify(data.rekap);
-      if (changed) {
-        rekapPresensi = data.rekap;
-        localStorage.setItem(STORAGE_REKAP_KEY, JSON.stringify(rekapPresensi));
-        updateBadgeCounts();
-
-        // Jika halaman admin sedang terbuka, render ulang tabel agar langsung sinkron
-        if (currentRole === "admin" && isAdminAuthenticated) {
-          renderAdminDashboard();
+    if (data.status === "success") {
+      let dataChanged = false;
+      if (Array.isArray(data.rekap)) {
+        if (JSON.stringify(rekapPresensi) !== JSON.stringify(data.rekap)) {
+          rekapPresensi = data.rekap;
+          localStorage.setItem(STORAGE_REKAP_KEY, JSON.stringify(rekapPresensi));
+          updateBadgeCounts();
+          dataChanged = true;
         }
       }
+      if (Array.isArray(data.batches) && data.batches.length > 0) {
+        data.batches.forEach(b => {
+          if (!availableBatches.includes(b)) availableBatches.push(b);
+        });
+      }
+      if (data.active_batch && data.active_batch !== activeBatch) {
+        activeBatch = data.active_batch;
+        dataChanged = true;
+      }
+      if (data.active_pertemuan) {
+        activePertemuan = Number(data.active_pertemuan) || 1;
+        if (!userManuallyChangedPertemuan) {
+          selectedPesertaPertemuan = activePertemuan;
+        }
+      }
+      if (data.pertemuan_stats) {
+        pertemuanStats = data.pertemuan_stats;
+      }
+
+      updateSessionUI();
+
+      // Jika halaman admin sedang terbuka, render ulang tabel agar langsung sinkron
+      if (currentRole === "admin" && isAdminAuthenticated && dataChanged) {
+        renderAdminDashboard();
+      }
+
       if (!isSilent) {
         showToastNotification("Data rekap presensi berhasil diperbarui!", "🔄");
       }
@@ -226,6 +267,87 @@ async function syncRekapFromServer(isSilent = true) {
     if (!isSilent) {
       alert("Gagal memperbarui rekap dari server hosting. Pastikan file presensi.php sudah terunggah di hosting.");
     }
+  }
+}
+
+function selectPesertaPertemuan(pNum) {
+  selectedPesertaPertemuan = Number(pNum);
+  userManuallyChangedPertemuan = true;
+  for (let i = 1; i <= 4; i++) {
+    const pill = document.getElementById("pillP" + i);
+    if (pill) {
+      if (i === selectedPesertaPertemuan) pill.classList.add("active");
+      else pill.classList.remove("active");
+    }
+  }
+  const btnText = document.getElementById("btnSubmitPresensiText");
+  if (btnText) {
+    btnText.textContent = `Konfirmasi Presensi Pertemuan ${selectedPesertaPertemuan}`;
+  }
+  if (currentMatchedPeserta) {
+    handleIdLookup();
+  }
+}
+
+function updateSessionUI() {
+  const batchDisplay = document.getElementById("activeBatchDisplay");
+  if (batchDisplay) {
+    batchDisplay.textContent = `Generasi 1 (${activeBatch})`;
+  }
+
+  // Update pills for participant
+  for (let i = 1; i <= 4; i++) {
+    const pill = document.getElementById("pillP" + i);
+    if (pill) {
+      if (i === selectedPesertaPertemuan) pill.classList.add("active");
+      else pill.classList.remove("active");
+    }
+  }
+  const btnText = document.getElementById("btnSubmitPresensiText");
+  if (btnText) {
+    btnText.textContent = `Konfirmasi Presensi Pertemuan ${selectedPesertaPertemuan}`;
+  }
+
+  // Admin active batch select options
+  const adminBatchSelect = document.getElementById("adminActiveBatchSelect");
+  if (adminBatchSelect) {
+    const prevVal = adminBatchSelect.value;
+    adminBatchSelect.innerHTML = availableBatches.map(b => 
+      `<option value="${escapeHtml(b)}"${b === activeBatch ? ' selected' : ''}>${escapeHtml(b)}</option>`
+    ).join("");
+    if (availableBatches.includes(prevVal) && !availableBatches.includes(activeBatch)) {
+      adminBatchSelect.value = prevVal;
+    }
+  }
+
+  // Admin filter batch options
+  const filterBatchSelect = document.getElementById("filterBatch");
+  if (filterBatchSelect) {
+    const currentFilter = filterBatchSelect.value;
+    filterBatchSelect.innerHTML = `<option value="all">Semua Batch</option>` +
+      availableBatches.map(b => `<option value="${escapeHtml(b)}"${b === activeBatch ? ' selected' : ''}>${escapeHtml(b)}</option>`).join("");
+    if (availableBatches.includes(currentFilter) || currentFilter === "all") {
+      filterBatchSelect.value = currentFilter;
+    } else {
+      filterBatchSelect.value = activeBatch;
+    }
+  }
+
+  // Admin active pertemuan toggle
+  const adminToggle = document.getElementById("adminPertemuanToggle");
+  if (adminToggle) {
+    const btns = adminToggle.querySelectorAll(".admin-p-btn");
+    btns.forEach(btn => {
+      const p = Number(btn.getAttribute("data-p"));
+      if (p === activePertemuan) btn.classList.add("active");
+      else btn.classList.remove("active");
+    });
+  }
+
+  // Admin badge
+  const adminBadge = document.getElementById("adminCurrentActiveSessionBadge");
+  if (adminBadge) {
+    adminBadge.textContent = `${activeBatch} • Pertemuan ${activePertemuan}`;
   }
 }
 
@@ -468,29 +590,62 @@ function handleIdLookup() {
     avatarEl.style.color = "#ffffff";
     avatarEl.textContent = getInitials(match.nama);
 
-    // Check if participant has already attended today
-    const existingRecord = rekapPresensi.find(r => r.idPeserta.toUpperCase() === match.id.toUpperCase());
+    // Update 4 Pertemuan Tracker Header
+    const trackerBatchEl = document.getElementById("trackerBatchName");
+    if (trackerBatchEl) {
+      trackerBatchEl.textContent = activeBatch;
+    }
+
+    // Periksa status kehadiran untuk 4 pertemuan di batch ini
+    for (let p = 1; p <= 4; p++) {
+      const pRecord = rekapPresensi.find(r => 
+        r.idPeserta.toUpperCase() === match.id.toUpperCase() &&
+        (r.batch || "Batch 1").toLowerCase() === activeBatch.toLowerCase() &&
+        Number(r.pertemuan || 1) === p
+      );
+      const itemEl = document.getElementById(`trackerP${p}`);
+      const statusEl = document.getElementById(`trackerStatusP${p}`);
+      if (itemEl && statusEl) {
+        if (pRecord) {
+          itemEl.className = "tracker-item attended";
+          statusEl.textContent = "✓ Hadir";
+        } else {
+          itemEl.className = "tracker-item pending";
+          statusEl.textContent = "Belum Hadir";
+        }
+      }
+    }
+
+    // Check if participant has already attended the SELECTED meeting in active batch
+    const currentMeetingRecord = rekapPresensi.find(r => 
+      r.idPeserta.toUpperCase() === match.id.toUpperCase() &&
+      (r.batch || "Batch 1").toLowerCase() === activeBatch.toLowerCase() &&
+      Number(r.pertemuan || 1) === Number(selectedPesertaPertemuan)
+    );
     const attendedAlert = document.getElementById("alreadyAttendedAlert");
+    const prevPLabel = document.getElementById("prevAttendedPertemuanLabel");
+    const prevTime = document.getElementById("prevAttendedTime");
     const statusBadge = document.getElementById("profileStatusBadge");
     const statusText = document.getElementById("profileStatusText");
 
-    if (existingRecord) {
-      attendedAlert.style.display = "flex";
-      document.getElementById("prevAttendedTime").textContent = existingRecord.timestamp;
-      statusBadge.className = "status-indicator-badge attended";
-      statusText.textContent = "Sudah Tercatat";
+    if (currentMeetingRecord) {
+      if (attendedAlert) attendedAlert.style.display = "flex";
+      if (prevPLabel) prevPLabel.textContent = `Pertemuan ${selectedPesertaPertemuan}`;
+      if (prevTime) prevTime.textContent = currentMeetingRecord.timestamp;
+      if (statusBadge) statusBadge.className = "status-indicator-badge attended";
+      if (statusText) statusText.textContent = `Sudah Hadir (P${selectedPesertaPertemuan})`;
       // Prefill previous feedback if any
       const feedbackInput = document.getElementById("inputKritikSaran");
-      if (!feedbackInput.value && existingRecord.kritikSaran) {
-        feedbackInput.value = existingRecord.kritikSaran;
+      if (feedbackInput && !feedbackInput.value && currentMeetingRecord.kritikSaran) {
+        feedbackInput.value = currentMeetingRecord.kritikSaran;
       }
     } else {
-      attendedAlert.style.display = "none";
-      statusBadge.className = "status-indicator-badge";
-      statusText.textContent = "Siap Presensi";
+      if (attendedAlert) attendedAlert.style.display = "none";
+      if (statusBadge) statusBadge.className = "status-indicator-badge";
+      if (statusText) statusText.textContent = `Siap Presensi (P${selectedPesertaPertemuan})`;
     }
 
-    helperText.innerHTML = `<span style="color: var(--success); font-weight: 600;">✓ Data ditemukan: ${match.nama}</span>`;
+    helperText.innerHTML = `<span style="color: var(--success); font-weight: 600;">✓ Data ditemukan: ${match.nama} (Siap untuk Pertemuan ${selectedPesertaPertemuan})</span>`;
   } else {
     currentMatchedPeserta = null;
     detailBox.className = "peserta-detail-box state-empty";
@@ -542,9 +697,11 @@ async function handlePresensiSubmit(event) {
   const selectedRating = document.querySelector('input[name="ratingPelatihan"]:checked')?.value || "5";
   const nowFormatted = formatDateTime(new Date());
 
-  // Check if existing record
+  // Check if existing record for this participant, batch, and meeting
   const existingIdx = rekapPresensi.findIndex(
-    r => r.idPeserta.toUpperCase() === currentMatchedPeserta.id.toUpperCase()
+    r => r.idPeserta.toUpperCase() === currentMatchedPeserta.id.toUpperCase() &&
+         (r.batch || "Batch 1").toLowerCase() === activeBatch.toLowerCase() &&
+         Number(r.pertemuan || 1) === Number(selectedPesertaPertemuan)
   );
 
   const attendanceData = {
@@ -553,6 +710,9 @@ async function handlePresensiSubmit(event) {
     whatsapp: currentMatchedPeserta.whatsapp || currentMatchedPeserta.email || "-",
     instansi: currentMatchedPeserta.instansi,
     track: currentMatchedPeserta.track,
+    batch: activeBatch,
+    pertemuan: Number(selectedPesertaPertemuan),
+    materi: `Pertemuan ${selectedPesertaPertemuan}`,
     timestamp: nowFormatted,
     kritikSaran: kritikSaran || "Belum ada catatan kritik/saran.",
     rating: selectedRating,
@@ -621,6 +781,24 @@ function showSuccessModal(data) {
 
   const elTimestamp = document.getElementById("modalTimestamp");
   if (elTimestamp) elTimestamp.textContent = data.timestamp;
+
+  // Batch & Pertemuan details in pass
+  const elBatchPertemuan = document.getElementById("modalBatchPertemuan");
+  if (elBatchPertemuan) {
+    elBatchPertemuan.textContent = `${data.batch || activeBatch} • Pertemuan ${data.pertemuan || selectedPesertaPertemuan}`;
+  }
+
+  const elProgress = document.getElementById("modalProgressHadir");
+  if (elProgress) {
+    const attendedCount = [1, 2, 3, 4].filter(p => 
+      rekapPresensi.some(r => 
+        r.idPeserta.toUpperCase() === data.idPeserta.toUpperCase() &&
+        (r.batch || "Batch 1").toLowerCase() === (data.batch || activeBatch).toLowerCase() &&
+        Number(r.pertemuan || 1) === p
+      )
+    ).length;
+    elProgress.textContent = `${attendedCount} / 4 Sesi (${Math.round((attendedCount / 4) * 100)}%)`;
+  }
 
   const feedbackRow = document.getElementById("modalFeedbackRow");
   if (feedbackRow) {
@@ -739,28 +917,237 @@ function renderAdminDashboard() {
 
 function renderAdminStats() {
   const totalTerdaftar = masterPeserta.length;
-  const totalHadir = rekapPresensi.length;
-  const belumHadir = Math.max(0, totalTerdaftar - totalHadir);
-  const totalFeedbackWithText = rekapPresensi.filter(
-    r => r.kritikSaran && r.kritikSaran !== "Belum ada catatan kritik/saran."
+  const filterBatchVal = document.getElementById("filterBatch")?.value || activeBatch;
+
+  // Rekap data sesuai batch yang difilter
+  const batchRecords = rekapPresensi.filter(r => 
+    filterBatchVal === "all" || (r.batch || "Batch 1").toLowerCase() === filterBatchVal.toLowerCase()
+  );
+
+  // Hadir di sesi pertemuan aktif hari ini
+  const hadirSesiAktif = masterPeserta.filter(p => 
+    batchRecords.some(r => 
+      r.idPeserta.toUpperCase() === p.id.toUpperCase() && 
+      Number(r.pertemuan || 1) === Number(activePertemuan)
+    )
   ).length;
 
-  document.getElementById("statTotalPeserta").textContent = totalTerdaftar;
-  document.getElementById("statTotalHadir").textContent = totalHadir;
-  document.getElementById("statBelumHadir").textContent = belumHadir;
-  document.getElementById("statTotalFeedback").textContent = totalFeedbackWithText;
+  const belumHadirSesiAktif = Math.max(0, totalTerdaftar - hadirSesiAktif);
+
+  const totalFeedbackWithText = batchRecords.filter(
+    r => r.kritikSaran && r.kritikSaran !== "Belum ada catatan kritik/saran." && r.kritikSaran !== "-"
+  ).length;
+
+  const elTotal = document.getElementById("statTotalPeserta");
+  const elHadir = document.getElementById("statTotalHadir");
+  const elBelum = document.getElementById("statBelumHadir");
+  const elFeedback = document.getElementById("statTotalFeedback");
+
+  if (elTotal) elTotal.textContent = totalTerdaftar;
+  if (elHadir) elHadir.textContent = hadirSesiAktif;
+  if (elBelum) elBelum.textContent = belumHadirSesiAktif;
+  if (elFeedback) elFeedback.textContent = totalFeedbackWithText;
 }
 
 function renderAdminTable() {
   const tbody = document.getElementById("adminTableBody");
+  const tableHead = document.getElementById("adminTableHead");
   const emptyState = document.getElementById("tableEmptyState");
   const searchQuery = (document.getElementById("adminSearchInput")?.value || "").toLowerCase().trim();
   const filterTrack = document.getElementById("filterTrack")?.value || "ALL";
   const filterStatus = document.getElementById("filterStatus")?.value || "ALL";
+  const filterBatchVal = document.getElementById("filterBatch")?.value || activeBatch;
+  const filterPertemuanVal = document.getElementById("filterPertemuan")?.value || "matrix";
 
-  // Build combined view: all master participants with attendance status
-  let combinedList = masterPeserta.map(p => {
-    const record = rekapPresensi.find(r => r.idPeserta.toUpperCase() === p.id.toUpperCase());
+  if (!tbody) return;
+
+  // ==========================================
+  // MODE 1: MATRIKS 4 PERTEMUAN (P1 - P4)
+  // ==========================================
+  if (filterPertemuanVal === "matrix") {
+    if (tableHead) {
+      tableHead.innerHTML = `
+        <tr>
+          <th style="width: 48px; text-align: center;">No</th>
+          <th style="width: 110px;">ID Peserta</th>
+          <th>Peserta</th>
+          <th>Kelas & Instansi</th>
+          <th style="text-align: center; width: 85px;">P1</th>
+          <th style="text-align: center; width: 85px;">P2</th>
+          <th style="text-align: center; width: 85px;">P3</th>
+          <th style="text-align: center; width: 85px;">P4</th>
+          <th style="text-align: center; width: 140px;">Total Hadir</th>
+          <th style="text-align: center; width: 100px;">Aksi</th>
+        </tr>
+      `;
+    }
+
+    let list = masterPeserta.map(p => {
+      const pRecords = [1, 2, 3, 4].map(pNum => {
+        return rekapPresensi.find(r => 
+          r.idPeserta.toUpperCase() === p.id.toUpperCase() &&
+          (filterBatchVal === "all" || (r.batch || "Batch 1").toLowerCase() === filterBatchVal.toLowerCase()) &&
+          Number(r.pertemuan || 1) === pNum
+        );
+      });
+      const attendedCount = pRecords.filter(Boolean).length;
+      return {
+        ...p,
+        pRecords,
+        attendedCount,
+        percent: Math.round((attendedCount / 4) * 100)
+      };
+    });
+
+    // Filter Track
+    if (filterTrack !== "ALL") {
+      list = list.filter(item => item.track === filterTrack || item.instansi === filterTrack);
+    }
+
+    // Filter Status (HADIR: minimal hadir 1x, BELUM: belum pernah hadir sama sekali)
+    if (filterStatus === "HADIR") {
+      list = list.filter(item => item.attendedCount > 0);
+    } else if (filterStatus === "BELUM") {
+      list = list.filter(item => item.attendedCount === 0);
+    }
+
+    // Filter Search
+    if (searchQuery) {
+      list = list.filter(item => 
+        item.nama.toLowerCase().includes(searchQuery) ||
+        item.id.toLowerCase().includes(searchQuery) ||
+        (item.whatsapp && item.whatsapp.toLowerCase().includes(searchQuery)) ||
+        item.instansi.toLowerCase().includes(searchQuery) ||
+        item.track.toLowerCase().includes(searchQuery)
+      );
+    }
+
+    tbody.innerHTML = "";
+
+    if (list.length === 0) {
+      if (emptyState) emptyState.style.display = "block";
+      return;
+    }
+    if (emptyState) emptyState.style.display = "none";
+
+    list.forEach((item, index) => {
+      const tr = document.createElement("tr");
+
+      // Bangun tombol pill untuk masing-masing P1, P2, P3, P4
+      const pCellsHtml = [1, 2, 3, 4].map((pNum, idx) => {
+        const rec = item.pRecords[idx];
+        if (rec) {
+          const escapedFeedback = encodeURIComponent(rec.kritikSaran || "-");
+          const escapedNama = encodeURIComponent(item.nama);
+          const escapedMeta = encodeURIComponent(`${item.id} • Pertemuan ${pNum} (${rec.timestamp})`);
+          const ratingText = getRatingText(rec.rating);
+          return `
+            <td style="text-align: center;">
+              <span class="matrix-pill attended" 
+                    title="Hadir pada: ${rec.timestamp}&#10;Klik untuk lihat masukan"
+                    onclick="openFeedbackDetail('${escapedNama}', '${escapedMeta}', '${escapedFeedback}', '${encodeURIComponent(ratingText)}', '${item.color}')">
+                ✓ Hadir
+              </span>
+            </td>
+          `;
+        } else {
+          return `
+            <td style="text-align: center;">
+              <span class="matrix-pill absent" 
+                    title="Belum Hadir - Klik untuk tandai Hadir P${pNum}"
+                    onclick="quickAbsenMatriks('${item.id}', ${pNum})">
+                + P${pNum}
+              </span>
+            </td>
+          `;
+        }
+      }).join("");
+
+      // Kolom Total Sesi & Progress Bar
+      const totalColHtml = `
+        <td style="text-align: center;">
+          <div class="matrix-total-badge">
+            <span class="matrix-total-num">${item.attendedCount} / 4 (${item.percent}%)</span>
+            <div class="matrix-progress-track">
+              <div class="matrix-progress-fill" style="width: ${item.percent}%; ${item.percent === 100 ? 'background: #10b981;' : item.percent >= 50 ? 'background: #3b82f6;' : 'background: #f59e0b;'}"></div>
+            </div>
+          </div>
+        </td>
+      `;
+
+      // Aksi: Hadirkan ke Sesi Aktif Hari Ini (atau Hapus jika sudah hadir)
+      const isAttendedActiveSession = !!item.pRecords[activePertemuan - 1];
+      const targetBatchAction = filterBatchVal === "all" ? activeBatch : filterBatchVal;
+      const actionHtml = isAttendedActiveSession
+        ? `<button class="table-action-btn" onclick="hapusPresensiSingle('${item.id}', '${escapeHtml(targetBatchAction)}', ${activePertemuan})" title="Batalkan presensi P${activePertemuan}">Batal P${activePertemuan}</button>`
+        : `<button class="table-action-btn" onclick="quickAbsenMatriks('${item.id}', ${activePertemuan})" title="Tandai hadir pada P${activePertemuan}">+ P${activePertemuan}</button>`;
+
+      tr.innerHTML = `
+        <td style="text-align: center;">${index + 1}</td>
+        <td><strong>${item.id}</strong></td>
+        <td>
+          <div class="user-cell">
+            <div class="user-avatar-tiny" style="background:${item.color}20; color:${item.color}">
+              ${getInitials(item.nama)}
+            </div>
+            <div>
+              <div class="user-meta-name">${escapeHtml(item.nama)}</div>
+              <div class="user-meta-whatsapp">📱 ${escapeHtml(item.whatsapp || '-')}</div>
+            </div>
+          </div>
+        </td>
+        <td>
+          <div style="font-weight: 600; font-size: 0.85rem;">${escapeHtml(item.track)}</div>
+          <div style="font-size: 0.75rem; color: var(--text-muted);">${escapeHtml(item.instansi)}</div>
+        </td>
+        ${pCellsHtml}
+        ${totalColHtml}
+        <td style="text-align: center;">${actionHtml}</td>
+      `;
+      tbody.appendChild(tr);
+    });
+
+    return;
+  }
+
+  // ==========================================
+  // MODE 2: PERTEMUAN TERTENTU (1, 2, 3, 4) ATAU SEMUA RIWAYAT
+  // ==========================================
+  const selectedPNum = Number(filterPertemuanVal);
+  const isSingleMeetingMode = selectedPNum >= 1 && selectedPNum <= 4;
+
+  if (tableHead) {
+    tableHead.innerHTML = `
+      <tr>
+        <th style="width: 48px; text-align: center;">No</th>
+        <th style="width: 110px;">ID Peserta</th>
+        <th>Peserta</th>
+        <th>${isSingleMeetingMode ? 'Sesi' : 'Batch & Sesi'}</th>
+        <th>Kelas & Instansi</th>
+        <th>Waktu Presensi</th>
+        <th style="text-align: center;">Status</th>
+        <th>Kritik & Saran</th>
+        <th style="text-align: center;">Aksi</th>
+      </tr>
+    `;
+  }
+
+  let list = masterPeserta.map(p => {
+    // Cari record presensi
+    let record = null;
+    if (isSingleMeetingMode) {
+      record = rekapPresensi.find(r => 
+        r.idPeserta.toUpperCase() === p.id.toUpperCase() &&
+        (filterBatchVal === "all" || (r.batch || "Batch 1").toLowerCase() === filterBatchVal.toLowerCase()) &&
+        Number(r.pertemuan || 1) === selectedPNum
+      );
+    } else {
+      record = rekapPresensi.find(r => 
+        r.idPeserta.toUpperCase() === p.id.toUpperCase() &&
+        (filterBatchVal === "all" || (r.batch || "Batch 1").toLowerCase() === filterBatchVal.toLowerCase())
+      );
+    }
+
     return {
       id: p.id,
       nama: p.nama,
@@ -769,6 +1156,8 @@ function renderAdminTable() {
       track: p.track,
       color: p.color,
       isAttended: !!record,
+      batch: record ? (record.batch || activeBatch) : activeBatch,
+      pertemuan: isSingleMeetingMode ? selectedPNum : (record ? Number(record.pertemuan || 1) : activePertemuan),
       timestamp: record ? record.timestamp : "-",
       kritikSaran: record ? record.kritikSaran : "-",
       rating: record ? record.rating : null
@@ -777,19 +1166,19 @@ function renderAdminTable() {
 
   // Apply track filter
   if (filterTrack !== "ALL") {
-    combinedList = combinedList.filter(item => item.track === filterTrack || item.instansi === filterTrack);
+    list = list.filter(item => item.track === filterTrack || item.instansi === filterTrack);
   }
 
   // Apply status filter
   if (filterStatus === "HADIR") {
-    combinedList = combinedList.filter(item => item.isAttended);
+    list = list.filter(item => item.isAttended);
   } else if (filterStatus === "BELUM") {
-    combinedList = combinedList.filter(item => !item.isAttended);
+    list = list.filter(item => !item.isAttended);
   }
 
   // Apply search query
   if (searchQuery) {
-    combinedList = combinedList.filter(item => 
+    list = list.filter(item => 
       item.nama.toLowerCase().includes(searchQuery) ||
       item.id.toLowerCase().includes(searchQuery) ||
       (item.whatsapp && item.whatsapp.toLowerCase().includes(searchQuery)) ||
@@ -800,13 +1189,13 @@ function renderAdminTable() {
 
   tbody.innerHTML = "";
 
-  if (combinedList.length === 0) {
-    emptyState.style.display = "block";
+  if (list.length === 0) {
+    if (emptyState) emptyState.style.display = "block";
     return;
   }
-  emptyState.style.display = "none";
+  if (emptyState) emptyState.style.display = "none";
 
-  combinedList.forEach((item, index) => {
+  list.forEach((item, index) => {
     const tr = document.createElement("tr");
 
     const statusBadgeHtml = item.isAttended
@@ -817,7 +1206,7 @@ function renderAdminTable() {
     if (item.isAttended && item.kritikSaran && item.kritikSaran !== "-") {
       const escapedFeedback = encodeURIComponent(item.kritikSaran);
       const escapedNama = encodeURIComponent(item.nama);
-      const escapedMeta = encodeURIComponent(`${item.id} • ${item.track}`);
+      const escapedMeta = encodeURIComponent(`${item.id} • Pertemuan ${item.pertemuan}`);
       const ratingText = getRatingText(item.rating);
       feedbackHtml = `
         <div>
@@ -830,11 +1219,11 @@ function renderAdminTable() {
     }
 
     const actionHtml = item.isAttended
-      ? `<button class="table-action-btn" onclick="hapusPresensiSingle('${item.id}')" title="Batalkan presensi peserta ini">Hapus</button>`
-      : `<button class="table-action-btn" onclick="quickAbsenDariAdmin('${item.id}')" title="Tandai hadir sekarang">+ Hadir</button>`;
+      ? `<button class="table-action-btn" onclick="hapusPresensiSingle('${item.id}', '${escapeHtml(item.batch)}', ${item.pertemuan})" title="Batalkan presensi">Batal</button>`
+      : `<button class="table-action-btn" onclick="quickAbsenMatriks('${item.id}', ${item.pertemuan})" title="Tandai hadir">+ Hadir</button>`;
 
     tr.innerHTML = `
-      <td>${index + 1}</td>
+      <td style="text-align: center;">${index + 1}</td>
       <td><strong>${item.id}</strong></td>
       <td>
         <div class="user-cell">
@@ -848,22 +1237,99 @@ function renderAdminTable() {
         </div>
       </td>
       <td>
+        <div style="font-weight: 700; color: #1e293b; font-size: 0.85rem;">${escapeHtml(item.batch)}</div>
+        <div style="font-size: 0.75rem; color: #0284c7; font-weight: 600;">Pertemuan ${item.pertemuan}</div>
+      </td>
+      <td>
         <div style="font-weight: 600; font-size: 0.85rem;">${escapeHtml(item.track)}</div>
         <div style="font-size: 0.75rem; color: var(--text-muted);">${escapeHtml(item.instansi)}</div>
       </td>
       <td style="font-size: 0.825rem; font-weight: 500;">${item.timestamp}</td>
-      <td>${statusBadgeHtml}</td>
+      <td style="text-align: center;">${statusBadgeHtml}</td>
       <td>${feedbackHtml}</td>
-      <td>${actionHtml}</td>
+      <td style="text-align: center;">${actionHtml}</td>
     `;
     tbody.appendChild(tr);
   });
 }
 
-// Quick action to attend from admin
-function quickAbsenDariAdmin(id) {
+// ========================================================
+// 6.2. ADMIN ACTIVE SESSION MANAGEMENT & ACTIONS
+// ========================================================
+async function handleAdminActiveSessionChange() {
+  const sel = document.getElementById("adminActiveBatchSelect");
+  if (!sel) return;
+  activeBatch = sel.value;
+  await saveSessionSettingsToServer(activeBatch, activePertemuan);
+  updateSessionUI();
+  renderAdminDashboard();
+  showToastNotification(`Sesi aktif dialihkan ke ${activeBatch} (Pertemuan ${activePertemuan})`, "⚙️");
+}
+
+async function setAdminActivePertemuan(pNum) {
+  activePertemuan = Number(pNum);
+  selectedPesertaPertemuan = activePertemuan;
+  await saveSessionSettingsToServer(activeBatch, activePertemuan);
+  updateSessionUI();
+  renderAdminDashboard();
+  showToastNotification(`Pertemuan aktif hari ini diatur ke Pertemuan ${activePertemuan}`, "📅");
+}
+
+async function saveSessionSettingsToServer(batch, pertemuan) {
+  if (IS_SERVER_ENV) {
+    try {
+      await fetch(`${PRESENSI_API_URL}?action=set_active_session`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ batch, pertemuan })
+      });
+    } catch (e) {
+      console.warn("Gagal simpan session settings ke server:", e);
+    }
+  }
+}
+
+async function promptAddNewBatch() {
+  const nextNum = availableBatches.length + 1;
+  const name = prompt(`Masukkan nama Batch / Gelombang baru:`, `Batch ${nextNum}`);
+  if (!name || !name.trim()) return;
+  const trimmed = name.trim();
+  if (availableBatches.map(b => b.toLowerCase()).includes(trimmed.toLowerCase())) {
+    alert(`Batch "${trimmed}" sudah ada dalam daftar.`);
+    return;
+  }
+
+  availableBatches.push(trimmed);
+  activeBatch = trimmed;
+  activePertemuan = 1;
+  selectedPesertaPertemuan = 1;
+
+  if (IS_SERVER_ENV) {
+    try {
+      await fetch(`${PRESENSI_API_URL}?action=add_batch`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ batch_name: trimmed, keterangan: `Pelatihan ${trimmed}` })
+      });
+      await saveSessionSettingsToServer(activeBatch, activePertemuan);
+    } catch (e) {
+      console.warn("Gagal simpan batch baru ke server:", e);
+    }
+  }
+
+  updateSessionUI();
+  renderAdminDashboard();
+  showToastNotification(`Batch "${trimmed}" berhasil dibuat dan diaktifkan!`, "🎉");
+}
+
+// Quick action to attend from matrix / admin
+function quickAbsenMatriks(id, pertemuanNum) {
   const match = masterPeserta.find(p => p.id === id);
   if (!match) return;
+
+  const fBatch = document.getElementById("filterBatch")?.value || activeBatch;
+  const targetBatch = fBatch === "all" ? activeBatch : fBatch;
+  const p = Number(pertemuanNum) || activePertemuan;
 
   const newRecord = {
     idPeserta: match.id,
@@ -871,15 +1337,30 @@ function quickAbsenDariAdmin(id) {
     whatsapp: match.whatsapp || match.email || "-",
     instansi: match.instansi,
     track: match.track,
+    batch: targetBatch,
+    pertemuan: p,
+    materi: `Pertemuan ${p}`,
     timestamp: formatDateTime(new Date()),
     kritikSaran: "Tercatat langsung oleh Admin",
     rating: "5",
     status: "HADIR"
   };
 
-  rekapPresensi.unshift(newRecord);
+  const existingIdx = rekapPresensi.findIndex(r => 
+    r.idPeserta.toUpperCase() === id.toUpperCase() &&
+    (r.batch || "Batch 1").toLowerCase() === targetBatch.toLowerCase() &&
+    Number(r.pertemuan || 1) === p
+  );
+
+  if (existingIdx !== -1) {
+    rekapPresensi[existingIdx] = newRecord;
+  } else {
+    rekapPresensi.unshift(newRecord);
+  }
+
   saveRekapData();
   renderAdminDashboard();
+  showToastNotification(`Peserta ${match.nama} ditandai hadir pada P${p}!`, "✅");
 
   if (IS_SERVER_ENV) {
     fetch(`${PRESENSI_API_URL}?action=submit_absen`, {
@@ -890,16 +1371,34 @@ function quickAbsenDariAdmin(id) {
   }
 }
 
-// Remove single attendance
-function hapusPresensiSingle(id) {
-  if (confirm(`Batalkan presensi untuk peserta ID ${id}?`)) {
-    rekapPresensi = rekapPresensi.filter(r => r.idPeserta.toUpperCase() !== id.toUpperCase());
+function quickAbsenDariAdmin(id) {
+  quickAbsenMatriks(id, activePertemuan);
+}
+
+// Remove single attendance (with batch & pertemuan awareness)
+function hapusPresensiSingle(id, batchName, pertemuanNum) {
+  const b = batchName || activeBatch;
+  const p = pertemuanNum ? Number(pertemuanNum) : null;
+  const msg = p 
+    ? `Batalkan presensi untuk peserta ID ${id} pada ${b} Pertemuan ${p}?`
+    : `Batalkan riwayat presensi peserta ID ${id} pada ${b}?`;
+
+  if (confirm(msg)) {
+    rekapPresensi = rekapPresensi.filter(r => {
+      const matchId = r.idPeserta.toUpperCase() === id.toUpperCase();
+      const matchBatch = (r.batch || "Batch 1").toLowerCase() === b.toLowerCase();
+      const matchP = p === null || Number(r.pertemuan || 1) === p;
+      return !(matchId && matchBatch && matchP);
+    });
+
     saveRekapData();
     renderAdminDashboard();
+    showToastNotification(`Presensi ID ${id} berhasil dibatalkan.`, "🗑️");
 
     if (IS_SERVER_ENV) {
-      fetch(`${PRESENSI_API_URL}?action=delete_absen&id=${encodeURIComponent(id)}`)
-        .catch(err => console.warn("Gagal hapus di server:", err));
+      let url = `${PRESENSI_API_URL}?action=delete_absen&id=${encodeURIComponent(id)}&batch=${encodeURIComponent(b)}`;
+      if (p !== null) url += `&pertemuan=${p}`;
+      fetch(url).catch(err => console.warn("Gagal hapus di server:", err));
     }
   }
 }
@@ -932,16 +1431,30 @@ function confirmResetData() {
     alert("Data rekap presensi saat ini masih kosong.");
     return;
   }
-  if (confirm("Apakah Anda yakin ingin MENGHAPUS SEMUA DATA REKAP presensi? Tindakan ini tidak dapat dibatalkan.")) {
-    rekapPresensi = [];
-    localStorage.setItem(STORAGE_REKAP_KEY, JSON.stringify([]));
+  const fBatch = document.getElementById("filterBatch")?.value || activeBatch;
+  const isAll = fBatch === "all";
+  const promptMsg = isAll
+    ? "Apakah Anda yakin ingin MENGHAPUS SEMUA DATA REKAP presensi seluruh batch? Tindakan ini tidak dapat dibatalkan."
+    : `Apakah Anda yakin ingin MENGHAPUS DATA REKAP presensi untuk ${fBatch}? Tindakan ini tidak dapat dibatalkan.`;
+
+  if (confirm(promptMsg)) {
+    if (isAll) {
+      rekapPresensi = [];
+    } else {
+      rekapPresensi = rekapPresensi.filter(r => (r.batch || "Batch 1").toLowerCase() !== fBatch.toLowerCase());
+    }
+    localStorage.setItem(STORAGE_REKAP_KEY, JSON.stringify(rekapPresensi));
     updateBadgeCounts();
     renderAdminDashboard();
-    showToastNotification("Data rekap presensi telah berhasil direset!", "🧹");
+    showToastNotification(`Data rekap presensi ${isAll ? 'seluruh batch' : fBatch} telah berhasil direset!`, "🧹");
 
     if (IS_SERVER_ENV) {
-      fetch(`${PRESENSI_API_URL}?action=reset_rekap`, { method: "POST" })
-        .catch(err => console.warn("Gagal reset di server:", err));
+      const payload = isAll ? {} : { batch: fBatch };
+      fetch(`${PRESENSI_API_URL}?action=reset_rekap`, { 
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      }).catch(err => console.warn("Gagal reset di server:", err));
     }
   }
 }
@@ -976,10 +1489,12 @@ function closeFeedbackDetailModal(event) {
   }
 }
 
-// Export data to Excel (.xlsx) using SheetJS
+// ========================================================
+// 6.4. EXPORT DATA KE EXCEL MULTI-SHEET & CSV
+// ========================================================
 function exportDataExcel() {
-  if (rekapPresensi.length === 0) {
-    alert("Belum ada data presensi yang tercatat untuk diekspor.");
+  if (rekapPresensi.length === 0 && masterPeserta.length === 0) {
+    alert("Belum ada data untuk diekspor.");
     return;
   }
 
@@ -988,59 +1503,136 @@ function exportDataExcel() {
     return;
   }
 
-  const excelRows = rekapPresensi.map((r, idx) => ({
+  const targetBatch = document.getElementById("filterBatch")?.value || activeBatch;
+  const workbook = XLSX.utils.book_new();
+
+  // ----------------------------------------------------
+  // SHEET 1: MATRIKS 4 PERTEMUAN (P1 - P4)
+  // ----------------------------------------------------
+  const matrixRows = masterPeserta.map((p, idx) => {
+    const pRecords = [1, 2, 3, 4].map(pNum => 
+      rekapPresensi.find(r => 
+        r.idPeserta.toUpperCase() === p.id.toUpperCase() &&
+        (targetBatch === "all" || (r.batch || "Batch 1").toLowerCase() === targetBatch.toLowerCase()) &&
+        Number(r.pertemuan || 1) === pNum
+      )
+    );
+    const totalHadir = pRecords.filter(Boolean).length;
+    const percent = Math.round((totalHadir / 4) * 100);
+
+    return {
+      "No": idx + 1,
+      "ID Peserta": p.id,
+      "Nama Peserta": p.nama,
+      "No. WhatsApp": p.whatsapp || p.email || "-",
+      "Track Pelatihan": p.track,
+      "Instansi": p.instansi,
+      "Batch": targetBatch === "all" ? (p.batch || "Batch 1") : targetBatch,
+      "Pertemuan 1": pRecords[0] ? `HADIR (${pRecords[0].timestamp})` : "TIDAK HADIR",
+      "Pertemuan 2": pRecords[1] ? `HADIR (${pRecords[1].timestamp})` : "TIDAK HADIR",
+      "Pertemuan 3": pRecords[2] ? `HADIR (${pRecords[2].timestamp})` : "TIDAK HADIR",
+      "Pertemuan 4": pRecords[3] ? `HADIR (${pRecords[3].timestamp})` : "TIDAK HADIR",
+      "Total Hadir (dari 4)": totalHadir,
+      "Persentase Kehadiran (%)": `${percent}%`,
+      "Status Kelulusan": percent >= 75 ? "MEMENUHI SYARAT" : "BELUM LENGKAP"
+    };
+  });
+
+  const wsMatrix = XLSX.utils.json_to_sheet(matrixRows);
+  wsMatrix["!cols"] = [
+    { wch: 6 },  // No
+    { wch: 14 }, // ID
+    { wch: 28 }, // Nama
+    { wch: 18 }, // WA
+    { wch: 30 }, // Track
+    { wch: 28 }, // Instansi
+    { wch: 14 }, // Batch
+    { wch: 25 }, // P1
+    { wch: 25 }, // P2
+    { wch: 25 }, // P3
+    { wch: 25 }, // P4
+    { wch: 16 }, // Total Hadir
+    { wch: 22 }, // %
+    { wch: 20 }  // Status Kelulusan
+  ];
+  XLSX.utils.book_append_sheet(workbook, wsMatrix, "Matriks 4 Pertemuan");
+
+  // ----------------------------------------------------
+  // SHEET 2: RIWAYAT DETAIL PRESENSI & ULASAN
+  // ----------------------------------------------------
+  const filteredRekap = rekapPresensi.filter(r => 
+    targetBatch === "all" || (r.batch || "Batch 1").toLowerCase() === targetBatch.toLowerCase()
+  );
+
+  const detailRows = filteredRekap.map((r, idx) => ({
     "No": idx + 1,
     "ID Peserta": r.idPeserta,
     "Nama Peserta": r.nama,
     "No. WhatsApp": r.whatsapp || r.email || "-",
     "Track Pelatihan": r.track,
     "Instansi": r.instansi,
+    "Batch": r.batch || "Batch 1",
+    "Pertemuan": `Pertemuan ${r.pertemuan || 1}`,
     "Waktu Presensi": r.timestamp,
     "Kepuasan (Rating)": getRatingLabel(r.rating),
     "Kritik & Saran": r.kritikSaran || "-",
     "Status": r.status || "HADIR"
   }));
 
-  const worksheet = XLSX.utils.json_to_sheet(excelRows);
-  worksheet["!cols"] = [
+  const wsDetail = XLSX.utils.json_to_sheet(detailRows.length > 0 ? detailRows : [{ "Status": "Belum ada riwayat" }]);
+  wsDetail["!cols"] = [
     { wch: 6 },  // No
     { wch: 14 }, // ID Peserta
     { wch: 26 }, // Nama Peserta
     { wch: 20 }, // No. WhatsApp
-    { wch: 32 }, // Track Pelatihan
+    { wch: 30 }, // Track Pelatihan
     { wch: 28 }, // Instansi
+    { wch: 14 }, // Batch
+    { wch: 16 }, // Pertemuan
     { wch: 24 }, // Waktu Presensi
     { wch: 22 }, // Kepuasan (Rating)
     { wch: 45 }, // Kritik & Saran
     { wch: 12 }  // Status
   ];
+  XLSX.utils.book_append_sheet(workbook, wsDetail, "Riwayat Detail Masukan");
 
-  const workbook = XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(workbook, worksheet, "Rekap Presensi");
-  XLSX.writeFile(workbook, `Rekap_Presensi_Halacoding_${new Date().toISOString().slice(0, 10)}.xlsx`);
-  showToastNotification("Data rekap presensi berhasil diekspor ke Excel (.xlsx)!", "📥");
+  const batchFileSuffix = targetBatch === "all" ? "Semua_Batch" : targetBatch.replace(/\s+/g, "_");
+  XLSX.writeFile(workbook, `Rekap_Presensi_Halacoding_${batchFileSuffix}_${new Date().toISOString().slice(0, 10)}.xlsx`);
+  showToastNotification("Data rekap presensi multi-pertemuan berhasil diekspor ke Excel!", "📥");
 }
 
-// Export data to CSV
+// Export data to CSV (Matriks format)
 function exportDataCSV() {
-  if (rekapPresensi.length === 0) {
-    alert("Belum ada data presensi yang tercatat untuk diekspor.");
-    return;
-  }
+  const targetBatch = document.getElementById("filterBatch")?.value || activeBatch;
+  const headers = ["No", "ID Peserta", "Nama Peserta", "No. WhatsApp", "Track", "Instansi", "Batch", "Pertemuan 1", "Pertemuan 2", "Pertemuan 3", "Pertemuan 4", "Total Hadir", "Persentase"];
+  
+  const rows = masterPeserta.map((p, idx) => {
+    const pRecords = [1, 2, 3, 4].map(pNum => 
+      rekapPresensi.find(r => 
+        r.idPeserta.toUpperCase() === p.id.toUpperCase() &&
+        (targetBatch === "all" || (r.batch || "Batch 1").toLowerCase() === targetBatch.toLowerCase()) &&
+        Number(r.pertemuan || 1) === pNum
+      )
+    );
+    const totalHadir = pRecords.filter(Boolean).length;
+    const percent = Math.round((totalHadir / 4) * 100);
 
-  const headers = ["No", "ID Peserta", "Nama Peserta", "No. WhatsApp", "Track Pelatihan", "Instansi", "Waktu Presensi", "Kepuasan (Rating)", "Kritik & Saran", "Status"];
-  const rows = rekapPresensi.map((r, idx) => [
-    idx + 1,
-    `"${r.idPeserta}"`,
-    `"${(r.nama || '').replace(/"/g, '""')}"`,
-    `"${r.whatsapp || r.email || '-'}"`,
-    `"${(r.track || '').replace(/"/g, '""')}"`,
-    `"${(r.instansi || '').replace(/"/g, '""')}"`,
-    `"${r.timestamp}"`,
-    `"${getRatingLabel(r.rating)}"`,
-    `"${(r.kritikSaran || '').replace(/"/g, '""')}"`,
-    `"${r.status || 'HADIR'}"`
-  ]);
+    return [
+      idx + 1,
+      `"${p.id}"`,
+      `"${(p.nama || '').replace(/"/g, '""')}"`,
+      `"${p.whatsapp || p.email || '-'}"`,
+      `"${(p.track || '').replace(/"/g, '""')}"`,
+      `"${(p.instansi || '').replace(/"/g, '""')}"`,
+      `"${targetBatch === 'all' ? (p.batch || 'Batch 1') : targetBatch}"`,
+      `"${pRecords[0] ? 'HADIR' : 'TIDAK'}"`,
+      `"${pRecords[1] ? 'HADIR' : 'TIDAK'}"`,
+      `"${pRecords[2] ? 'HADIR' : 'TIDAK'}"`,
+      `"${pRecords[3] ? 'HADIR' : 'TIDAK'}"`,
+      totalHadir,
+      `"${percent}%"`
+    ];
+  });
 
   const csvContent = "\uFEFF" + [headers.join(","), ...rows.map(e => e.join(","))].join("\r\n");
   const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
