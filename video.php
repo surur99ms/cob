@@ -93,7 +93,7 @@ session_start();
             <!-- Page Header -->
             <div class="text-center max-w-2xl mx-auto mb-16">
                 <span class="text-accent font-bold tracking-widest uppercase text-xs">Visualisasi Pembelajaran</span>
-                <h1 class="text-5xl font-serif font-bold text-ink mt-4 mb-6">Galeri Video</h1>
+                <h1 class="text-5xl font-serif font-bold text-ink mt-4 mb-6">Galeri Video99</h1>
                 <p class="text-lg text-inkLight">Tonton tutorial pemrograman, vlog keseharian santri, dan rekaman webinar secara gratis.</p>
             </div>
 
