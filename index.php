@@ -38,7 +38,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['email'])) {
         $_SESSION['msgType'] = "error";
     }
     
-    header("Location: " . $_SERVER['PHP_SELF']);
+    header("Location: " . $_SERVER['PHP_SELF'] . "#newsletter");
     exit;
 }
 
@@ -337,69 +337,79 @@ $videos = [
         </section>
 
         <!-- Newsletter Section -->
-        <section id="newsletter" class="py-24 border-t border-black/5">
-            <div class="max-w-5xl mx-auto px-6 sm:px-8 lg:px-12">
-                <div class="bg-white rounded-[40px] p-10 lg:p-16 flex flex-col md:flex-row items-center gap-12 lg:gap-20 shadow-sm border border-black/5">
+        <section id="newsletter" class="py-20 lg:py-28 border-t border-black/5">
+            <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="rounded-[36px] sm:rounded-[44px] p-8 sm:p-12 lg:p-16 shadow-[0_10px_40px_rgba(0,0,0,0.04)] border border-black/5 relative overflow-hidden"
+                     style="background: radial-gradient(circle at 100% 0%, rgba(254, 237, 227, 0.75) 0%, rgba(255, 255, 255, 0) 50%), radial-gradient(circle at 0% 100%, rgba(251, 234, 226, 0.65) 0%, rgba(255, 255, 255, 0) 45%), radial-gradient(circle at 100% 100%, rgba(231, 242, 244, 0.75) 0%, rgba(255, 255, 255, 0) 45%), #FFFFFF;">
                     
-                    <!-- Left Side -->
-                    <div class="w-full md:w-1/2 space-y-8">
-                        <h2 class="text-5xl lg:text-6xl font-serif font-medium text-ink leading-[1.1] relative inline-block">
-                            Subscribe <br/>
-                            <span class="font-bold">Santri<span class="text-accent">Koding</span></span>
-                            <!-- Paper Airplane SVG -->
-                            <svg class="absolute -right-16 -top-4 w-16 h-16 text-[#CBA3F5] transform rotate-12" viewBox="0 0 24 24" fill="currentColor">
-                                <path d="M22 2L11 13M22 2L15 22L11 13M22 2L2 9L11 13" stroke="#2D2D2D" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                            </svg>
-                        </h2>
+                    <!-- Top Section (Grid: Left text & social proof, Right 3D illustration) -->
+                    <div class="grid grid-cols-1 md:grid-cols-12 gap-8 lg:gap-12 items-center mb-10 sm:mb-14">
                         
-                        <p class="text-ink text-xl font-medium max-w-sm">
-                            Join a growing community of more than <span class="font-bold">10,000 friendly readers.</span>
-                        </p>
-                        
-                        <!-- Reviews & Avatars -->
-                        <div class="flex items-center gap-4 pt-2">
-                            <div class="flex -space-x-3">
-                                <div class="w-10 h-10 rounded-full border-2 border-white bg-gray-200 overflow-hidden"><img src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=100&h=100&fit=crop" class="w-full h-full object-cover"></div>
-                                <div class="w-10 h-10 rounded-full border-2 border-white bg-gray-300 overflow-hidden"><img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop" class="w-full h-full object-cover"></div>
-                                <div class="w-10 h-10 rounded-full border-2 border-white bg-gray-400 overflow-hidden"><img src="https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?w=100&h=100&fit=crop" class="w-full h-full object-cover"></div>
-                            </div>
-                            <div>
-                                <div class="flex text-[#FAD961] text-[15px]">
-                                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                        <!-- Left Column -->
+                        <div class="md:col-span-6 lg:col-span-6 space-y-6">
+                            <h2 class="text-5xl sm:text-6xl lg:text-[4rem] font-serif font-bold text-ink leading-[1.08] tracking-tight">
+                                Subscribe<br/>
+                                <span class="text-[#E65A4B]">SantriKoding</span>
+                            </h2>
+                            
+                            <p class="text-gray-800 text-lg sm:text-xl font-normal leading-snug">
+                                Join a growing community of more than<br class="hidden sm:inline"/>
+                                <span class="font-bold text-ink">10,000 friendly readers.</span>
+                            </p>
+                            
+                            <!-- Avatars & 5 Stars & Reviews -->
+                            <div class="flex items-center gap-4 pt-2">
+                                <div class="flex -space-x-2.5">
+                                    <img class="w-10 h-10 rounded-full border-2 border-white object-cover shadow-sm" src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=faces" alt="Reader avatar">
+                                    <img class="w-10 h-10 rounded-full border-2 border-white object-cover shadow-sm" src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop&crop=faces" alt="Reader avatar">
+                                    <img class="w-10 h-10 rounded-full border-2 border-white object-cover shadow-sm" src="https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=100&h=100&fit=crop&crop=faces" alt="Reader avatar">
                                 </div>
-                                <p class="text-sm text-inkLight font-medium mt-1">200+ reviews</p>
+                                <div class="flex flex-col justify-center">
+                                    <div class="flex text-[#F59E0B] text-xs gap-1">
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                    </div>
+                                    <span class="text-xs sm:text-sm text-gray-500 font-medium mt-1">200+ reviews</span>
+                                </div>
                             </div>
                         </div>
+
+                        <!-- Right Column (3D Illustration) -->
+                        <div class="md:col-span-6 lg:col-span-6 flex justify-center md:justify-end">
+                            <img src="newsletter-ill.png" alt="SantriKoding Newsletter Illustration" class="w-full max-w-sm sm:max-w-md lg:max-w-[460px] h-auto object-contain select-none pointer-events-none drop-shadow-sm">
+                        </div>
+
                     </div>
-                    
-                    <!-- Right Side -->
-                    <div class="w-full md:w-1/2 space-y-8">
-                        <p class="text-ink text-xl lg:text-[1.35rem] leading-relaxed font-medium">
+
+                    <!-- Bottom Section (Centered) -->
+                    <div class="max-w-2xl mx-auto text-center space-y-6">
+                        <p class="text-gray-800 text-base sm:text-lg leading-relaxed font-normal">
                             Each week, I share actionable productivity tips, practical life advice, and highlights from my favourite books, directly to your inbox. It's free, and always will be.
                         </p>
-                        
-                        <div>
-                            <?php if ($message): ?>
-                                <div class="p-4 mb-4 rounded-xl <?= $msgType == 'success' ? 'bg-green-100 text-green-900 border border-green-200' : 'bg-red-100 text-red-900 border border-red-200' ?>">
-                                    <?= htmlspecialchars($message) ?>
-                                </div>
-                            <?php endif; ?>
-                            
-                            <form method="POST" action="" class="flex flex-col sm:flex-row gap-2 bg-[#F8F7F3] rounded-full p-2 border border-black/5">
-                                <input type="email" name="email" required placeholder="Your email" 
-                                    class="flex-grow px-6 py-4 bg-transparent focus:outline-none text-ink placeholder-gray-500 font-medium text-lg">
-                                <button type="submit" 
-                                    class="px-8 py-4 bg-[#60C3D6] hover:bg-[#4eb3c6] text-ink font-semibold rounded-full transition-colors whitespace-nowrap shadow-sm text-lg">
-                                    Join Now!
-                                </button>
-                            </form>
-                            
-                            <p class="text-xs text-inkLight mt-6 leading-relaxed px-2 font-medium">
-                                By submitting this form, you'll be signed up to my free newsletter, which sometimes includes mentions of my books, apps and courses. You can opt-out at any time with no hard feelings 😌 Here's our privacy policy if you like reading.
-                            </p>
-                        </div>
+
+                        <?php if ($message): ?>
+                            <div class="p-4 rounded-2xl text-sm font-medium <?= $msgType == 'success' ? 'bg-green-50 text-green-800 border border-green-200' : 'bg-red-50 text-red-800 border border-red-200' ?>">
+                                <?= htmlspecialchars($message) ?>
+                            </div>
+                        <?php endif; ?>
+
+                        <form method="POST" action="#newsletter" class="flex flex-col sm:flex-row items-center bg-white rounded-full p-2 border border-gray-200/90 shadow-[0_4px_25px_rgba(0,0,0,0.06)] max-w-xl mx-auto focus-within:ring-2 focus-within:ring-[#2BB7CD]/30 focus-within:border-[#2BB7CD] transition-all">
+                            <input type="email" name="email" required placeholder="Your email" 
+                                class="w-full sm:flex-1 px-6 py-3.5 bg-transparent focus:outline-none text-ink placeholder-gray-400 font-normal text-base rounded-full">
+                            <button type="submit" 
+                                class="w-full sm:w-auto px-8 py-3.5 bg-[#2BB7CD] hover:bg-[#239fb3] text-white font-semibold rounded-full transition-all shadow-sm hover:shadow text-base whitespace-nowrap cursor-pointer">
+                                Join Now!
+                            </button>
+                        </form>
+
+                        <p class="text-xs sm:text-[13px] text-gray-500 leading-relaxed max-w-lg mx-auto">
+                            By submitting this form, you'll be signed up to my free newsletter, which sometimes includes mentions of my books, apps and courses. You can opt-out at any time with no hard feelings 😌 <a href="#" class="underline hover:text-gray-700">Here's our privacy policy if you like reading.</a>
+                        </p>
                     </div>
-                    
+
                 </div>
             </div>
         </section>
