@@ -223,7 +223,7 @@ session_start();
                 duration: "32 Menit",
                 excerpt: "Membahas mitos bahwa PHP sudah 'mati' dan mengapa bahasa ini masih sangat berkuasa di industri lokal maupun global.",
                 content: "Banyak yang bilang PHP sudah ketinggalan zaman, tapi faktanya mayoritas website di dunia masih menggunakan PHP, terutama ekosistem WordPress dan Laravel. Kita akan bedah data pasar kerja terkini, alasan mengapa PHP masih menjadi pilihan rasional untuk pemula, dan bagaimana masa depan framework seperti Laravel atau CodeIgniter.",
-                image: "https://images.unsplash.com/photo-1516280440502-86927918a5cb?q=80&w=1200&auto=format&fit=crop"
+                image: "https://images.unsplash.com/photo-1461749280684-dccba630e2f6?q=80&w=1200&auto=format&fit=crop"
             },
             {
                 id: 3,
@@ -233,7 +233,7 @@ session_start();
                 duration: "50 Menit",
                 excerpt: "Diskusi santai tentang dilema programmer muslim yang sering begadang dan bagaimana mengatur ritme kerja islami.",
                 content: "Deadline project sering kali memaksa programmer untuk lembur hingga larut malam. Lalu bagaimana nasib shalat Subuh dan Tahajud kita? Bersama Ustadz Developer, kita ngobrol santai tentang pentingnya keberkahan waktu, tips mengatur jam tidur (sleep hygiene), dan bagaimana meniatkan pekerjaan koding sebagai nilai ibadah.",
-                image: "https://images.unsplash.com/photo-1601024925769-d450849206b1?q=80&w=1200&auto=format&fit=crop"
+                image: "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?q=80&w=1200&auto=format&fit=crop"
             }
         ];
 
