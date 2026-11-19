@@ -143,51 +143,66 @@ session_start();
         </div>
     </footer>
 
-    <!-- Article Detail Modal -->
-    <div id="articleModal" class="fixed inset-0 z-50 hidden" aria-labelledby="modal-title" role="dialog" aria-modal="true">
-        <!-- Backdrop -->
-        <div class="fixed inset-0 bg-ink/80 backdrop-blur-sm transition-opacity" id="modalBackdrop"></div>
-
-        <!-- Modal Panel -->
-        <div class="fixed inset-0 z-10 w-screen overflow-y-auto">
-            <div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
-                <div class="relative transform overflow-hidden rounded-3xl bg-white text-left shadow-2xl transition-all sm:my-8 sm:w-full sm:max-w-3xl opacity-100 translate-y-0 sm:scale-100">
-                    
-                    <!-- Close Button -->
-                    <button id="closeModalBtn" class="absolute top-4 right-4 w-10 h-10 bg-white/80 backdrop-blur rounded-full flex items-center justify-center text-ink hover:bg-gray-100 transition-colors z-10 shadow-sm border border-gray-200">
-                        <i class="fas fa-times text-xl"></i>
+    <!-- Article Detail Fullscreen Reader Modal -->
+    <div id="articleModal" class="fixed inset-0 z-50 hidden bg-[#FBF9F6] overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+        <!-- Sticky Top Navigation Bar -->
+        <header class="sticky top-0 z-30 bg-white/95 backdrop-blur-md border-b border-black/5 shadow-sm">
+            <div class="max-w-4xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+                <button onclick="closeModal()" class="inline-flex items-center gap-2 text-ink hover:text-accent font-medium text-sm transition-colors py-2 px-3 rounded-xl hover:bg-gray-100">
+                    <i class="fas fa-arrow-left"></i>
+                    <span class="font-sans">Kembali ke Kumpulan Artikel</span>
+                </button>
+                <div class="flex items-center gap-2">
+                    <button id="closeModalBtn" class="w-10 h-10 rounded-full bg-gray-100 hover:bg-gray-200 text-ink flex items-center justify-center transition-colors shadow-sm" title="Tutup (Esc)">
+                        <i class="fas fa-times text-lg"></i>
                     </button>
+                </div>
+            </div>
+        </header>
 
-                    <div class="max-h-[90vh] overflow-y-auto">
-                        <!-- Header Image -->
-                        <div class="w-full h-64 sm:h-80 relative">
-                            <img id="modalMainImg" src="" alt="Thumbnail" class="w-full h-full object-cover">
-                            <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
-                        </div>
-
-                        <!-- Article Content -->
-                        <div class="p-8 lg:p-12 relative -mt-20 bg-white rounded-t-[40px]">
-                            <div class="flex items-center gap-3 mb-4">
-                                <span id="modalCategory" class="bg-accent/10 text-accent font-bold px-3 py-1 rounded-full text-xs uppercase tracking-wider"></span>
-                                <span id="modalDate" class="text-sm text-gray-500 font-medium"></span>
-                            </div>
-                            
-                            <h2 id="modalTitle" class="text-3xl lg:text-4xl font-serif font-bold text-ink mb-8 leading-tight"></h2>
-                            
-                            <div class="prose prose-lg text-inkLight mb-8 max-w-none font-serif leading-relaxed">
-                                <p id="modalContent"></p>
-                            </div>
-
-                            <div class="mt-12 pt-8 border-t border-gray-100 text-center">
-                                <button onclick="closeModal()" class="px-8 py-3 bg-ink hover:bg-inkLight text-white font-medium rounded-xl transition-colors">
-                                    Tutup Artikel
-                                </button>
-                            </div>
-                        </div>
+        <!-- Fullscreen Article Container -->
+        <main class="max-w-4xl mx-auto px-4 sm:px-6 py-8 sm:py-14">
+            <!-- Article Header Meta -->
+            <div class="max-w-3xl mx-auto mb-8">
+                <div class="flex items-center gap-3 mb-4">
+                    <span id="modalCategory" class="bg-accent/10 text-accent font-bold px-3.5 py-1.5 rounded-full text-xs uppercase tracking-wider"></span>
+                    <span id="modalDate" class="text-sm text-gray-500 font-medium"></span>
+                </div>
+                <h1 id="modalTitle" class="text-3xl sm:text-4xl lg:text-5xl font-serif font-bold text-ink leading-tight mb-6"></h1>
+                
+                <!-- Author Info -->
+                <div class="flex items-center gap-3 pt-2 pb-4 border-b border-black/5">
+                    <div class="w-11 h-11 rounded-full bg-accent/15 text-accent flex items-center justify-center font-bold text-base font-serif shadow-sm">
+                        M
+                    </div>
+                    <div>
+                        <p class="text-sm font-bold text-ink">Misbahussurur</p>
+                        <p class="text-xs text-gray-500">Santri, Penulis, Pionir Santri Koding</p>
                     </div>
                 </div>
             </div>
-        </div>
+
+            <!-- Featured Image -->
+            <div class="max-w-3xl mx-auto mb-10 overflow-hidden rounded-2xl sm:rounded-3xl shadow-lg border border-black/5 bg-gray-100">
+                <img id="modalMainImg" src="" alt="Thumbnail" class="w-full h-64 sm:h-96 md:h-[440px] object-cover">
+            </div>
+
+            <!-- Article Content -->
+            <div class="max-w-3xl mx-auto">
+                <div id="modalContent" class="text-inkLight font-serif text-lg sm:text-xl leading-relaxed space-y-6">
+                </div>
+
+                <!-- Footer Navigation inside Article -->
+                <div class="mt-16 pt-8 border-t border-black/10 flex flex-col sm:flex-row items-center justify-between gap-4">
+                    <button onclick="closeModal()" class="w-full sm:w-auto px-8 py-3.5 bg-ink hover:bg-inkLight text-white font-medium rounded-xl transition-all shadow-md inline-flex items-center justify-center gap-2">
+                        <i class="fas fa-arrow-left"></i> Kembali ke Kumpulan Artikel
+                    </button>
+                    <button onclick="document.getElementById('articleModal').scrollTo({top: 0, behavior: 'smooth'});" class="w-full sm:w-auto px-6 py-3.5 bg-white border border-gray-200 hover:bg-gray-50 text-ink font-medium rounded-xl transition-all shadow-sm inline-flex items-center justify-center gap-2">
+                        <i class="fas fa-arrow-up"></i> Kembali ke Atas
+                    </button>
+                </div>
+            </div>
+        </main>
     </div>
 
     <script>
@@ -332,6 +347,7 @@ session_start();
 
             // Show Modal
             modal.classList.remove('hidden');
+            modal.scrollTop = 0;
             // Prevent body scroll
             document.body.style.overflow = 'hidden';
         }
@@ -341,8 +357,8 @@ session_start();
             document.body.style.overflow = 'auto';
         }
 
-        closeModalBtn.addEventListener('click', closeModal);
-        modalBackdrop.addEventListener('click', closeModal);
+        if (closeModalBtn) closeModalBtn.addEventListener('click', closeModal);
+        if (modalBackdrop) modalBackdrop.addEventListener('click', closeModal);
         // Close on ESC key
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape' && !modal.classList.contains('hidden')) {
