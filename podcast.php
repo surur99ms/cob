@@ -143,63 +143,89 @@ session_start();
         </div>
     </footer>
 
-    <!-- Podcast Detail Modal -->
-    <div id="podcastModal" class="fixed inset-0 z-50 hidden" aria-labelledby="modal-title" role="dialog" aria-modal="true">
-        <!-- Backdrop -->
-        <div class="fixed inset-0 bg-ink/80 backdrop-blur-sm transition-opacity" id="modalBackdrop"></div>
-
-        <!-- Modal Panel -->
-        <div class="fixed inset-0 z-10 w-screen overflow-y-auto">
-            <div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
-                <div class="relative transform overflow-hidden rounded-3xl bg-white text-left shadow-2xl transition-all sm:my-8 sm:w-full sm:max-w-2xl opacity-100 translate-y-0 sm:scale-100">
-                    
-                    <!-- Close Button -->
-                    <button id="closeModalBtn" class="absolute top-4 right-4 w-10 h-10 bg-white/80 backdrop-blur rounded-full flex items-center justify-center text-ink hover:bg-gray-100 transition-colors z-10 shadow-sm border border-gray-200">
-                        <i class="fas fa-times text-xl"></i>
+    <!-- Podcast Detail Fullscreen Modal -->
+    <div id="podcastModal" class="fixed inset-0 z-50 hidden bg-[#FBF9F6] overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+        <!-- Sticky Top Navigation Bar -->
+        <header class="sticky top-0 z-30 bg-white/95 backdrop-blur-md border-b border-black/5 shadow-sm">
+            <div class="max-w-4xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+                <button onclick="closeModal()" class="inline-flex items-center gap-2 text-ink hover:text-accent font-medium text-sm transition-colors py-2 px-3 rounded-xl hover:bg-gray-100">
+                    <i class="fas fa-arrow-left"></i>
+                    <span class="font-sans">Kembali ke Episode Podcast</span>
+                </button>
+                <div class="flex items-center gap-2">
+                    <button id="closeModalBtn" class="w-10 h-10 rounded-full bg-gray-100 hover:bg-gray-200 text-ink flex items-center justify-center transition-colors shadow-sm" title="Tutup (Esc)">
+                        <i class="fas fa-times text-lg"></i>
                     </button>
+                </div>
+            </div>
+        </header>
 
-                    <div class="max-h-[90vh] overflow-y-auto">
-                        <!-- Header Image -->
-                        <div class="w-full aspect-video relative flex items-center justify-center">
-                            <img id="modalMainImg" src="" alt="Thumbnail" class="absolute inset-0 w-full h-full object-cover blur-sm opacity-50">
-                            <div class="absolute inset-0 bg-ink/40"></div>
-                            
-                            <!-- Fake Play Button for Visuals -->
-                            <div class="relative z-10 w-20 h-20 bg-accent rounded-full flex items-center justify-center text-white shadow-xl hover:scale-110 transition-transform cursor-pointer">
-                                <i class="fas fa-play text-2xl ml-1"></i>
-                            </div>
-                        </div>
-
-                        <!-- Podcast Content -->
-                        <div class="p-8 lg:p-10 relative bg-white">
-                            <div class="flex items-center justify-between mb-4">
-                                <div class="flex items-center gap-3">
-                                    <span id="modalCategory" class="bg-accent/10 text-accent font-bold px-3 py-1 rounded-full text-xs uppercase tracking-wider"></span>
-                                    <span id="modalDuration" class="text-sm text-gray-500 font-medium flex items-center gap-1"><i class="far fa-clock"></i> </span>
-                                </div>
-                                <span id="modalDate" class="text-sm text-gray-500 font-medium"></span>
-                            </div>
-                            
-                            <h2 id="modalTitle" class="text-2xl lg:text-3xl font-serif font-bold text-ink mb-6 leading-tight"></h2>
-                            
-                            <div class="prose prose-sm text-inkLight mb-8 max-w-none leading-relaxed">
-                                <h4 class="font-bold text-ink mb-2">Show Notes:</h4>
-                                <p id="modalContent"></p>
-                            </div>
-
-                            <div class="mt-8 pt-8 border-t border-gray-100 flex gap-4">
-                                <a href="#" class="flex-1 text-center px-6 py-4 bg-ink hover:bg-inkLight text-white font-medium rounded-xl transition-colors shadow-sm flex justify-center items-center gap-2">
-                                    <i class="fab fa-spotify text-green-400"></i> Dengarkan di Spotify
-                                </a>
-                                <a href="#" class="flex-1 text-center px-6 py-4 bg-white border-2 border-gray-200 hover:border-gray-300 text-ink font-medium rounded-xl transition-colors flex justify-center items-center gap-2">
-                                    <i class="fab fa-apple text-ink"></i> Apple Podcasts
-                                </a>
-                            </div>
-                        </div>
+        <!-- Fullscreen Podcast Container -->
+        <main class="max-w-4xl mx-auto px-4 sm:px-6 py-8 sm:py-14">
+            <!-- Podcast Header Meta -->
+            <div class="max-w-3xl mx-auto mb-8">
+                <div class="flex flex-wrap items-center gap-3 mb-4">
+                    <span id="modalCategory" class="bg-accent/10 text-accent font-bold px-3.5 py-1.5 rounded-full text-xs uppercase tracking-wider"></span>
+                    <span id="modalDuration" class="text-sm text-gray-500 font-medium flex items-center gap-1 bg-gray-100 px-3 py-1 rounded-full"><i class="far fa-clock"></i> </span>
+                    <span id="modalDate" class="text-sm text-gray-500 font-medium"></span>
+                </div>
+                <h1 id="modalTitle" class="text-3xl sm:text-4xl lg:text-5xl font-serif font-bold text-ink leading-tight mb-6"></h1>
+                
+                <!-- Host Info -->
+                <div class="flex items-center gap-3 pt-2 pb-4 border-b border-black/5">
+                    <div class="w-11 h-11 rounded-full bg-accent/15 text-accent flex items-center justify-center font-bold text-base font-serif shadow-sm">
+                        <i class="fas fa-microphone-alt"></i>
+                    </div>
+                    <div>
+                        <p class="text-sm font-bold text-ink">Misbahussurur</p>
+                        <p class="text-xs text-gray-500">Santri Koding Podcast Host</p>
                     </div>
                 </div>
             </div>
-        </div>
+
+            <!-- Featured Player Card -->
+            <div class="max-w-3xl mx-auto mb-10 overflow-hidden rounded-2xl sm:rounded-3xl shadow-xl border border-black/5 bg-ink relative">
+                <div class="w-full aspect-[16/9] sm:aspect-[21/9] relative flex items-center justify-center">
+                    <img id="modalMainImg" src="" alt="Thumbnail" class="absolute inset-0 w-full h-full object-cover blur-sm opacity-40">
+                    <div class="absolute inset-0 bg-gradient-to-t from-ink via-ink/60 to-transparent"></div>
+                    
+                    <!-- Player Center -->
+                    <div class="relative z-10 text-center px-6">
+                        <div class="w-20 h-20 bg-accent hover:bg-accentHover rounded-full flex items-center justify-center text-white shadow-2xl hover:scale-110 transition-all cursor-pointer mx-auto mb-4">
+                            <i class="fas fa-play text-2xl ml-1"></i>
+                        </div>
+                        <p class="text-white font-medium text-sm">Klik untuk memutar episode ini</p>
+                    </div>
+                </div>
+
+                <!-- Streaming Links -->
+                <div class="p-6 bg-white border-t border-gray-100 flex flex-col sm:flex-row gap-4">
+                    <a href="https://open.spotify.com" target="_blank" class="flex-1 text-center px-6 py-3.5 bg-ink hover:bg-inkLight text-white font-medium rounded-xl transition-colors shadow-sm flex justify-center items-center gap-2 text-sm">
+                        <i class="fab fa-spotify text-green-400 text-lg"></i> Dengarkan di Spotify
+                    </a>
+                    <a href="https://podcasts.apple.com" target="_blank" class="flex-1 text-center px-6 py-3.5 bg-white border-2 border-gray-200 hover:border-gray-300 text-ink font-medium rounded-xl transition-colors flex justify-center items-center gap-2 text-sm">
+                        <i class="fab fa-apple text-ink text-lg"></i> Apple Podcasts
+                    </a>
+                </div>
+            </div>
+
+            <!-- Show Notes & Description -->
+            <div class="max-w-3xl mx-auto">
+                <h3 class="font-serif font-bold text-2xl text-ink mb-4 pb-2 border-b border-black/5">Catatan Episode (Show Notes)</h3>
+                <div id="modalContent" class="text-inkLight font-serif text-lg sm:text-xl leading-relaxed space-y-4">
+                </div>
+
+                <!-- Footer Navigation inside Podcast -->
+                <div class="mt-16 pt-8 border-t border-black/10 flex flex-col sm:flex-row items-center justify-between gap-4">
+                    <button onclick="closeModal()" class="w-full sm:w-auto px-8 py-3.5 bg-ink hover:bg-inkLight text-white font-medium rounded-xl transition-all shadow-md inline-flex items-center justify-center gap-2">
+                        <i class="fas fa-arrow-left"></i> Kembali ke Episode Podcast
+                    </button>
+                    <button onclick="document.getElementById('podcastModal').scrollTo({top: 0, behavior: 'smooth'});" class="w-full sm:w-auto px-6 py-3.5 bg-white border border-gray-200 hover:bg-gray-50 text-ink font-medium rounded-xl transition-all shadow-sm inline-flex items-center justify-center gap-2">
+                        <i class="fas fa-arrow-up"></i> Kembali ke Atas
+                    </button>
+                </div>
+            </div>
+        </main>
     </div>
 
     <script>
@@ -345,6 +371,7 @@ session_start();
 
             // Show Modal
             modal.classList.remove('hidden');
+            modal.scrollTop = 0;
             // Prevent body scroll
             document.body.style.overflow = 'hidden';
         }
@@ -354,8 +381,8 @@ session_start();
             document.body.style.overflow = 'auto';
         }
 
-        closeModalBtn.addEventListener('click', closeModal);
-        modalBackdrop.addEventListener('click', closeModal);
+        if (closeModalBtn) closeModalBtn.addEventListener('click', closeModal);
+        if (modalBackdrop) modalBackdrop.addEventListener('click', closeModal);
         // Close on ESC key
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape' && !modal.classList.contains('hidden')) {
