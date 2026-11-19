@@ -178,8 +178,8 @@ $videos = [
                             <span class="absolute top-0 right-0 text-5xl lg:text-7xl transform rotate-12 origin-bottom-right">👋</span>
                             <svg class="absolute w-[105%] h-auto bottom-1 -left-2 text-[#60C3D6] -z-10" viewBox="0 0 200 15" xmlns="http://www.w3.org/2000/svg"><path d="M0 10 Q 50 -5 100 10 T 200 5" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"/></svg>
                         </h1>
-                        <p class="text-xl lg:text-2xl text-ink font-light leading-relaxed max-w-2xl pt-6">
-                            Misbahussurur: Santri, Penulis, Pionir '<span class="font-bold border-b-2 border-ink">Santri Koding</span>'. Dia menerjemahkan kearifan lokal pesantren ke dalam baris-baris kode yang berdaya, menginspirasi gerakan koding di kalangan santri dan mengubah lanskap teknologi pendidikan.
+                        <p class="text-xl lg:text-2xl font-serif text-inkLight/90 leading-relaxed max-w-2xl pt-6 italic">
+                            <span class="font-sans font-semibold text-ink not-italic">Misbahussurur:</span> Santri, Penulis, Pionir '<span class="font-bold text-ink not-italic border-b-2 border-accent">Santri Koding</span>'. Dia menerjemahkan kearifan lokal pesantren ke dalam baris-baris kode yang berdaya, menginspirasi gerakan koding di kalangan santri dan mengubah lanskap teknologi pendidikan.
                         </p>
                         
                         <!-- YouTube Subscribe Form -->
