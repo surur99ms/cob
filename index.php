@@ -346,15 +346,18 @@ $videos = [
                     </div>
                 <?php endif; ?>
 
-                <!-- Card Container with Direct Mockup Image & Functional Form Overlay -->
+                <!-- Card Container with Direct HD Mockup Image & Functional Form Overlay -->
                 <div class="relative w-full rounded-[24px] sm:rounded-[36px] overflow-hidden shadow-[0_15px_45px_rgba(0,0,0,0.06)] border border-black/5 bg-white select-none">
-                    <!-- Gambar Utuh Sesuai Mockup -->
-                    <img src="newsletter-bg.jpg" alt="Subscribe SantriKoding" class="w-full h-auto block pointer-events-none">
+                    <!-- Gambar Utuh HD Sesuai Mockup (2.7K Resolution) -->
+                    <picture>
+                        <source srcset="santrikoding.webp" type="image/webp">
+                        <img src="santrikoding.png" alt="Subscribe SantriKoding" class="w-full h-auto block pointer-events-none" loading="eager" decoding="async">
+                    </picture>
 
                     <!-- Form Interaktif (Your email + Join Now!) -->
                     <form method="POST" action="#newsletter" 
                           class="absolute flex items-center bg-white rounded-full border border-gray-200 shadow-md p-0.5 sm:p-1 md:p-1.5 focus-within:ring-2 focus-within:ring-[#2BB7CD] transition-all"
-                          style="left: 50%; transform: translateX(-50%); top: 78.2%; width: 41.6%; height: 8.5%; min-height: 28px;">
+                          style="left: 50%; transform: translateX(-50%); top: 78.4%; width: 41.6%; height: 8.5%; min-height: 28px;">
                         
                         <input type="email" name="email" required placeholder="Your email" 
                                class="w-full h-full px-2.5 sm:px-4 md:px-5 bg-transparent focus:outline-none text-gray-800 placeholder-gray-400 font-normal text-[10px] sm:text-xs md:text-sm lg:text-base rounded-full">
