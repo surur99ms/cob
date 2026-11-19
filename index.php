@@ -134,7 +134,7 @@ $videos = [
                 <a href="#newsletter" class="px-6 py-2.5 bg-accent hover:bg-accentHover text-white rounded-full font-medium transition-colors shadow-sm text-sm">
                     Gabung 50.000+ Subscribers
                 </a>
-                <a href="index.php#courses" class="text-ink hover:text-accent font-medium text-sm transition-colors">Aplikasi Baru</a>
+                <a href="index.php#courses" class="text-ink hover:text-accent font-medium text-sm transition-colors">Aplikasi</a>
                 <a href="artikel.php" class="text-ink hover:text-accent font-medium text-sm transition-colors">Artikel</a>
                 <a href="podcast.php" class="text-ink hover:text-accent font-medium text-sm transition-colors">Podcast</a>
                 <a href="video.php" class="text-ink hover:text-accent font-medium text-sm transition-colors">Video</a>
