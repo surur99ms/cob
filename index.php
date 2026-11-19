@@ -337,80 +337,35 @@ $videos = [
         </section>
 
         <!-- Newsletter Section -->
-        <section id="newsletter" class="py-20 lg:py-28 border-t border-black/5">
+        <section id="newsletter" class="py-16 sm:py-24 border-t border-black/5">
             <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="rounded-[36px] sm:rounded-[44px] p-8 sm:p-12 lg:p-16 shadow-[0_10px_40px_rgba(0,0,0,0.04)] border border-black/5 relative overflow-hidden"
-                     style="background: radial-gradient(circle at 100% 0%, rgba(254, 237, 227, 0.75) 0%, rgba(255, 255, 255, 0) 50%), radial-gradient(circle at 0% 100%, rgba(251, 234, 226, 0.65) 0%, rgba(255, 255, 255, 0) 45%), radial-gradient(circle at 100% 100%, rgba(231, 242, 244, 0.75) 0%, rgba(255, 255, 255, 0) 45%), #FFFFFF;">
-                    
-                    <!-- Top Section (Grid: Left text & social proof, Right 3D illustration) -->
-                    <div class="grid grid-cols-1 md:grid-cols-12 gap-8 lg:gap-12 items-center mb-10 sm:mb-14">
+                
+                <?php if ($message): ?>
+                    <div class="max-w-md mx-auto mb-6 p-4 rounded-2xl text-center text-sm font-medium shadow-sm <?= $msgType == 'success' ? 'bg-green-100 text-green-900 border border-green-200' : 'bg-red-100 text-red-900 border border-red-200' ?>">
+                        <?= htmlspecialchars($message) ?>
+                    </div>
+                <?php endif; ?>
+
+                <!-- Card Container with Direct Mockup Image & Functional Form Overlay -->
+                <div class="relative w-full rounded-[24px] sm:rounded-[36px] overflow-hidden shadow-[0_15px_45px_rgba(0,0,0,0.06)] border border-black/5 bg-white select-none">
+                    <!-- Gambar Utuh Sesuai Mockup -->
+                    <img src="newsletter-bg.jpg" alt="Subscribe SantriKoding" class="w-full h-auto block pointer-events-none">
+
+                    <!-- Form Interaktif (Your email + Join Now!) -->
+                    <form method="POST" action="#newsletter" 
+                          class="absolute flex items-center bg-white rounded-full border border-gray-200 shadow-md p-0.5 sm:p-1 md:p-1.5 focus-within:ring-2 focus-within:ring-[#2BB7CD] transition-all"
+                          style="left: 50%; transform: translateX(-50%); top: 78.2%; width: 41.6%; height: 8.5%; min-height: 28px;">
                         
-                        <!-- Left Column -->
-                        <div class="md:col-span-6 lg:col-span-6 space-y-6">
-                            <h2 class="text-5xl sm:text-6xl lg:text-[4rem] font-serif font-bold text-ink leading-[1.08] tracking-tight">
-                                Subscribe<br/>
-                                <span class="text-[#E65A4B]">SantriKoding</span>
-                            </h2>
-                            
-                            <p class="text-gray-800 text-lg sm:text-xl font-normal leading-snug">
-                                Join a growing community of more than<br class="hidden sm:inline"/>
-                                <span class="font-bold text-ink">10,000 friendly readers.</span>
-                            </p>
-                            
-                            <!-- Avatars & 5 Stars & Reviews -->
-                            <div class="flex items-center gap-4 pt-2">
-                                <div class="flex -space-x-2.5">
-                                    <img class="w-10 h-10 rounded-full border-2 border-white object-cover shadow-sm" src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=faces" alt="Reader avatar">
-                                    <img class="w-10 h-10 rounded-full border-2 border-white object-cover shadow-sm" src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop&crop=faces" alt="Reader avatar">
-                                    <img class="w-10 h-10 rounded-full border-2 border-white object-cover shadow-sm" src="https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=100&h=100&fit=crop&crop=faces" alt="Reader avatar">
-                                </div>
-                                <div class="flex flex-col justify-center">
-                                    <div class="flex text-[#F59E0B] text-xs gap-1">
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star"></i>
-                                    </div>
-                                    <span class="text-xs sm:text-sm text-gray-500 font-medium mt-1">200+ reviews</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Right Column (3D Illustration) -->
-                        <div class="md:col-span-6 lg:col-span-6 flex justify-center md:justify-end">
-                            <img src="newsletter-ill.png" alt="SantriKoding Newsletter Illustration" class="w-full max-w-sm sm:max-w-md lg:max-w-[460px] h-auto object-contain select-none pointer-events-none drop-shadow-sm">
-                        </div>
-
-                    </div>
-
-                    <!-- Bottom Section (Centered) -->
-                    <div class="max-w-2xl mx-auto text-center space-y-6">
-                        <p class="text-gray-800 text-base sm:text-lg leading-relaxed font-normal">
-                            Each week, I share actionable productivity tips, practical life advice, and highlights from my favourite books, directly to your inbox. It's free, and always will be.
-                        </p>
-
-                        <?php if ($message): ?>
-                            <div class="p-4 rounded-2xl text-sm font-medium <?= $msgType == 'success' ? 'bg-green-50 text-green-800 border border-green-200' : 'bg-red-50 text-red-800 border border-red-200' ?>">
-                                <?= htmlspecialchars($message) ?>
-                            </div>
-                        <?php endif; ?>
-
-                        <form method="POST" action="#newsletter" class="flex flex-col sm:flex-row items-center bg-white rounded-full p-2 border border-gray-200/90 shadow-[0_4px_25px_rgba(0,0,0,0.06)] max-w-xl mx-auto focus-within:ring-2 focus-within:ring-[#2BB7CD]/30 focus-within:border-[#2BB7CD] transition-all">
-                            <input type="email" name="email" required placeholder="Your email" 
-                                class="w-full sm:flex-1 px-6 py-3.5 bg-transparent focus:outline-none text-ink placeholder-gray-400 font-normal text-base rounded-full">
-                            <button type="submit" 
-                                class="w-full sm:w-auto px-8 py-3.5 bg-[#2BB7CD] hover:bg-[#239fb3] text-white font-semibold rounded-full transition-all shadow-sm hover:shadow text-base whitespace-nowrap cursor-pointer">
-                                Join Now!
-                            </button>
-                        </form>
-
-                        <p class="text-xs sm:text-[13px] text-gray-500 leading-relaxed max-w-lg mx-auto">
-                            By submitting this form, you'll be signed up to my free newsletter, which sometimes includes mentions of my books, apps and courses. You can opt-out at any time with no hard feelings 😌 <a href="#" class="underline hover:text-gray-700">Here's our privacy policy if you like reading.</a>
-                        </p>
-                    </div>
-
+                        <input type="email" name="email" required placeholder="Your email" 
+                               class="w-full h-full px-2.5 sm:px-4 md:px-5 bg-transparent focus:outline-none text-gray-800 placeholder-gray-400 font-normal text-[10px] sm:text-xs md:text-sm lg:text-base rounded-full">
+                        
+                        <button type="submit" 
+                                class="h-full px-2.5 sm:px-4 md:px-6 bg-[#25B4CB] hover:bg-[#1fa5bb] text-white font-semibold rounded-full text-[10px] sm:text-xs md:text-sm lg:text-base whitespace-nowrap shadow-sm transition-all cursor-pointer flex items-center justify-center">
+                            Join Now!
+                        </button>
+                    </form>
                 </div>
+
             </div>
         </section>
 
