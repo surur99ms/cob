@@ -125,7 +125,7 @@ $videos = [
             <!-- Logo Section -->
             <div class="flex-shrink-0">
                 <a href="#" class="inline-block">
-                    <img src="logo-black.jpg" alt="Misbahussurur Logo" class="h-20 lg:h-28 w-auto object-contain">
+                    <img src="logo-black.png" alt="Misbahussurur Logo" class="h-20 lg:h-28 w-auto object-contain">
                 </a>
             </div>
             
